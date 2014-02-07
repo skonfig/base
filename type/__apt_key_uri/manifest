@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2012 Jake Guffey (jake.guffey at eprotex.com)
+# 2013-2014 Steven Armstrong (steven-cdist at armstrong.cc)
 #
 # This file is part of cdist.
 #
@@ -17,26 +17,5 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
-#
-# The __jail type creates, configures, and deletes FreeBSD jails for use as
-#  virtual machines.
-#
 
-# Debug
-#exec >&2
-#set -x
-
-# Can only be used on FreeBSD
-os="$(cat "$__global/explorer/os")"
-if [ ! "$os" = "freebsd" ]; then
-	echo "__jail can only be used on FreeBSD targets!" >&2
-	exit 1
-fi
-
-jaildir="$(cat "$__object/parameter/jaildir")"
-
-__directory ${jaildir} --parents
-
-# Debug
-#set +x
-
+__package curl

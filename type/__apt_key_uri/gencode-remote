@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2011-2014 Steven Armstrong (steven-cdist at armstrong.cc)
 #
 # This file is part of cdist.
 #
@@ -17,43 +17,29 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
-#
-# Manage packages with yum (mostly Fedora)
-#
 
 if [ -f "$__object/parameter/name" ]; then
    name="$(cat "$__object/parameter/name")"
 else
    name="$__object_id"
 fi
-
 state_should="$(cat "$__object/parameter/state")"
+state_is="$(cat "$__object/explorer/state")"
 
-if grep -q -E "(centos|redhat|amazon)" "$__global/explorer/os"; then
-    opts="-y --quiet"
-else
-    opts="--assumeyes --quiet"
+if [ "$state_should" = "$state_is" ]; then
+   # nothing to do
+   exit 0
 fi
-
-not_installed="^no package provides"
-
-if grep -q "$not_installed" "$__object/explorer/pkg_version"; then
-    state_is="absent"
-else
-    state_is="present"
-fi
-
-[ "$state_is" = "$state_should" ] && exit 0
 
 case "$state_should" in
-    present)
-        echo yum $opts install \"$name\"
-    ;;
-    absent)
-        echo yum $opts remove \"$name\"
-    ;;
-    *)
-        echo "Unknown state: $state_should" >&2
-        exit 1
-    ;;
+   present)
+      uri="$(cat "$__object/parameter/uri")"
+      printf 'curl -s -L "%s" | apt-key add -\n' "$uri"
+   ;;
+   absent)
+      cat << DONE
+keyid=\$(apt-key list | grep -B1 "$name" | awk '/pub/ { print \$2 }' | cut -d'/' -f 2)
+apt-key del \$keyid
+DONE
+   ;;
 esac
