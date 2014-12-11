@@ -1,4 +1,5 @@
 name
+flavor
 version
+repo
 state
-target-release

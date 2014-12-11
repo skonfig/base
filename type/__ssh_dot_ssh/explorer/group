@@ -1,7 +1,6 @@
 #!/bin/sh
 #
-# 2014 Daniel Heule  (hda at sfs.biz)
-# 2014 Thomas Oettli (otho at sfs.biz)
+# 2014 Steven Armstrong (steven-cdist at armstrong.cc)
 #
 # This file is part of cdist.
 #
@@ -18,19 +17,6 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
-#
 
-# FIXME: other system types (not linux ...)
-
-os=$("$__explorer/os")
-case "$os" in
-    "macosx")
-        echo "$(sysctl -n hw.memsize)/1024" | bc
-    ;;
-
-    *)
-    if [ -r /proc/meminfo ]; then
-        grep "MemTotal:" /proc/meminfo | awk '{print $2}'
-    fi
-    ;;
-esac
+gid="$("$__type_explorer/passwd" | cut -d':' -f 4)"
+getent group "$gid" || true

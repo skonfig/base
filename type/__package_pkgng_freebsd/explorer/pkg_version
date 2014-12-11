@@ -1,7 +1,6 @@
 #!/bin/sh
 #
-# 2014 Daniel Heule  (hda at sfs.biz)
-# 2014 Thomas Oettli (otho at sfs.biz)
+# 2014 Jake Guffey (jake.guffey at eprotex.com)
 #
 # This file is part of cdist.
 #
@@ -19,18 +18,20 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 #
+# Retrieve the status of a package - parsed dpkg output
+#
 
-# FIXME: other system types (not linux ...)
+if [ -f "$__object/parameter/name" ]; then
+   name="$(cat "$__object/parameter/name")"
+else
+   name="$__object_id"
+fi
 
-os=$("$__explorer/os")
-case "$os" in
-    "macosx")
-        echo "$(sysctl -n hw.memsize)/1024" | bc
-    ;;
+# Don't produce "no pkgs installed" output -- breaks things
+PKG_OUTPUT=$(pkg info 2>&1)
+echo -n "$(echo "$PKG_OUTPUT" \
+   | awk '{print $1}' \
+   | sed 's/^\(.*\)-\([^-]*\)$/name:\1 ver:\2/g' \
+   | grep "name:$name ver:" \
+   | sed 's/^.*ver:\(.*\)/\1/g')"
 
-    *)
-    if [ -r /proc/meminfo ]; then
-        grep "MemTotal:" /proc/meminfo | awk '{print $2}'
-    fi
-    ;;
-esac
