@@ -59,6 +59,17 @@ case $uname_s in
             echo 'If you can, please submit a patch.'>&2
         fi
     ;;
+    SunOS)
+        format </dev/null \
+        | awk '
+            BEGIN {
+              getline
+              while ($0 !~ /^AVAILABLE DISK/) getline
+            }
+            /^ +[0-9]+\. /' \
+        | sed -e 's/^ *[0-9][0-9]*. //' \
+        | cut -d' ' -f1
+    ;;
     *)
         printf "Don't know how to list disks for %s operating system.\n" "${uname_s}" >&2
         printf 'If you can please submit a patch\n' >&2
