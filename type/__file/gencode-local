@@ -27,7 +27,7 @@ type="$(cat "$__object/explorer/type")"
 
 if [ "$state_should" = "pre-exists" ]; then
    if [ -f "$__object/parameter/source" ]; then
-      echo "--source cannot be used with --state pre-exists"
+      echo "--source cannot be used with --state pre-exists" >&2
       exit 1
    fi
 
