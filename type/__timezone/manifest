@@ -87,6 +87,12 @@ in
 		# XXX: Should /etc/TZ be updated??
 		echo "${TZ}" | __file /etc/TZ --owner 0 --group 0 --mode 0644 --source -
 		;;
+	(freebsd)
+		test -n "${zoneinfo_file}" || invalid_timezone
+
+		echo "${TZ}" | __file /var/db/zoneinfo --owner 0 --group 0 --mode 0644 \
+			--source -
+		;;
 	(voidlinux)
 		test -n "${zoneinfo_file}" || invalid_timezone
 
