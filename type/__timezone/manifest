@@ -37,7 +37,7 @@ invalid_timezone() {
 # some OSes require a timezone package to be installed first
 case ${os}
 in
-	(archlinux|alpine|debian|devuan|ubuntu|centos|redhat|scientific)
+	(archlinux|alpine|debian|devuan|ubuntu|centos|redhat|scientific|voidlinux)
 		__package tzdata
 		export require=__package/tzdata
 		;;
@@ -73,6 +73,15 @@ in
 			--file /etc/sysconfig/clock \
 			--delimiter '=' --exact_delimiter \
 			--key 'ZONE' \
+			--value "\"${TZ}\""
+		;;
+	(voidlinux)
+		test -n "${zoneinfo_file}" || invalid_timezone
+
+		__key_value /etc/rc.conf:TIMEZONE \
+			--file /etc/rc.conf \
+			--key TIMEZONE \
+			--delimiter '=' --exact_delimiter \
 			--value "\"${TZ}\""
 		;;
 	(*)
