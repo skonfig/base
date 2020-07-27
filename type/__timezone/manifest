@@ -61,6 +61,13 @@ in
         ;;
 esac
 
+case ${os}
+in
+	(ubuntu|debian|devuan|coreos|alpine)
+		echo "${timezone_should}" | __file /etc/timezone --source -
+		;;
+esac
+
 __link /etc/localtime \
     --source "/usr/share/zoneinfo/${timezone}" \
     --type symbolic
