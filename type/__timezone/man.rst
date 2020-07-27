@@ -3,13 +3,13 @@ cdist-type__timezone(7)
 
 NAME
 ----
-cdist-type__timezone - Allows one to configure the desired localtime timezone.
+cdist-type__timezone - Configure the system timezone.
 
 
 DESCRIPTION
 -----------
-This type creates a symlink (/etc/localtime) to the selected timezone
-(which should be available in /usr/share/zoneinfo).
+This type creates a symlink (``/etc/localtime``) to the selected
+timezone (which should be available in ``/usr/share/zoneinfo``).
 
 
 REQUIRED PARAMETERS

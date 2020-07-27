@@ -3,6 +3,7 @@
 # 2011 Ramon Salvadó (rsalvado at gnuine.com)
 # 2012-2015 Steven Armstrong (steven-cdist at armstrong.cc)
 # 2012-2019 Nico Schottelius (nico-cdist at schottelius.org)
+# 2020 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -20,45 +21,40 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-timezone=$(cat "${__object:?}/parameter/tz")
+TZ=$(cat "${__object:?}/parameter/tz")
 os=$(cat "${__global:?}/explorer/os")
+localtime_file=/etc/localtime
 
 case ${os}
 in
-    (archlinux|debian|ubuntu|devuan|alpine)
-        __package tzdata
-        export require='__package/tzdata'
-        ;;
-    (suse)
-        __package timezone
-        export require='__package/timezone'
-        ;;
-    (freebsd|netbsd|openbsd)
-        # whitelist
-        :
-        ;;
-    (coreos)
-        # whitelist
-        :
-        ;;
-    (scientific|centos)
-        __package tzdata --state present
-        export require='__package/tzdata'
-        __file /etc/sysconfig/clock \
-            --owner root --group root --mode 644 \
-            --state exists
-        require='__file/etc/sysconfig/clock' \
-            __key_value ZONE \
-                --file /etc/sysconfig/clock \
-                --delimiter '=' \
-                --value "\"${timezone}\""
-        ;;
-    (*)
-        : "${__type:?}"  # make shellcheck happy
-        echo "Your operating system (${os}) is currently not supported by this type (${__type##*/})." >&2
-        echo 'Please contribute an implementation for it if you can.' >&2
-        exit 1
-        ;;
+	(archlinux|alpine|debian|devuan|ubuntu|centos|redhat|scientific)
+		__package tzdata
+		export require=__package/tzdata
+		;;
+	(suse)
+		__package timezone
+		export require=__package/timezone
+		;;
+	(coreos|freebsd|netbsd|openbsd)
+		# whitelist
+		;;
+	(centos|redhat|scientific)
+		__file /etc/sysconfig/clock \
+			--state exists \
+			--owner 0 --group 0 --mode 0644
+		require=__file/etc/sysconfig/clock \
+		__key_value /etc/sysconfig/clock:ZONE \
+			--file /etc/sysconfig/clock \
+			--delimiter '=' --exact_delimiter \
+			--key 'ZONE' \
+			--value "\"${TZ}\""
+		;;
+	(*)
+		: "${__type:?}"  # make shellcheck happy
+		echo "Your operating system (${os}) is currently not supported by this type (${__type##*/})." >&2
+		echo 'Please contribute an implementation for it if you can.' >&2
+		exit 1
+		;;
 esac
 
 case ${os}
@@ -68,6 +64,7 @@ in
 		;;
 esac
 
-__link /etc/localtime \
-    --source "/usr/share/zoneinfo/${timezone}" \
-    --type symbolic
+zoneinfo_file="/usr/share/zoneinfo/${TZ}"
+__link "${localtime_file}" \
+	--type symbolic \
+	--source "${zoneinfo_file}"
