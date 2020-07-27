@@ -101,6 +101,15 @@ in
 		${TZ}
 		EOF
 		;;
+	(freebsd)
+		test -n "${zoneinfo_file}" || invalid_timezone
+
+		__file /var/db/zoneinfo \
+			--owner 0 --group 0 --mode 0644 \
+			--source - <<-EOF
+		${TZ}
+		EOF
+		;;
 	(voidlinux)
 		test -n "${zoneinfo_file}" || invalid_timezone
 
