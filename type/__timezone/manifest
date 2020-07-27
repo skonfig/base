@@ -24,6 +24,15 @@
 TZ=$(cat "${__object:?}/parameter/tz")
 os=$(cat "${__global:?}/explorer/os")
 localtime_file=/etc/localtime
+zoneinfo_file=$(cat "${__object:?}/explorer/zoneinfo_file")
+
+invalid_timezone() {
+	# NOTE: When the tzdata package was just installed, this might produce an
+	# invalid timezone error because the explorer has been run before the
+	# installation.
+	printf 'Invalid timezone: %s\n' "${TZ}" >&2
+	exit 1
+}
 
 # some OSes require a timezone package to be installed first
 case ${os}
@@ -42,8 +51,11 @@ esac
 case ${os}
 in
 	(alpine)
+		test -n "${zoneinfo_file}" || invalid_timezone
 		;;
 	(coreos|debian|devuan|ubuntu)
+		test -n "${zoneinfo_file}" || invalid_timezone
+
 		__file /etc/timezone \
 			--owner 0 --group 0 --mode 0644 \
 			--source - <<-EOF
@@ -51,6 +63,8 @@ in
 		EOF
 		;;
 	(centos|redhat|scientific)
+		test -n "${zoneinfo_file}" || invalid_timezone
+
 		__file /etc/sysconfig/clock \
 			--state exists \
 			--owner 0 --group 0 --mode 0644
@@ -69,7 +83,6 @@ in
 		;;
 esac
 
-zoneinfo_file="/usr/share/zoneinfo/${TZ}"
 __link "${localtime_file}" \
 	--type symbolic \
 	--source "${zoneinfo_file}"
