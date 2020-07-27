@@ -45,6 +45,10 @@ in
 		__package timezone
 		export require=__package/timezone
 		;;
+	(slackware)
+		__package glibc-zoneinfo
+		export require=__package/glibc-zoneinfo
+		;;
 esac
 
 # configure the timezone
