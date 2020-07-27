@@ -41,6 +41,10 @@ in
 		__package tzdata
 		export require=__package/tzdata
 		;;
+	(gentoo)
+		__package sys-libs/timezone-data
+		export require=__package/sys-libs/timezone-data
+		;;
 	(suse)
 		__package timezone
 		export require=__package/timezone
@@ -71,6 +75,17 @@ in
 			--delimiter '=' --exact_delimiter \
 			--key 'ZONE' \
 			--value "\"${TZ}\""
+		;;
+	(gentoo)
+		test -n "${zoneinfo_file}" || invalid_timezone
+
+		# XXX: systemd?
+
+		echo "${TZ}" | __file /etc/timezone --owner 0 --group 0 --mode 0644 \
+			--source -
+
+		# XXX: Should /etc/TZ be updated??
+		echo "${TZ}" | __file /etc/TZ --owner 0 --group 0 --mode 0644 --source -
 		;;
 	(voidlinux)
 		test -n "${zoneinfo_file}" || invalid_timezone
