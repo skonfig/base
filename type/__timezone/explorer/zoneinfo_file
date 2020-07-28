@@ -17,33 +17,45 @@
 # You should have received a copy of the GNU General Public License
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
+# Determine and print the path of the --tz zoneinfo file.
+# If the zone is invalid, the explorer produces empty output.
+#
 
 TZ=$(cat "${__object:?}/parameter/tz")
 
-case $(uname -s)
-in
-	(Darwin)
-		TZDIR=/var/db/timezone/zoneinfo
-		;;
-	(SunOS)
-		TZDIR=/usr/share/lib/zoneinfo
-		;;
-	(*)
-		# According to glibc's tzfile(5) there are two typical directories:
-		if test -d /usr/share/zoneinfo
-		then
-			# Linux, FreeBSD, OpenBSD, NetBSD. And others?
-			TZDIR=/usr/share/zoneinfo
-		elif test -d /usr/lib/zoneinfo
-		then
-			# Old libc4, libc5 apparently.
-			TZDIR=/usr/lib/zoneinfo
-		else
-			exit 0
-		fi
-esac
+if test -s "${__object:?}/parameter/tzdir"
+then
+	TZDIR=$(cat "${__object:?}/parameter/tzdir")
 
-if test -e "${TZDIR}/${TZ}"
+	test -d "${TZDIR}" || {
+		printf 'Invalid --tzdir: no such directory: %s\n' "${TZDIR}" >&2
+		exit 1
+	}
+else
+	case $(uname -s)
+	in
+		(Darwin)
+			TZDIR=/var/db/timezone/zoneinfo
+			;;
+		(SunOS)
+			TZDIR=/usr/share/lib/zoneinfo
+			;;
+		(*)
+			# According to glibc's tzfile(5) there are two typical directories:
+			if test -d /usr/share/zoneinfo
+			then
+				# Linux, FreeBSD, OpenBSD, NetBSD. And others?
+				TZDIR=/usr/share/zoneinfo
+			elif test -d /usr/lib/zoneinfo
+			then
+				# Old libc4, libc5 apparently.
+				TZDIR=/usr/lib/zoneinfo
+			fi
+			;;
+	esac
+fi
+
+if test -n "${TZDIR-}" && test -e "${TZDIR}/${TZ}"
 then
 	echo "${TZDIR}/${TZ}"
 fi
