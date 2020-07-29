@@ -194,6 +194,51 @@ in
 				--key TIMEZONE --value "\"${TZ}\""
 		fi
 		;;
+	(solaris)
+		# tzreload is available starting with Solaris 10 u9, but apparently a
+		# reboot it is still required after changing the timezone.
+		onchange_cmd='command -v tzreload >/dev/null 2>&1 && tzreload || true'
+
+		if awk '{split($0,a,"."); exit !(a[1]>5 || (a[1]==5 && a[2]>=11))}' \
+			"${__global:?}/explorer/os_version"
+		then
+			# Oracle Solaris 11.2 and later uses SMF to store environment info.
+			# This is a hack, but I didn't feel like modifying the whole type
+			# just for some Oracle nonsense.
+
+			# XXXXXX vvv Copied from __locale_system. Does it also apply here?
+
+			# 11.3 apparently added nlsadm(1m), but it is missing from 11.2.
+			# Illumos continues to use /etc/default/init
+			# NOTE: Remember not to use "cool" POSIX features like -q or -e with
+			# Solaris grep.
+
+			release_bre='Oracle Solaris 11\.[2-9]'  # FIXME: for versions > 11.9
+			# https://unix.stackexchange.com/questions/211425/changing-timezone-in-oracle-solaris-11-2
+			onchange_cmd=$(cat <<-EOF
+			if grep '${release_bre}' /etc/release >&-
+			then
+			    svccfg -s svc:/system/timezone:default setprop timezone/localtime = astring: '${TZ}'
+			    svcadm refresh svc:/system/timezone:default
+			    svccfg -s svc:/system/environment:init setprop environment/TZ = astring: 'localtime'
+			    svcadm refresh svc:/system/environment:init
+			fi
+			${onchange_cmd}
+			EOF
+			)
+			# svccfg_cmd="svccfg -s svc:/system/environment:init setprop environment/TZ = astring: '$(cat "${__object:?}/parameter/value")'"
+			# refresh_cmd='svcadm refresh svc:/system/environment'
+			# onchange_cmd="grep '${release_regex}' /etc/release >&- || exit 0; ${svccfg_cmd:-:} && ${refresh_cmd}"
+		fi
+
+		# /etc/TIMEZONE is a symbolic link to /etc/default/init
+		__key_value /etc/TIMEZONE:TZ \
+			--file /etc/TIMEZONE \
+			--key TZ \
+			--delimiter '=' --exact_delimiter \
+			--value "${TZ}" \
+			--onchange "${onchange_cmd}"
+		;;
 	(voidlinux)
 		test -n "${zoneinfo_file}" || invalid_timezone
 
