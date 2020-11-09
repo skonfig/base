@@ -93,6 +93,29 @@ in
 		echo "${TZ}" | __file /var/db/zoneinfo --owner 0 --group 0 --mode 0644 \
 			--source -
 		;;
+	(openwrt)
+		tzdata=$(awk -F'\t' -v TZ="${TZ}" '$1==TZ{print $2}' \
+			"${__type:?}/files/openwrt/tzdata.tsv")
+
+		test -n "${tzdata}" || invalid_timezone
+
+		__uci system.@system[0].zonename --value "${TZ}"
+			# --transaction timezone
+		__uci system.@system[0].timezone --value "${tzdata}"
+			# --transaction timezone
+
+		if test -n "${zoneinfo_file}"
+		then
+			localtime_file=/tmp/localtime
+			__file /tmp/TZ --state absent
+		else
+			echo "${tzdata}" | __file /tmp/TZ --source -
+
+			# NOTE: Skip creation of localtime link, since timezones are not
+			#       installed on target.
+			exit 0
+		fi
+		;;
 	(voidlinux)
 		test -n "${zoneinfo_file}" || invalid_timezone
 
