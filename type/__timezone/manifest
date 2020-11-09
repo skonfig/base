@@ -26,6 +26,50 @@ os=$(cat "${__global:?}/explorer/os")
 localtime_file=/etc/localtime
 zoneinfo_file=$(cat "${__object:?}/explorer/zoneinfo_file")
 
+canonicalize_path() {
+	# NOTE: Only works for absolute paths
+	# shellcheck disable=SC2016
+	printf '%s\n' "${1:?}" \
+	| tr '/' '\n' \
+	| sed -n -e '
+	    # ignore empty lines (produced by // in original path and leading /)
+	    /^$/bq
+		# ignore /./ components
+	    /^\.$/bq
+		# drop a component from the "stack" if a .. is met
+	    /^\.\.$/{
+	      # delete last line from hold space
+	      x
+	      s/^\(.*\)\n.*$/\1/
+	      x
+	      bq
+	    }
+	    # push component to "stack" (append to hold space)
+	    H
+	    :q
+	    # print stack contents (hold space) at the end
+	    ${x;p;}' \
+	| sed -n -e 'H;${g;s/^\n//;s/\n/\//g;p;}'
+}
+
+count_path_components() (
+	components=$(canonicalize_path "$1")
+	IFS=/
+	# shellcheck disable=SC2048,SC2086
+	set -f -- ${components#/}
+	echo $#
+)
+
+backdirs() {
+	test "${1:-0}" -gt 0 || { printf './\n'; return 0; }
+	until test "${1:-0}" -le 0
+	do
+		printf '../'
+		set -- $(($1 - 1))
+	done
+	printf '\n'
+}
+
 invalid_timezone() {
 	# NOTE: When the tzdata package was just installed, this might produce an
 	# invalid timezone error because the explorer has been run before the
@@ -127,6 +171,7 @@ in
 		;;
 esac
 
+rel_zoneinfo_file="$(backdirs "$(count_path_components "${localtime_file%/*}")")${zoneinfo_file#/}"
 __link "${localtime_file}" \
 	--type symbolic \
-	--source "${zoneinfo_file}"
+	--source "${rel_zoneinfo_file}"
