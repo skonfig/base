@@ -154,6 +154,22 @@ in
 		${TZ}
 		EOF
 		;;
+	(suse)
+		os_version=$(cat "${__global:?}/explorer/os_version")
+		os_major=${os_version%%[!0-9]*}
+
+		# TODO: Consider using `yast2 timezone ...` instead
+		if test $((os_major)) -lt 15 || test $((os_major)) -eq 42
+		then
+			# It seems that starting with SuSE 15 /etc/sysconfig/clock is
+			# abandoned.  The file still exists but only contains a
+			# DEFAULT_TIMEZONE entry.
+			__key_value /etc/sysconfig/clock:TIMEZONE \
+				--file /etc/sysconfig/clock \
+				--delimiter '=' --exact_delimiter \
+				--key TIMEZONE --value "\"${TZ}\""
+		fi
+		;;
 	(voidlinux)
 		test -n "${zoneinfo_file}" || invalid_timezone
 
