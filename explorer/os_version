@@ -139,6 +139,25 @@ in
 
       echo "${devuan_version}"
       ;;
+   (dsm)
+      # e.g. 4.1-2668, 6.2.3-25426 Update 3
+
+      # shellcheck source=/dev/null
+      . /etc/VERSION || exit 0
+
+      # productversion is available on DSM 5.2+ only.
+      # For older versions fall back to concatenation of majorversion and minorversion.
+      : "${productversion:=${majorversion:-0}${minorversion:+.${minorversion}}}"
+
+      # some versions define smallfixnumber=0, which would produce
+      # "Update 0" and makes no sense.
+      test $((smallfixnumber)) -gt 0 || smallfixnumber=
+
+      printf '%s%s%s\n' \
+         "${productversion}" \
+         "${buildnumber:+-${buildnumber}}" \
+         "${smallfixnumber:+ Update ${smallfixnumber}}"
+      ;;
    (fedora)
       sed -e 's/^Fedora\( Core\)* release \(.*\) (.*)$/\2/' /etc/fedora-release
       ;;
