@@ -160,6 +160,28 @@ in
 			exit 0
 		fi
 		;;
+	(suse)
+		if test -s "${__global:?}/explorer/os_release"
+		then
+			# shellcheck source=/dev/null
+			os_version=$(. "${__global:?}/explorer/os_release" && echo "${VERSION}")
+		else
+			os_version=$(sed -n 's/^VERSION\ *=\ *//p' "${__global:?}/explorer/os_version")
+		fi
+		os_major=$(expr "${os_version}" : '\([0-9]\{1,\}\)')
+
+		# TODO: Consider using `yast2 timezone ...` instead
+		if expr "${os_major}" \< 15 \| "${os_major}" = 42
+		then
+			# It seems that starting with SuSE 15 /etc/sysconfig/clock is
+			# abandoned.  The file still exists but only contains a
+			# DEFAULT_TIMEZONE entry.
+			__key_value /etc/sysconfig/clock:TIMEZONE \
+				--file /etc/sysconfig/clock \
+				--delimiter '=' --exact_delimiter \
+				--key TIMEZONE --value "\"${TZ}\""
+		fi
+		;;
 	(voidlinux)
 		test -n "${zoneinfo_file}" || invalid_timezone
 
