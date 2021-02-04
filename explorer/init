@@ -39,6 +39,8 @@
 #    systemd, upstart, sysvinit, openrc, ???
 #  Devuan:
 #    sysvinit, sysvinit+openrc
+#  DSM:
+#    busybox-init+syno, upstart-syno, systemd
 #  Gentoo:
 #    sysvinit+openrc, openrc-init, systemd
 #  Haiku:
@@ -155,10 +157,14 @@ check_busybox_init() (
 	test -x "${busybox_path}" || return 1
 	grep -q 'BusyBox v[0-9]' "${busybox_path}" || return 1
 
-	# It is quite common to use Busybox init to stack other init systemd
+	# It is quite common to use BusyBox’s init to stack other service managers
 	# (like OpenRC) on top of it. So we check for that, too.
 	if stacked=$(check_openrc)
 	then
+		echo "busybox-init+${stacked}"
+	elif stacked=$(check_synoinit)
+	then
+		# Synology DSM < 5.0 uses BusyBox + synoservice(8)
 		echo "busybox-init+${stacked}"
 	else
 		echo busybox-init
@@ -229,6 +235,13 @@ check_smf() {
 	echo smf
 }
 
+check_synoinit() {
+	# synoservice(8)
+	test -x /usr/syno/sbin/synoservice || return 1
+
+	echo syno
+}
+
 check_systemd() {
 	# NOTE: sd_booted(3)
 	test -d /run/systemd/system/ || return 1
@@ -263,7 +276,12 @@ check_upstart() {
 	case $(initctl version)
 	in
 		(*'(upstart '*')')
-			if test -d /etc/init
+			if test -x /usr/syno/sbin/synoservice \
+				&& test -x /usr/syno/sbin/synoservicectl
+			then
+				# upstart-based Synology init system
+				echo upstart-syno
+			elif test -d /etc/init
 			then
 				# modern (DBus-based?) upstart >= 0.5
 				echo upstart
@@ -300,10 +318,10 @@ find_init_procfs() (
 		# /sbin/init (deleted)
 		# [root@fedora-12 ~]# ls -l /proc/1/exe
 		# lrwxrwxrwx. 1 root root 0 2020-01-30 23:00 /proc/1/exe -> /sbin/init (deleted)
-
 		init_exe=${init_exe% (deleted)}
-		test -x "${init_exe}" || return 1
 	fi
+
+	test -x "${init_exe}" || return 1
 
 	echo "${init_exe}"
 )
@@ -400,10 +418,11 @@ check_list() (
 )
 
 
-# BusyBox's versions of ps and pgrep do not support some options
+# BusyBox’s versions of ps and pgrep do not support some options
 # depending on which compile-time options have been used.
 
 find_init_pgrep() {
+	command -v pgrep >/dev/null 2>&1 || return 1
 	pgrep -P0 -fl 2>/dev/null | awk -F '[[:blank:]]' '$1 == 1 { print $2 }'
 }
 
