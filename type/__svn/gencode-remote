@@ -1,0 +1,95 @@
+#!/bin/sh -e
+#
+# 2021-2022 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+quote() { printf '%s\n' "$*" | sed "s/'/'\\\\''/g;1s/^/'/;\$s/\$/'/"; }
+
+destination="/${__object_id:?}"
+
+state_is=$(cat "${__object:?}/explorer/state")
+state_should=$(cat "${__object:?}/parameter/state")
+source=$(cat "${__object:?}/parameter/source")
+
+case ${state_should}
+in
+	(present)
+		if test "${state_should}" != "${state_is}"
+		then
+			svn_co_flags='-q --non-interactive'
+
+			if test -s "${__object:?}/parameter/revision"
+			then
+				read -r _revision <"${__object:?}/parameter/revision"
+				# NOTE: quote revision because SVN accepts non-numeric values
+				#       and a user could inject other options using this type's
+				#       --revision parameter.
+				svn_co_flags="${svn_co_flags-} --revision=$(quote "${_revision}")"
+			fi
+
+			printf 'svn checkout %s %s %s\n' \
+				"${svn_co_flags}" \
+				"$(quote "${source}")" \
+				"$(quote "${destination}")"
+		fi
+
+		if test -s "${__object:?}/parameter/owner"
+		then
+			owner_is=$(cat "${__object:?}/explorer/owner")
+			owner_should=$(cat "${__object:?}/parameter/owner")
+
+			if test "${owner_should}" != "${owner_is}"
+			then
+				printf 'chown -R %s %s\n' \
+					"$(quote "${owner_should}")" \
+					"$(quote "${destination}")"
+			fi
+		fi
+		if test -s "${__object:?}/parameter/group"
+		then
+			group_is=$(cat "${__object:?}/explorer/group")
+			group_should=$(cat "${__object:?}/parameter/group")
+
+			if test "${group_should}" != "${group_is}"
+			then
+				printf 'chgrp -R %s %s\n' \
+					"$(quote "${group_should}")" \
+					"$(quote "${destination}")"
+			fi
+		fi
+		if test -s "${__object:?}/parameter/mode"
+		then
+			mode_is=$(cat "${__object:?}/explorer/mode")
+			mode_should=$(cat "${__object:?}/parameter/mode")
+
+			if test "${mode_should}" != "${mode_is}"
+			then
+				printf 'chmod -R %s %s\n' \
+					"$(quote "${mode_should}")" \
+					"$(quote "${destination}")"
+			fi
+		fi
+		;;
+	(absent)
+		# working copy root directory is removed in manifest
+		;;
+	(*)
+		printf 'Invalid --state: %s\n' "${state_should}" >&2
+		exit 1
+		;;
+esac
