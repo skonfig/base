@@ -37,6 +37,15 @@ mode
    Unix mode to set for all the files in the working copy.
 
    Format: suitable for :strong:`chmod`\ (1)
+username
+   Username to use to authenticate to SVN server.
+password
+   Password of ``--username``.
+
+   *Security note:* if possible it should be avoided to use the ``--username``
+   and ``--password`` parameters because the password will be copied to the
+   target host in plain text.
+   If possible it is advisable to use SSH "deploy keys" instead.
 
 
 EXAMPLES

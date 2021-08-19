@@ -42,10 +42,30 @@ in
 				svn_co_flags="${svn_co_flags-} --revision=$(quote "${_revision}")"
 			fi
 
+			if test -s "${__object:?}/parameter/username"
+			then
+				svn_co_flags="${svn_co_flags-} --username=$(quote "$(cat "${__object:?}/parameter/username")")"
+
+				if test -s "${__object:?}/parameter/password"
+				then
+					# NOTE: password on stdin because the process command line
+					#       could be read be non-root users and thus exposing
+					#       the password.
+					password_in_stdin=true
+					svn_co_flags="${svn_co_flags-} --password-from-stdin <<'EOF'"
+				fi
+			fi
+
 			printf 'svn checkout %s %s %s\n' \
 				"${svn_co_flags}" \
 				"$(quote "${source}")" \
 				"$(quote "${destination}")"
+
+			if ${password_in_stdin:-false}
+			then
+				cat "${__object:?}/parameter/password"
+				echo EOF
+			fi
 		fi
 
 		if test -s "${__object:?}/parameter/owner"
