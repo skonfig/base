@@ -3,23 +3,23 @@ cdist-type__package_apt(7)
 
 NAME
 ----
-cdist-type__package_apt - Manage packages with apt-get
+cdist-type__package_apt - Manage packages with APT
 
 
 DESCRIPTION
 -----------
-apt-get is usually used on Debian and variants (like Ubuntu) to
-manage packages. The package will be installed without recommended
-or suggested packages. If such packages are required, install them
-separatly or use the parameter ``--install-recommends``.
+APT is usually used on Debian and variants (like Ubuntu) to manage packages.
+The package will be installed without recommended or suggested packages. If
+such packages are required, install them separatly or use the parameter
+``--install-recommends``.
 
-This type will also update package index, if it is older
-than one day, to avoid missing package error messages.
+This type will update package index (before package installation) if any of following is true:
 
+- ``/var/lib/apt/lists`` is missing.
+- ``/etc/apt/`` content is newer than ``/var/lib/apt/lists/`` (type will ``touch`` it after every update).
+- Package index cache is missing or older than one day.
 
-REQUIRED PARAMETERS
--------------------
-None
+This type is nonparallel and only first instance of this type will update package index.
 
 
 OPTIONAL PARAMETERS
@@ -51,8 +51,8 @@ install-recommends
     installed packages.
 
 purge-if-absent
-    If this parameter is given when state is `absent`, the package is
-    purged from the system (using `--purge`).
+    If this parameter is given and state is ``absent``, the package is
+    purged from the system (using ``--purge``).
 
 
 EXAMPLES
@@ -72,6 +72,7 @@ EXAMPLES
 
 SEE ALSO
 --------
+:strong:`cdist-type__apt_update_index`\ (7)
 :strong:`cdist-type__package`\ (7)
 
 

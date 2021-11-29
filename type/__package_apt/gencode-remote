@@ -108,12 +108,27 @@ in
         # https://code.ungleich.ch/ungleich-public/cdist/-/issues/861
         apt_opts="-o Acquire::AllowReleaseInfoChange::Suite=true -o Acquire::AllowReleaseInfoChange::Version=true"
 
-        # following is bit ugly, but important hack.
-        # due to how cdist config run works, there isn't
-        # currently better way to do it :(
+        # Try to update index cache before installing a package. cdist runs all
+        # type explorers first (except when CDIST_ORDER_DEPENDENCY is used) and
+        # then runs generated code. Due to that we can't explore state of APT's
+        # cache in explorer and generate code based on explorer's result
+        # because then all instances of this type want to update cache. Instead
+        # we rely on this type being nonparallel and first instance will also
+        # update index cache.
+
+        # Use __apt_update_index default.
+        maxage=86400
+
+        # Some of following code is duplicated in __apt_update_index/explorer/state.
+        # If you change anything here, please make changes there too.
         cat << EOF
-if [ ! -f /var/cache/apt/pkgcache.bin ] || [ "\$( stat --format %Y /var/cache/apt/pkgcache.bin )" -lt "\$( date +%s -d '-1 day' )" ]
-then echo apt-get $apt_opts update > /dev/null 2>&1 || true
+if [ ! -d /var/lib/apt/lists ] \\
+    || [ -n "\$( find /etc/apt -newer /var/lib/apt/lists )" ] \\
+    || [ ! -f /var/cache/apt/pkgcache.bin ] \\
+    || [ "\$( stat --format %Y /var/cache/apt/pkgcache.bin )" -lt "\$( date +%s -d '-$maxage seconds' )" ]
+then
+    apt-get $apt_opts update || apt-get $apt_opts update
+    touch -c /var/lib/apt/lists
 fi
 EOF
 
