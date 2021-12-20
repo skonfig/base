@@ -1,5 +1,7 @@
 #!/bin/sh -e
 
+quote() { printf '%s\n' "$*" | sed "s/'/'\\\\''/g;1s/^/'/;\$s/\$/'/"; }
+
 if grep -Eq '^(missing|match)$' "$__object/explorer/state"
 then
     exit 0
@@ -62,10 +64,13 @@ esac
 
 if [ -f "$__object/parameter/backup-destination" ]
 then
-    echo "if [ -e '$dst' ]; then mv '$dst' '$dst.cdist__unpack_backup_$( date +%s )'; fi"
+    backup_dst="${dst:?}.cdist__unpack_backup_$(date +%s)"
+    echo "if [ -e $(quote "${dst}") ]; then mv $(quote "${dst}") $(quote "${backup_dst}"); fi"
+    printf 'backed up %s to %s\n' "${dst}" "${backup_dst}" >>"${__messages_out:?}"
 fi
 
 echo "$cmd"
+printf 'unpacked to %s\n' "${dst}" >>"${__messages_out:?}"
 
 if [ -f "$__object/parameter/sum-file" ]
 then
@@ -79,6 +84,7 @@ echo "cksum '$src' | awk '{ print \$1\$2 }' > '$sum_file'"
 if [ ! -f "$__object/parameter/preserve-archive" ]
 then
     echo "rm -f '$src'"
+    printf 'removed archive %s\n' "${src}" >>"${__messages_out:?}"
 fi
 
 if [ -f "$__object/parameter/onchange" ]
