@@ -3,21 +3,29 @@ cdist-type__apt_update_index(7)
 
 NAME
 ----
-cdist-type__apt_update_index - Update apt's package index
+cdist-type__apt_update_index - Update APT package index
 
 
 DESCRIPTION
 -----------
-This cdist type runs apt-get update whenever any apt sources have changed.
+This type will update APT package index if any of following is true:
 
+- ``/var/lib/apt/lists`` is missing.
+- ``/etc/apt/`` content is newer than ``/var/lib/apt/lists/`` (type will ``touch`` it after every update).
+- Package index cache is missing or older than ``--maxage``.
+- ``--always`` parameter is set.
 
-REQUIRED PARAMETERS
--------------------
-None.
 
 OPTIONAL PARAMETERS
 -------------------
-None.
+maxage
+    Update is skipped if maximum age (in seconds) of package index cache is not reached yet. Defaults to 86400.
+
+
+BOOLEAN PARAMETERS
+------------------
+always
+    Always update package index.
 
 
 EXAMPLES
@@ -26,6 +34,11 @@ EXAMPLES
 .. code-block:: sh
 
     __apt_update_index
+
+
+SEE ALSO
+--------
+:strong:`cdist-type__package_apt`\ (7)
 
 
 AUTHORS
