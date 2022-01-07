@@ -1,6 +1,6 @@
 #!/bin/sh -e
 #
-# 2021 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
+# 2021-2022 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
 #
 # This file is part of cdist.
 #
@@ -26,8 +26,11 @@ os=$(cat "${__global:?}/explorer/os")
 
 case ${os}
 in
-	(debian|devuan|ubuntu)
-		__package_apt subversion
+	(alpine|archlinux|gentoo|debian|devuan|ubuntu|centos|fedora|scientific|slackware|suse|freebsd|netbsd|openbsd)
+		__package subversion
+		;;
+	(openwrt)
+		__package subversion-client
 		;;
 	(*)
 		: "${__type:?}"  # make shellcheck happy
@@ -47,7 +50,7 @@ state_should=$(cat "${__object:?}/parameter/state")
 case ${state_should}
 in
 	(present)
-		:
+		:  # managed in gencode-remote
 		;;
 	(absent)
 		# Let __directory handle removal of working copies
