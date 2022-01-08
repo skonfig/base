@@ -2,7 +2,7 @@
 #
 # 2011 Nico Schottelius (nico-cdist at schottelius.org)
 # 2012 Giel van Schijndel (giel plus cdist at mortis dot eu)
-# 2020 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
+# 2020,2022 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
 #
 # This file is part of cdist.
 #
@@ -23,7 +23,8 @@
 # Retrieve the status of a package - parses opkg output
 #
 
-readonly __type_path=${__object%%${__object_id}*}
+: "${__object:?}"  # assert __object is set
+readonly __type_path=${__object%%${__object_id:?}*}
 test -d "${__type_path}" || { echo 'Cannot determine __type_path' >&2; exit 1; }
 readonly LOCKFILE="${__type_path:?}/.cdist_opkg.lock"
 
@@ -66,11 +67,11 @@ else
 fi
 
 
-if test -f "${__object}/parameter/name"
+if test -f "${__object:?}/parameter/name"
 then
-	pkg_name=$(cat "${__object}/parameter/name")
+	pkg_name=$(cat "${__object:?}/parameter/name")
 else
-	pkg_name=$__object_id
+	pkg_name=${__object_id:?}
 fi
 
 

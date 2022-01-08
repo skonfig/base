@@ -2,7 +2,7 @@
 #
 # 2011,2013 Nico Schottelius (nico-cdist at schottelius.org)
 # 2012 Giel van Schijndel (giel plus cdist at mortis dot eu)
-# 2020 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
+# 2020,2022 Dennis Camera (cdist at dtnr.ch)
 #
 # This file is part of cdist.
 #
@@ -23,23 +23,16 @@
 # Manage packages on OpenWrt, optware, and co.
 #
 
-if test -f "${__object}/parameter/name"
+quote() { printf '%s\n' "$*" | sed "s/'/'\\\\''/g;1s/^/'/;\$s/\$/'/"; }
+
+if test -f "${__object:?}/parameter/name"
 then
-	name=$(cat "${__object}/parameter/name")
+	name=$(cat "${__object:?}/parameter/name")
 else
-	name=$__object_id
+	name=${__object_id:?}
 fi
-
-state_should=$(cat "${__object}/parameter/state")
-state_is=$(cat "${__object}/explorer/pkg_status")
-
-case $state_is
-in
-	(absent*)
-		presence=$(echo "${state_is}" | cut -d ' ' -f 2)
-		state_is='absent'
-		;;
-esac
+state_should=$(cat "${__object:?}/parameter/state")
+read -r state_is presence <"${__object:?}/explorer/pkg_status"
 
 if test "${state_is}" = "${state_should}"
 then
@@ -47,7 +40,7 @@ then
 fi
 
 
-case $state_should
+case ${state_should}
 in
 	(present)
 		if test "${presence}" = 'notpresent'
@@ -55,12 +48,12 @@ in
 			echo 'opkg --verbosity=0 update'
 		fi
 
-		printf "opkg --verbosity=0 install '%s'\n" "${name}"
-		echo 'installed' >>"${__messages_out}"
+		printf 'opkg --verbosity=0 install %s\n' "$(quote "${name}")"
+		echo 'installed' >>"${__messages_out:?}"
 		;;
 	(absent)
-		printf "opkg --verbosity=0 remove '%s'" "${name}"
-		echo 'removed' >>"${__messages_out}"
+		printf 'opkg --verbosity=0 remove %s\n' "$(quote "${name}")"
+		echo 'removed' >>"${__messages_out:?}"
 		;;
 	(*)
 		printf 'Unknown state: %s\n' "${state_should}" >&2
