@@ -92,7 +92,7 @@ then
 	echo 'present'
 elif opkg info "${pkg_name}" 2>/dev/null | grep -q .
 then
-	echo 'absent notpresent'
-else
 	echo 'absent'
+else
+	echo 'absent notpresent'
 fi
