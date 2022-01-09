@@ -1,6 +1,6 @@
 #!/bin/sh -e
 #
-# 2021 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
+# 2021-2022 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
 #
 # This file is part of cdist.
 #
@@ -35,7 +35,7 @@ group_gid=$(ls -ldn "${destination}" | awk '{ print $4 }')
 # NOTE: +1 because $((notanum)) prints 0.
 if test $((group_gid + 1)) -ge 0
 then
-	group_should=$(cat "${__object:?}/parameter/group" 2>/dev/null)
+	group_should=$(cat "${__object:?}/parameter/group" 2>/dev/null || true)
 
 	if expr "${group_should}" : '[0-9]*$' >/dev/null
 	then
