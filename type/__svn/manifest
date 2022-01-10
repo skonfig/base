@@ -24,13 +24,21 @@
 
 os=$(cat "${__global:?}/explorer/os")
 
+state_should=$(cat "${__object:?}/parameter/state")
+
 case ${os}
 in
 	(alpine|archlinux|gentoo|debian|devuan|ubuntu|centos|fedora|scientific|slackware|suse|freebsd|netbsd|openbsd)
-		__package subversion
+		if test "${state_should}" != 'absent'
+		then
+			__package subversion
+		fi
 		;;
 	(openwrt)
-		__package subversion-client
+		if test "${state_should}" != 'absent'
+		then
+			__package subversion-client
+		fi
 		;;
 	(*)
 		: "${__type:?}"  # make shellcheck happy
@@ -44,8 +52,6 @@ esac
 
 ################################################################################
 # Manage working copy root directory
-
-state_should=$(cat "${__object:?}/parameter/state")
 
 case ${state_should}
 in
