@@ -1,6 +1,7 @@
 #!/bin/sh
 #
 # 2012-2014 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2022 Dennis Camera (cdist at dtnr.ch)
 #
 # This file is part of cdist.
 #
@@ -28,13 +29,32 @@ if [ ! -e "$destination" ]; then
    exit 0
 fi
 
+_readlink() {
+	if command -v readlink >/dev/null 2>&1
+	then
+		readlink "$1"
+	else
+		# resort to parsing the output of ls(1)
+		if ls -Ldl "$1" | grep -q '^d'
+		then
+			# resolve destination of symlinks pointing to a directory
+			(cd "$1" && pwd -P)
+		else
+			# resolve destination of symlinks pointing to a file
+			_ls_out=$(ls -l "$1")
+			echo "${_ls_out#*$1 -> }"
+			unset _ls_out
+		fi
+	fi
+}
+
 destination_dir="${destination%/*}"
 
 case "$type" in
    symbolic)
       cd "$destination_dir" || exit 1
       if [ -h "$destination" ]; then
-         source_is=$(readlink "$destination")
+         source_is=$(_readlink "${destination}")
          # ignore trailing slashes for comparison
          if [ "${source_is%/}" = "${source%/}" ]; then
             echo present
