@@ -1,3 +1,7 @@
+# NOTE: older releases of OpenWrt do not include sbin in PATH but uci(1) is
+#       installed in /sbin.
+PATH=/bin:/sbin:/usr/bin:/usr/sbin
+
 changes=$(uci changes)
 
 if test -n "${changes}"
