@@ -2,7 +2,7 @@
 #
 # 2011 Nico Schottelius (nico-cdist at schottelius.org)
 # 2012 Giel van Schijndel (giel plus cdist at mortis dot eu)
-# 2020,2022 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
+# 2020,2022 Dennis Camera (cdist at dtnr.ch)
 #
 # This file is part of cdist.
 #
@@ -24,9 +24,11 @@
 #
 
 : "${__object:?}"  # assert __object is set
-readonly __type_path=${__object%%${__object_id:?}*}
+__type_path=${__object%%${__object_id:?}*}
+readonly __type_path
 test -d "${__type_path}" || { echo 'Cannot determine __type_path' >&2; exit 1; }
-readonly LOCKFILE="${__type_path:?}/.cdist_opkg.lock"
+LOCKFILE="${__type_path:?}/.cdist_opkg.lock"
+readonly LOCKFILE
 
 if command -v flock >/dev/null 2>&1
 then
