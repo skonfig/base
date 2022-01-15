@@ -3,7 +3,7 @@
 # 2011 Ramon Salvadó (rsalvado at gnuine.com)
 # 2012-2015 Steven Armstrong (steven-cdist at armstrong.cc)
 # 2012-2019 Nico Schottelius (nico-cdist at schottelius.org)
-# 2020 Dennis Camera (dennis.camera at riiengineering.ch)
+# 2020,2022 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -105,7 +105,9 @@ in
 	(alpine|coreos|debian|devuan|ubuntu)
 		test -n "${zoneinfo_file}" || invalid_timezone
 
-		echo "${TZ}" | __file /etc/timezone --source -
+		__file /etc/timezone --source - <<-EOF
+		${TZ}
+		EOF
 		;;
 	(centos|redhat|scientific)
 		test -n "${zoneinfo_file}" || invalid_timezone
@@ -129,13 +131,20 @@ in
 			--source -
 
 		# XXX: Should /etc/TZ be updated??
-		echo "${TZ}" | __file /etc/TZ --owner 0 --group 0 --mode 0644 --source -
+		__file /etc/TZ \
+			--owner 0 --group 0 --mode 0644 \
+			--source - <<-EOF
+		${TZ}
+		EOF
 		;;
 	(freebsd)
 		test -n "${zoneinfo_file}" || invalid_timezone
 
-		echo "${TZ}" | __file /var/db/zoneinfo --owner 0 --group 0 --mode 0644 \
-			--source -
+		__file /var/db/zoneinfo \
+			--owner 0 --group 0 --mode 0644 \
+			--source - <<-EOF
+		${TZ}
+		EOF
 		;;
 	(openwrt)
 		tzdata=$(awk -F'\t' -v TZ="${TZ}" '$1==TZ{print $2}' \
@@ -153,7 +162,10 @@ in
 			localtime_file=/tmp/localtime
 			__file /tmp/TZ --state absent
 		else
-			echo "${tzdata}" | __file /tmp/TZ --source -
+			__file /tmp/TZ \
+				 --source - <<-EOF
+			${tzdata}
+			EOF
 
 			# NOTE: Skip creation of localtime link, since timezones are not
 			#       installed on target.
@@ -170,7 +182,7 @@ in
 		fi
 		os_major=$(expr "${os_version}" : '\([0-9]\{1,\}\)')
 
-		# TODO: Consider using `yast2 timezone ...` instead
+		# XXX: Consider using `yast2 timezone ...` instead
 		if expr "${os_major}" \< 15 \| "${os_major}" = 42
 		then
 			# It seems that starting with SuSE 15 /etc/sysconfig/clock is
