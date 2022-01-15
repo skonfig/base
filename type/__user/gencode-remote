@@ -4,6 +4,7 @@
 # 2011 Nico Schottelius (nico-cdist at schottelius.org)
 # 2013 Daniel Heule (hda at sfs.biz)
 # 2018 Thomas Eckert (tom at it-eckert.de)
+# 2022 Dennis Camera (cdist at dtnr.ch)
 #
 # This file is part of cdist.
 #
@@ -23,7 +24,6 @@
 #
 # Manage users.
 #
-#set -x
 
 name="$__object_id"
 
@@ -48,6 +48,57 @@ shorten_property() {
     system) ret="-r";;
     esac
     echo "$ret"
+}
+
+quote_ifneeded() {
+	# copied from type/__uci/files/functions.sh
+	for _arg
+	do
+		shift
+		if test -n "$(printf %s "${_arg}" | tr -d -c '\t\n \042-\047\050-\052\073-\077\133\\`|~' | tr -c '' '.')"
+		then
+			# needs quoting
+			set -- "$@" "'$(printf '%s\n' "${_arg}" | sed -e "s/'/'\\\\''/g")'"
+		else
+			set -- "$@" "${_arg}"
+		fi
+	done
+	unset _arg
+
+	# NOTE: Use printf because POSIX echo interprets escape sequences
+	printf '%s' "$*"
+}
+
+
+do_user() {
+	_util_name=user$1
+	_user_name=$2
+	shift; shift
+
+	set -- "${_util_name}" "$@"
+
+	case ${os:?}
+	in
+		(freebsd)
+			# FreeBSD uses the pw wrapper utility
+			set -- pw "$@"
+
+			# user name is -n option
+			set -- "$@" -n
+			;;
+		(openwrt)
+			# NOTE: older releases of OpenWrt do not include sbin in PATH, but
+			#       user* utilities are installed in /usr/sbin.
+			echo 'PATH=/bin:/sbin:/usr/bin:/usr/sbin'
+			;;
+	esac
+	# append user name as last argument
+	set -- "$@" "${_user_name}"
+
+	# quote arguments if needed
+	quote_ifneeded "$@"; echo
+
+	unset _util_name _user_name
 }
 
 if [ "$state" = "present" ]; then
@@ -104,11 +155,8 @@ if [ "$state" = "present" ]; then
 
        if [ $# -gt 0 ]; then
           echo mod >> "$__messages_out"
-          if [ "$os" = "freebsd" ]; then
-             echo pw usermod "$@" -n "$name"
-          else
-             echo usermod "$@" "$name"
-          fi
+
+          do_user mod "${name}" "$@"
        else
           true
        fi
@@ -125,30 +173,18 @@ if [ "$state" = "present" ]; then
             fi
         done
 
-       if [ "$os" = "freebsd" ]; then
-          echo pw useradd "$@" -n "$name"
-       else
-          echo useradd "$@" "$name"
-       fi
+       do_user add "${name}" "$@"
     fi
 elif [ "$state" = "absent" ]; then
     if grep -q "^${name}:" "$__object/explorer/passwd"; then
         #user exists, but state != present, so delete it
-        if [ -f "$__object/parameter/remove-home" ]; then
-            if [ "$os" = "freebsd" ]; then
-                printf "pw userdel '%s' -r >/dev/null 2>&1\\n" "${name}"
-            else
-                printf "userdel -r '%s' >/dev/null 2>&1\\n" "${name}"
-            fi
-            echo "userdel -r" >> "$__messages_out"
-        else
-            if [ "$os" = "freebsd" ]; then
-                printf "pw userdel '%s' >/dev/null 2>&1\\n" "${name}"
-            else
-                printf "userdel '%s' >/dev/null 2>&1\\n" "${name}"
-            fi
-            echo "userdel" >> "$__messages_out"
+        set --
+        if [ -f "${__object:?}/parameter/remove-home" ]; then
+            set -- "$@" -r
         fi
+
+        do_user del "${name}" "$@"
+        echo "userdel $*" >>"${__messages_out:?}"
     fi
 else
     echo "Invalid state $state" >&2
