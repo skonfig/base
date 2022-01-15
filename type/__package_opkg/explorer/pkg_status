@@ -92,7 +92,7 @@ if opkg status "${pkg_name}" 2>/dev/null \
 	| grep -q -e '^Status: [^ ][^ ]* [^ ][^ ]* installed$'
 then
 	echo 'present'
-elif opkg info "${pkg_name}" 2>/dev/null | grep -q .
+elif opkg list "${pkg_name}" 2>/dev/null | grep -q .
 then
 	echo 'absent'
 else
