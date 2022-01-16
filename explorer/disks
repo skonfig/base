@@ -60,6 +60,10 @@ case $uname_s in
         fi
     ;;
     SunOS)
+        # NOTE: format(1m) - disk partitioning and maintenance utility.
+        #       When called with no arguments, it will print a list of disks it
+        #       can find and prompt the user to select one.
+        #       passing in /dev/null as stdin will cancel the disk selection.
         format </dev/null \
         | sed -n \
               -e '1,/^AVAILABLE DISK/d' \
