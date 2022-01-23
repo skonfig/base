@@ -29,7 +29,11 @@ mode="$(cat "$__object/parameter/mode")"
 
 case "$state_should" in
     present)
-        :
+        case "$( cat "$__global/explorer/os" )" in
+            debian|ubuntu)
+                __package python3-venv
+            ;;
+        esac
     ;;
 
     absent)

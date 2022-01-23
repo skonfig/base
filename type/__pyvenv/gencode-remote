@@ -38,21 +38,13 @@ mode="$(cat "$__object/parameter/mode")"
 destination="/$__object_id"
 venvparams="$(cat "$__object/parameter/venvparams")"
 pyvenvparam="$__object/parameter/pyvenv"
-
-os=$(cat "$__global/explorer/os")
+interpreter="$(cat "$__object/parameter/interpreter")"
 
 if [ -f "$pyvenvparam" ]
 then
     pyvenv=$(cat "$pyvenvparam")
 else
-    case "$os" in
-        alpine|ubuntu) # no pyvenv on alpine - I assume others will follow
-            pyvenv="python3 -m venv"
-            ;;
-        *)
-            pyvenv="pyvenv"
-            ;;
-    esac
+    pyvenv="$interpreter -m venv"
 fi
 
 case $state_should in

@@ -43,11 +43,11 @@ mode
 owner
    User to chown to
 
-pyvenv
-   Use this specific pyvenv
-
 venvparams
    Specific parameters to pass to pyvenv invocation
+
+interpreter
+   Name or path of the interpreter to use for creating the venv (default to ``python3``)
 
 
 EXAMPLES
@@ -57,8 +57,11 @@ EXAMPLES
 
     __pyvenv /home/services/djangoenv
 
-    # Use specific pyvenv
-    __pyvenv /home/foo/fooenv --pyvenv /usr/local/bin/pyvenv-3.4
+    # Use specific interpreter name
+    __pyvenv /home/foo/fooenv --interpreter python3.10
+
+    # Use specific interpreter path
+    __pyvenv /home/foo/fooenv --interpreter /opt/python/3.4/bin/python3
 
     # Create python virtualenv for user foo.
     __pyvenv /home/foo/fooenv --group foo --owner foo
