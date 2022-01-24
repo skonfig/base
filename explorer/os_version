@@ -75,20 +75,39 @@ in
       devuan_version=$(cat /etc/devuan_version)
       case ${devuan_version}
       in
-         (*/ceres)
-            # ceres versions don't have a number, so we decode by codename:
-            case ${devuan_version}
-            in
-               (chimaera/ceres) echo 3.99 ;;
-               (beowulf/ceres) echo 2.99 ;;
-               (ascii/ceres) echo 1.99 ;;
-               (*) exit 1
-            esac
+         ([0-9]*)
             ;;
          (*)
-            echo "${devuan_version}"
+            devuan_codename=${devuan_version}
+            # decode codename
+            case ${devuan_codename%%/*}
+            in
+               (daedalus) devuan_version=5 ;;
+               (chimaera) devuan_version=4 ;;
+               (beowulf) devuan_version=3 ;;
+               (ascii) devuan_version=2 ;;
+               (jessie) devuan_version=1 ;;
+               (*) exit 1
+            esac
+            devuan_suffix=$(expr "${devuan_codename}" : '[^/]*/\(.*\)$' || true)
+            case ${devuan_suffix}
+            in
+               ('')
+                  ;;
+               (ceres)
+                  # subtract .01
+                  devuan_version=$((devuan_version - 1)).99
+                  ;;
+               (*)
+                  printf 'Unknown suffix (%s) in version (%s)\n' \
+                     "${devuan_suffix}" "${devuan_codename}" >&2
+                  exit 1
+                  ;;
+            esac
             ;;
       esac
+
+      echo "${devuan_version}"
    ;;
    fedora)
       cat /etc/fedora-release
