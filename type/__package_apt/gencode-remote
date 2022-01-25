@@ -1,7 +1,7 @@
 #!/bin/sh -e
 #
 # 2011-2013 Nico Schottelius (nico-cdist at schottelius.org)
-# 2021 Dennis Camera (cdist at dtnr.ch)
+# 2021-2022 Dennis Camera (cdist at dtnr.ch)
 #
 # This file is part of cdist.
 #
@@ -51,7 +51,21 @@ else
 fi
 
 
-read -r state_is auto_state name_is version_is <"${__object:?}/explorer/state"
+read -r state_is _ <"${__object:?}/explorer/state"
+case ${state_is}
+in
+	(present)
+		read -r state_is auto_state name_is version_is <"${__object:?}/explorer/state"
+		;;
+	(absent)
+		read -r state_is config_state <"${__object:?}/explorer/state"
+		name_is=${name}
+		;;
+	(*)
+		printf 'state explorer reports invalid state: %s\n' "${state_is}" >&2
+		exit 1
+		;;
+esac
 
 # Hint if we need to avoid questions at some point:
 # DEBIAN_PRIORITY=critical can reduce the number of questions
@@ -136,10 +150,12 @@ EOF
         echo 'installed' >>"${__messages_out:?}"
     ;;
     absent)
-        test "${state_is}" != 'absent' || exit 0
-
-        echo "${aptget} remove ${purgeparam} '${name_is}'"
-        echo 'removed' >>"${__messages_out:?}"
+        if test "${state_is}" != 'absent' \
+        || test -f "${__object:?}/parameter/purge-if-absent" -a "${config_state}" != 'purged'
+        then
+            echo "${aptget} remove ${purgeparam} '${name_is}'"
+            echo 'removed' >>"${__messages_out:?}"
+        fi
     ;;
     *)
         echo "Unknown state: $state_should" >&2
