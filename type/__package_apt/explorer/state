@@ -29,7 +29,7 @@ breify() {
 }
 
 
-if test -f "${__object}/parameter/name"
+if test -f "${__object:?}/parameter/name"
 then
 	name=$(cat "${__object:?}/parameter/name")
 else
@@ -55,7 +55,7 @@ do
 			# NOTE: instead of using apt-mark(8) parse the extended_states file
 			#       directly. apt-mark is sloow and didn't have a stable
 			#       interface in older Debian versions.
-			is_auto=$(sed -n -e '/^Package: '$(breify "${name}")'$/,/^$/!d' -e 's/^Auto-Installed: *//p' "${extended_states_file}")
+			is_auto=$(sed -n -e '/^Package: '"$(breify "${name}")"'$/,/^$/!d' -e 's/^Auto-Installed: *//p' "${extended_states_file}")
 		fi
 
 		# NOTE: older versions don't have apt-mark -> all packages are manual
