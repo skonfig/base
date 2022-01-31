@@ -24,7 +24,6 @@ state
 
 branch
     Create this branch by checking out the remote branch of this name
-    Default branch is "master"
 
 group
    Group to chgrp to.
