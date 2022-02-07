@@ -14,6 +14,8 @@ See ``setfacl`` and ``acl`` manpages for more details.
 
 One of ``--entry`` or ``--source`` must be used.
 
+There's special case with (capital) ``X`` perms bit - when used, ``x`` bit is set only for directories.
+
 
 OPTIONAL MULTIPLE PARAMETERS
 ----------------------------
