@@ -28,7 +28,7 @@ fi
 # do sed dry run, diff result and if no change, then there's nothing to do
 # also redirect diff's output to stderr for debugging purposes
 
-if echo "$script" | "$sed_cmd" -f - "$file_from_target" | diff -u "$file_from_target" - >&2
+if echo "$script" | $sed_cmd -f - "$file_from_target" | diff -u "$file_from_target" - >&2
 then
     exit 0
 fi
