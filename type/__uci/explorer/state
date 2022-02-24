@@ -52,8 +52,8 @@ else
 fi
 
 
-# strip off trailing newline
-printf '%s\n' "${values_is}" \
+# make sure to not add a trailing newline
+printf '%s' "${values_is}" \
 | awk '
 function unquote(s) {
 	# simplified dequoting of single quoted strings
