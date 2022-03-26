@@ -32,7 +32,7 @@ then
 
 elif command -v wget > /dev/null
 then
-    cmd="wget -O - '%s'"
+    cmd="wget -q -O - '%s'"
 
 else
     echo 'local download failed, no usable utility' >&2

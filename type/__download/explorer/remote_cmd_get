@@ -12,5 +12,5 @@ elif
 then
     echo "fetch -o - '%s'"
 else
-    echo "wget -O - '%s'"
+    echo "wget -q -O - '%s'"
 fi
