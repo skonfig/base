@@ -17,7 +17,7 @@ then
         dst="/$__object_id"
     fi
 
-    echo "download_tmp=\"\$( mktemp '$dst'.XXXXXXXX )\""
+    echo "download_tmp=\"${dst}.cdist__download_tmp\""
 
     # shellcheck disable=SC2059
     printf "$cmd_get > \"\$download_tmp\"\n" "$url"
