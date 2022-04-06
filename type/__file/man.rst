@@ -19,7 +19,7 @@ regular file, and state is:
   exists
     do nothing
 symlink
-  replace it with the source file
+  replace it with the source file or remove
 directory
   replace it with the source file
 

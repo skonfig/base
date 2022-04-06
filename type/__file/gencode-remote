@@ -88,7 +88,7 @@ case "$state_should" in
     ;;
 
     absent)
-        if [ "$type" = "file" ]; then
+        if [ "$type" = "file" ] || [ "$type" = "symlink" ]; then
             echo "rm -f '$destination'"
             echo remove >> "$__messages_out"
             fire_onchange=1
