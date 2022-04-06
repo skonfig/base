@@ -82,11 +82,14 @@ DONE
 
 case "$state_should" in
     present)
-        # if we insert new entry, filter also all entrys out with the same id 
-        echo "("
-        echo "crontab -u $user -l 2>/dev/null | grep -v -E \"$filter\" | grep -v \"# $name\\$\" 2>/dev/null || true"
-        echo "echo '$entry'"
-        echo ") | crontab -u $user -"
+        # if we insert new entry, filter also all entries out with the same id
+        printf '%s\n' \
+            '{' \
+            "crontab -u '$user' -l 2>/dev/null | grep -v -E \"$filter\" | grep -v \"# $name\\$\" 2>/dev/null || true" \
+            "cat <<'EOF'" \
+            "${entry}" \
+            "EOF" \
+            "} | crontab -u '$user' -"
     ;;
     absent)
         if [ -f "$__object/parameter/raw_command" ]; then
