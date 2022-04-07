@@ -19,6 +19,24 @@ None
 
 OPTIONAL PARAMETERS
 -------------------
+requirement
+    Can be anything supported by `pip install` - package name, URL, package
+    with extras etc. If this is anything else than package name (e.g. URL),
+    then object id must be package name, otherwise state explorer will fail and
+    type will be not idempotent.
+
+pip
+    Instead of using pip from PATH, use the specific pip path.
+
+state
+    Either "present" or "absent", defaults to "present"
+
+runas
+    Run pip as specified user. By default it runs as root.
+
+
+DEPRECATED OPTIONAL PARAMETERS
+------------------------------
 name
     If supplied, use the name and not the object id as the package name.
 
@@ -32,14 +50,6 @@ extra
     that are not explicitly named for the type because pip does not offer a
     management for orphaned packages and they may be used by other packages.
 
-pip
-    Instead of using pip from PATH, use the specific pip path.
-
-state
-    Either "present" or "absent", defaults to "present" 
-
-runas
-    Run pip as specified user. By default it runs as root.
 
 
 EXAMPLES
@@ -56,13 +66,14 @@ EXAMPLES
     # Use pip in a virtualenv located at /foo/shinken_virtualenv as user foo
     __package_pip pyro --state present --pip /foo/shinken_virtualenv/bin/pip --runas foo
 
-    # Install package with optional dependencies
-    __package_pip mautrix-telegram --extra speedups --extra webp_convert --extra hq_thumbnails
-    # the extras can also be specified comma-separated
-    __package_pip mautrix-telegram --extra speedups,webp_convert,hq_thumbnails --extra postgres
+    # Install package with extras
+    __package_pip mautrix-telegram --requirement mautrix-telegram[speedups,webp_convert,hq_thumbnails]
 
     # or take all extras
-    __package_pip mautrix-telegram --extra all
+    __package_pip mautrix-telegram --requirement mautrix-telegram[all]
+
+    # Install package from URL
+    __package_pip mkosi --requirement git+https://github.com/systemd/mkosi.git
 
 
 SEE ALSO

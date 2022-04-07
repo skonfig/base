@@ -30,12 +30,14 @@ state_should="$(cat "$__object/parameter/state")"
 [ "$state_is" = "$state_should" ] && ! [ -s "$__object/explorer/extras" ] \
     && exit 0
 
-
+requirementparam="$__object/parameter/requirement"
 nameparam="$__object/parameter/name"
-if [ -f "$nameparam" ]; then
-    name=$(cat "$nameparam")
+if [ -f "$requirementparam" ]; then
+    requirement=$(cat "$requirementparam")
+elif [ -f "$nameparam" ]; then
+    requirement=$(cat "$nameparam")
 else
-    name="$__object_id"
+    requirement="$__object_id"
 fi
 
 pipparam="$__object/parameter/pip"
@@ -65,23 +67,23 @@ case "$state_should" in
             # all extras are passed to pip in a comma-separated list in the name
             # sed loops through all input lines and add commas between them
             extras="$(sed ':a; $!N; s/\n/,/; ta' "$__object/explorer/extras")"
-            name="${name}[${extras}]"
+            requirement="${requirement}[${extras}]"
         fi
 
         if [ "$runas" ]
         then
-            echo "su -c '$pip install -q $name' $runas"
+            echo "su -c \"$pip install -q '$requirement'\" $runas"
         else
-            echo "$pip" install -q "$name"
+            echo "$pip install -q '$requirement'"
         fi
         echo "installed" >> "$__messages_out"
     ;;
     absent)
         if [ "$runas" ]
         then
-            echo "su -c '$pip uninstall -q -y $name' $runas"
+            echo "su -c \"$pip uninstall -q -y '$requirement'\" $runas"
         else
-            echo "$pip" uninstall -q -y "$name"
+            echo "$pip uninstall -q -y '$requirement'"
         fi
         echo "removed" >> "$__messages_out"
     ;;
