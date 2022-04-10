@@ -39,7 +39,8 @@ else
     exit 1
 fi
 
-echo "download_tmp=\"$__object/files/download_file\""
+echo "mkdir \"$__object/files\""
+echo "download_tmp=\"$__object/files/download_tmp\""
 
 # shellcheck disable=SC2059
 printf "$cmd > \"\$download_tmp\"\n" "$url"
