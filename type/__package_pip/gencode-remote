@@ -3,6 +3,7 @@
 # 2012 Nico Schottelius (nico-cdist at schottelius.org)
 # 2016 Darko Poljak (darko.poljak at gmail.com)
 # 2021 Matthias Stecher (matthiasstecher at gmx.de)
+# 2022 Dennis Camera (cdist at dtnr.ch)
 #
 # This file is part of cdist.
 #
@@ -23,12 +24,11 @@
 # Development supported by Local AG (www.local.ch)
 #
 
-state_is=$(cat "$__object/explorer/state")
-state_should="$(cat "$__object/parameter/state")"
+state_is=$(cat "${__object:?}/explorer/state")
+state_should=$(cat "${__object:?}/parameter/state")
 
-# short circuit if state is the same and no extras to install
-[ "$state_is" = "$state_should" ] && ! [ -s "$__object/explorer/extras" ] \
-    && exit 0
+# short circuit if state is the same and no further extras to install
+test "${state_is}" != "${state_should}" || exit 0
 
 requirement=$(cat "${__object:?}/explorer/requirement")
 
