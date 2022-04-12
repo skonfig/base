@@ -30,15 +30,7 @@ state_should="$(cat "$__object/parameter/state")"
 [ "$state_is" = "$state_should" ] && ! [ -s "$__object/explorer/extras" ] \
     && exit 0
 
-requirementparam="$__object/parameter/requirement"
-nameparam="$__object/parameter/name"
-if [ -f "$requirementparam" ]; then
-    requirement=$(cat "$requirementparam")
-elif [ -f "$nameparam" ]; then
-    requirement=$(cat "$nameparam")
-else
-    requirement="$__object_id"
-fi
+requirement=$(cat "${__object:?}/explorer/requirement")
 
 pipparam="$__object/parameter/pip"
 if [ -f "$pipparam" ]; then
@@ -62,14 +54,6 @@ fi
 
 case "$state_should" in
     present)
-        if [ -s "$__object/explorer/extras" ]
-        then
-            # all extras are passed to pip in a comma-separated list in the name
-            # sed loops through all input lines and add commas between them
-            extras="$(sed ':a; $!N; s/\n/,/; ta' "$__object/explorer/extras")"
-            requirement="${requirement}[${extras}]"
-        fi
-
         if [ "$runas" ]
         then
             echo "su -c \"$pip install -q '$requirement'\" $runas"
