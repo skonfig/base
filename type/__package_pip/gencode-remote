@@ -32,17 +32,12 @@ state_should="$(cat "$__object/parameter/state")"
 
 requirement=$(cat "${__object:?}/explorer/requirement")
 
-pipparam="$__object/parameter/pip"
-if [ -f "$pipparam" ]; then
-    pip=$(cat "$pipparam")
-else
-    pip="$( cat "$__object/explorer/pip" )"
-    if [ -z "$pip" ]
-    then
-        echo 'pip not found in path' >&2
-        exit 1
-    fi
-fi
+pip=$(cat "${__object:?}/explorer/pip")
+test -n "${pip}" || {
+    echo 'Could not find pip.' >&2
+    echo 'Please make sure that pip is installed or specify the command to use in --pip.' >&2
+    exit 1
+}
 
 runasparam="$__object/parameter/runas"
 if [ -f "$runasparam" ]

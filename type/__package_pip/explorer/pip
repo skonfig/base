@@ -1,10 +1,48 @@
 #!/bin/sh -e
+#
+# 2022 Dennis Camera (cdist at dtnr.ch)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
 
-for bin in pip3 pip
-do
-    if check="$( command -v "$bin" )"
-    then
-        echo "$check"
-        break
-    fi
-done
+first_arg() { printf '%s\n' "$1"; }
+
+first_command() {
+	while test $# -gt 0
+	do
+		command -v "$1" 2>/dev/null && return
+		shift
+	done
+	return 1
+}
+
+if test -s "${__object:?}/parameter/pip"
+then
+	cat "${__object:?}/parameter/pip"
+elif first_command pip3 pip
+then
+	:  # nothing to do, first_command printed path already
+elif pycmd=$(first_command python3 python)
+then
+	# no pip executable installed, use python -m pip
+
+	# FIXME: pipcmd construction is incorrect if path contains whitespace
+	pipcmd="${pycmd} -m pip"
+
+	# check if the pip module is actually installed
+	${pipcmd} -V >/dev/null 2>&1 || exit 0
+	printf '%s\n' "${pipcmd}"
+fi
