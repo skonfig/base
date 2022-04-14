@@ -4,6 +4,7 @@
 # 2013      Nico Schottelius (nico-cdist at schottelius.org)
 # 2013      Thomas Oettli (otho at sfs.biz)
 # 2017      Daniel Heule (hda at sfs.biz)
+# 2022 Dennis Camera (cdist at dtnr.ch)
 #
 # This file is part of cdist.
 #
@@ -20,6 +21,13 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
+
+breify() {
+	# Imported from type/__package_apt/explorer/state
+	# Convert arguments to a POSIX BRE-compatible form, i.e. escape special
+	# characters (incl. delimiter)
+	printf '%s' "$*" | sed -e 's/[].^$*\[]/\\&/g' -e 's:/:\\/:g'
+}
 
 name="$__object_name"
 user="$(cat "$__object/parameter/user")"
@@ -85,7 +93,7 @@ case "$state_should" in
         # if we insert new entry, filter also all entries out with the same id
         printf '%s\n' \
             '{' \
-            "crontab -u '$user' -l 2>/dev/null | grep -v -E \"$filter\" | grep -v \"# $name\\$\" 2>/dev/null || true" \
+            "crontab -u '$user' -l 2>/dev/null | grep -v -E \"$filter\" | grep -v \" # $(breify "${name}")\\$\" 2>/dev/null || true" \
             "cat <<'EOF'" \
             "${entry}" \
             "EOF" \
@@ -97,7 +105,7 @@ case "$state_should" in
             echo "grep -v \"^$entry\\$\" | crontab -u $user -"
         else
             echo "( crontab -u $user -l 2>/dev/null | grep -v -E \"$filter\" 2>/dev/null || true ) | \\"
-            echo "grep -v \"# $name\\$\" | crontab -u $user -"
+            echo "grep -v \" # $(breify "${name}")\\$\" | crontab -u $user -"
         fi
     ;;
 esac
