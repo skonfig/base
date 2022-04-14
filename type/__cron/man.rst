@@ -14,7 +14,7 @@ This cdist type allows you to manage entries in a users crontab.
 REQUIRED PARAMETERS
 -------------------
 user
-   The user who's crontab is edited
+   The user whose crontab is edited
 command
    The command to run.
 
@@ -73,7 +73,8 @@ EXAMPLES
 
 SEE ALSO
 --------
-:strong:`crontab`\ (5)
+* :strong:`crontab`\ (5)
+* :strong:`cdist-type__cron_env`\ (7)
 
 
 AUTHORS
