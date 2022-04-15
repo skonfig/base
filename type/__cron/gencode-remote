@@ -33,11 +33,12 @@ name="$__object_name"
 user="$(cat "$__object/parameter/user")"
 command="$(cat "$__object/parameter/command")"
 
-if [ -f "$__object/parameter/raw" ]; then
+if [ -f "$__object/parameter/raw_command" ]; then
+	echo 'error: parameter --raw_command is not supported anymore.' >&2
+	exit 1
+elif [ -f "$__object/parameter/raw" ]; then
    raw="$(cat "$__object/parameter/raw")"
    entry="$raw $command # $name"
-elif [ -f "$__object/parameter/raw_command" ]; then
-   entry="$command"
 else
    minute="$(cat "$__object/parameter/minute")"
    hour="$(cat "$__object/parameter/hour")"
@@ -110,12 +111,7 @@ case "$state_should" in
 		#       synchronization of its own.
 		sed -e '/^#/d' -e '/^$/d' "${__type:?}/files/lock.sh"
 
-        if [ -f "$__object/parameter/raw_command" ]; then
-            echo "( crontab -u $user -l 2>/dev/null | grep -v -E \"$filter\" 2>/dev/null || true ) | \\"
-            echo "grep -v \"^$entry\\$\" | crontab -u $user -"
-        else
-            echo "( crontab -u $user -l 2>/dev/null | grep -v -E \"$filter\" 2>/dev/null || true ) | \\"
-            echo "grep -v \" # $(breify "${name}")\\$\" | crontab -u $user -"
-        fi
+        echo "( crontab -u $user -l 2>/dev/null | grep -v -E \"$filter\" 2>/dev/null || true ) | \\"
+        echo "grep -v \" # $(breify "${name}")\\$\" | crontab -u $user -"
     ;;
 esac

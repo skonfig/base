@@ -27,9 +27,4 @@ grep_suffix() {
 name="$__object_name"
 user="$(cat "$__object/parameter/user")"
 
-if [ -f "$__object/parameter/raw_command" ]; then
-    command="$(cat "$__object/parameter/command")"
-    crontab -u "$user" -l 2>/dev/null | grep -xF "${command}" || true
-else
-    crontab -u "$user" -l 2>/dev/null | grep_suffix " # ${name}"
-fi
+crontab -u "${user}" -l 2>/dev/null | grep_suffix " # ${name}"
