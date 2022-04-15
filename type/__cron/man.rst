@@ -21,8 +21,8 @@ command
 
 OPTIONAL PARAMETERS
 -------------------
-**NOTE**: All time-related parameters (``--minute``, ``--hour``, ``--day_of_month``
-``--month`` and ``--day_of_week``) defaults to ``*``, which means to execute it
+**NOTE**: All time-related parameters (``--minute``, ``--hour``, ``--day-of-month``
+``--month`` and ``--day-of-week``) defaults to ``*``, which means to execute it
 **always**. If you set ``--hour 0`` to execute the cronjob only at midnight, it
 will execute **every** minute in the first hour of the morning all days.
 
@@ -32,11 +32,11 @@ minute
    See crontab(5). Defaults to *
 hour
    See crontab(5). Defaults to *
-day_of_month
+day-of-month
    See crontab(5). Defaults to *
 month
    See crontab(5). Defaults to *
-day_of_week
+day-of-week
    See crontab(5). Defaults to *
 raw
    Take whatever the user has given instead of time and date fields.
@@ -53,7 +53,7 @@ EXAMPLES
 
     # run Monday to Saturday at 23:15
     __cron some-id --user root --command "/path/to/script" \
-       --hour 23 --minute 15 --day_of_week 1-6
+       --hour 23 --minute 15 --day-of-week 1-6
 
     # run on reboot
     __cron some-id --user root --command "/path/to/script" \

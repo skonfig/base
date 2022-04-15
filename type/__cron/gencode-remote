@@ -42,9 +42,21 @@ elif [ -f "$__object/parameter/raw" ]; then
 else
    minute="$(cat "$__object/parameter/minute")"
    hour="$(cat "$__object/parameter/hour")"
-   day_of_month="$(cat "$__object/parameter/day_of_month")"
+   if test -f "${__object:?}/parameter/day_of_month"
+   then
+      # deprecated name
+      day_of_month="$(cat "$__object/parameter/day_of_month")"
+   else
+      day_of_month="$(cat "$__object/parameter/day-of-month")"
+   fi
    month="$(cat "$__object/parameter/month")"
-   day_of_week="$(cat "$__object/parameter/day_of_week")"
+   if test -f "${__object:?}/parameter/day_of_week"
+   then
+      # deprecated name
+      day_of_week="$(cat "$__object/parameter/day_of_week")"
+   else
+      day_of_week="$(cat "$__object/parameter/day-of-week")"
+   fi
    entry="$minute $hour $day_of_month $month $day_of_week $command # $name"
 fi
 
