@@ -1,7 +1,5 @@
-#!/bin/sh
+#!/bin/sh -e
 #
-# 2011-2013 Steven Armstrong (steven-cdist at armstrong.cc)
-# 2013      Nico Schottelius (nico-cdist at schottelius.org)
 # 2022 Dennis Camera (cdist at dtnr.ch)
 #
 # This file is part of cdist.
@@ -24,7 +22,7 @@ grep_suffix() {
 	awk -v suffix="$1" 'substr($0, length($0) - length(suffix) + 1) == suffix'
 }
 
-name="$__object_name"
-user="$(cat "$__object/parameter/user")"
+name=${__object_name:?}
+user=$(cat "${__object:?}/parameter/user")
 
 crontab -u "${user}" -l 2>/dev/null | grep_suffix " # ${name}"
