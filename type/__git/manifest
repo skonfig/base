@@ -32,6 +32,19 @@ mode="$(cat "$__object/parameter/mode")"
 
 case "$state_should" in
     present)
+        source=$(cat "${__object:?}/parameter/source")
+        case ${source}
+        in
+            (https://*)
+                os=$(cat "${__global:?}/explorer/os")
+                case ${os}
+                in
+                    (debian|devuan|ubuntu)
+                        __package_apt ca-certificates
+                        ;;
+                esac
+                ;;
+        esac
         :
     ;;
 
