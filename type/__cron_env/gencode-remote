@@ -96,12 +96,22 @@ in
 		update_script='function prtvar() { printf "%s=%s\n", n, v; p++ } '${awk_var_filter}' { prtvar(); next } /^[ \t]*#[ \t]*(m|minutes?)[ \t](h|hours?)/ || /^[ \t]*[0-9*@]/ { p++ } p==1 { prtvar() } { print } END { if (!p) prtvar() }'
 		modify_crontab_cmd="awk -v n=$(quote "${var_name}") -v v=$(quote "${qvalue}") $(quote "${update_script}")"
 
+		# NOTE: We need to lock against parallel execution with __cron because
+		#       both types modify the same "file" and crontab(1) does not
+		#       synchronization of its own.
+		sed -e '/^#/d' -e '/^$/d' "${__type:?}/files/lock.sh"
+
 		printf '%s | %s | %s\n' \
 			"${crontab_print_cmd?}" \
 			"${modify_crontab_cmd?}" \
 			"${crontab_update_cmd?}"
 		;;
 	(absent)
+		# NOTE: We need to lock against parallel execution with __cron because
+		#       both types modify the same "file" and crontab(1) does not
+		#       synchronization of its own.
+		sed -e '/^#/d' -e '/^$/d' "${__type:?}/files/lock.sh"
+
 		printf '%s | %s | %s\n' \
 			"${crontab_print_cmd?}" \
 			"awk -v n=$(quote "${var_name}") $(quote "!(${awk_var_filter?})")" \

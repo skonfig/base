@@ -90,6 +90,11 @@ DONE
 
 case "$state_should" in
     present)
+		# NOTE: We need to lock against parallel execution with __cron because
+		#       both types modify the same "file" and crontab(1) does not
+		#       synchronization of its own.
+		sed -e '/^#/d' -e '/^$/d' "${__type:?}/files/lock.sh"
+
         # if we insert new entry, filter also all entries out with the same id
         printf '%s\n' \
             '{' \
@@ -100,6 +105,11 @@ case "$state_should" in
             "} | crontab -u '$user' -"
     ;;
     absent)
+		# NOTE: We need to lock against parallel execution with __cron because
+		#       both types modify the same "file" and crontab(1) does not
+		#       synchronization of its own.
+		sed -e '/^#/d' -e '/^$/d' "${__type:?}/files/lock.sh"
+
         if [ -f "$__object/parameter/raw_command" ]; then
             echo "( crontab -u $user -l 2>/dev/null | grep -v -E \"$filter\" 2>/dev/null || true ) | \\"
             echo "grep -v \"^$entry\\$\" | crontab -u $user -"
