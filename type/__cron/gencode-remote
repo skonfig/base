@@ -21,13 +21,12 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-breify() {
-	# NOTE: imported from type/__package_apt/explorer/state
-	# Convert arguments to a POSIX BRE-compatible form, i.e. escape special
-	# characters (incl. delimiter)
-	printf '%s' "$*" | sed -e 's/[].^$*\[]/\\&/g' -e 's:/:\\/:g'
-}
 quote() { printf '%s\n' "$*" | sed "s/'/'\\\\''/g;1s/^/'/;\$s/\$/'/"; }
+entry_replace_cmd() {
+	printf "awk -v suffix=%s -v replace=%s 'function prtrepl(){if(!p&&replace)print replace;p=1} substr(\$0, length(\$0)-length(suffix)+1)==suffix {prtrepl();next} {print} END {prtrepl()}'\\n" \
+		"$(quote "$1")" \
+		"$(quote "$2")"
+}
 
 name=${__object_name:?}
 user=$(cat "${__object:?}/parameter/user")
@@ -81,44 +80,31 @@ test "${state_is}" != "${state_should}" || exit 0
 
 . "${__type:?}/files/commands.sh"
 
-entry_filter_cmd="grep -v $(quote " # $(breify "${name}")\$")"
+entry_marker=" # ${name}"
 
 case ${state_should}
 in
 	(present)
-		# print commands necessary to execute other commands, first
-		prepare_cmds
-
-		# NOTE: We need to lock against parallel execution with __cron because
-		#       both types modify the same "file" and crontab(1) does not
-		#       synchronization of its own.
-		sed -e '/^#/d' -e '/^$/d' "${__type:?}/files/lock.sh"
-
-		# add/replace crontab entry by removing entries with the given cdist tag
-		# from crontab and appending a new line
-		cat <<-CODE
-		${crontab_update_cmd?} <<EOF
-		\$(${crontab_print_cmd?} | ${entry_filter_cmd?})
-		${entry?}
-		EOF
-		CODE
 		;;
 	(absent)
-		# print commands necessary to execute other commands, first
-		prepare_cmds
-
-		# NOTE: We need to lock against parallel execution with __cron because
-		#       both types modify the same "file" and crontab(1) does not
-		#       synchronization of its own.
-		sed -e '/^#/d' -e '/^$/d' "${__type:?}/files/lock.sh"
-
-		printf '%s | %s | %s\n' \
-			"${crontab_print_cmd?}" \
-			"${entry_filter_cmd?}" \
-			"${crontab_update_cmd?}"
+		# unset $entry to make the code below remove the line
+		entry=
 		;;
 	(*)
 		printf 'Invalid --state: %s\n' "${state_should}" >&2
 		exit 1
 		;;
 esac
+
+# print commands necessary to execute other commands, first
+prepare_cmds
+
+# NOTE: We need to lock against parallel execution with __cron because
+#       both types modify the same "file" and crontab(1) does not
+#       synchronization of its own.
+sed -e '/^#/d' -e '/^$/d' "${__type:?}/files/lock.sh"
+
+printf '%s | %s | %s\n' \
+	"${crontab_print_cmd?}" \
+	"$(entry_replace_cmd "${entry_marker?}" "${entry?}")" \
+	"${crontab_update_cmd?}"
