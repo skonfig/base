@@ -18,11 +18,21 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
+name=${__object_name:?}
+user=$(cat "${__object:?}/parameter/user")
+
+crontab_list() {
+	case $(uname -s)
+	in
+		(SunOS)
+			crontab -l "${user}" 2>/dev/null ;;
+		(*)
+			crontab -u "${user}" -l 2>/dev/null ;;
+	esac
+}
+
 grep_suffix() {
 	awk -v suffix="$1" 'substr($0, length($0) - length(suffix) + 1) == suffix'
 }
 
-name=${__object_name:?}
-user=$(cat "${__object:?}/parameter/user")
-
-crontab -u "${user}" -l 2>/dev/null | grep_suffix " # ${name}"
+crontab_list | grep_suffix " # ${name}"

@@ -20,6 +20,26 @@
 # Returns the current state of the cron variable.
 #
 
+user=$(cat "${__object:?}/parameter/user")
+
+if test -f "${__object:?}/parameter/name"
+then
+	read -r var_name <"${__object:?}/parameter/name"
+else
+	var_name=${__object_id:?}
+fi
+
+crontab_list() {
+	case $(uname -s)
+	in
+		(SunOS)
+			crontab -l "${user}" 2>/dev/null ;;
+		(*)
+			crontab -u "${user}" -l 2>/dev/null ;;
+	esac
+
+}
+
 grep_var() {
 	awk -v var_name="$1" '
 	function unquote(s,    qc) {
@@ -37,25 +57,7 @@ grep_var() {
 	}'
 }
 
-user=$(cat "${__object:?}/parameter/user")
-
-if test -f "${__object:?}/parameter/name"
-then
-	read -r var_name <"${__object:?}/parameter/name"
-else
-	var_name=${__object_id:?}
-fi
-
-
-value_is=$(
-	case $(uname -s)
-	in
-		(SunOS)
-			crontab -l "${user}" 2>/dev/null ;;
-		(*)
-			crontab -u "${user}" -l 2>/dev/null ;;
-	esac \
-	| grep_var "${var_name}")
+value_is=$(crontab_list | grep_var "${var_name}")
 
 if test -z "${value_is}"
 then
