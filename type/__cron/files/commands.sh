@@ -38,7 +38,10 @@ in
 	(*)
 		# NOTE: $!N makes sure that matching comment lines are only removed from
 		#       the beginning of the file.
-		crontab_print_cmd="crontab -u $(quote "${user}") -l 2>/dev/null | sed -e $(quote "/${vixie_comment_filter?}/d") -e '\$!N'"
+		# NOTE: the "EDITOR=cat crontab -e" hack produces a default
+		#       crontab in case no crontab existed previously.
+		#       On BusyBox it creates a crontab file.
+		crontab_print_cmd="{ crontab -u $(quote "${user}") -l 2>/dev/null | grep ^ || EDITOR=cat crontab -u $(quote "${user}") -e 2>/dev/null; } | sed -e $(quote "/${vixie_comment_filter?}/d") -e '\$!N'"
 		crontab_update_cmd="crontab -u $(quote "${user}") -"
 		;;
 esac
