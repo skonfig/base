@@ -17,6 +17,8 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
+# Prints the line matching $__object_name in --user’s current crontab.
+#
 
 name=${__object_name:?}
 user=$(cat "${__object:?}/parameter/user")
@@ -35,4 +37,4 @@ grep_suffix() {
 	awk -v suffix="$1" 'substr($0, length($0) - length(suffix) + 1) == suffix'
 }
 
-crontab_list | grep_suffix " # ${name}"
+crontab_list | grep -v '^[[:blank:]]*#' | grep_suffix " # ${name}"

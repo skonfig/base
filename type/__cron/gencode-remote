@@ -23,7 +23,7 @@
 
 quote() { printf '%s\n' "$*" | sed "s/'/'\\\\''/g;1s/^/'/;\$s/\$/'/"; }
 entry_replace_cmd() {
-	printf "awk -v suffix=%s -v replace=%s 'function prtrepl(){if(!p&&replace)print replace;p=1} substr(\$0, length(\$0)-length(suffix)+1)==suffix {prtrepl();next} {print} END {prtrepl()}'\\n" \
+	printf "awk -v suffix=%s -v replace=%s 'function prtrepl(){if(!p&&replace)print replace;p=1} !/^[ \\t]*#/ && substr(\$0, length(\$0)-length(suffix)+1) == suffix {prtrepl();next} {print} END {prtrepl()}'\\n" \
 		"$(quote "$1")" \
 		"$(quote "$2")"
 }
