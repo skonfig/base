@@ -21,7 +21,8 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-quote() { printf '%s\n' "$*" | sed "s/'/'\\\\''/g;1s/^/'/;\$s/\$/'/"; }
+. "${__type:?}/files/functions.sh"
+
 entry_replace_cmd() {
 	printf "awk -v suffix=%s -v replace=%s 'function prtrepl(){if(!p&&replace)print replace;p=1} !/^[ \\t]*#/ && substr(\$0, length(\$0)-length(suffix)+1) == suffix {prtrepl();next} {print} END {prtrepl()}'\\n" \
 		"$(quote "$1")" \
@@ -95,6 +96,12 @@ in
 		exit 1
 		;;
 esac
+
+# assert that $entry only has one line to avoid fucking up the crontab
+test $(count_lines "${entry-}") -le 1 || {
+	echo 'crontab entries must contain exactly one line.' >&2
+	exit 1
+}
 
 # print commands necessary to execute other commands, first
 prepare_cmds
