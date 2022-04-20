@@ -18,7 +18,7 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-quote() { printf '%s\n' "$*" | sed "s/'/'\\\\''/g;1s/^/'/;\$s/\$/'/"; }
+. "${__type:?}/files/functions.sh"
 
 user=$(cat "${__object:?}/parameter/user")
 
@@ -66,6 +66,13 @@ in
 		exit 1
 		;;
 esac
+
+
+# assert that $entry only has one line to avoid fucking up the crontab
+test $(count_lines "${qvalue-}") -le 1 || {
+	echo 'crontab environment values must contain exactly one line.' >&2
+	exit 1
+}
 
 # print commands necessary to execute other commands, first
 prepare_cmds
