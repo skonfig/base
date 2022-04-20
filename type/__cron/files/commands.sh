@@ -36,12 +36,32 @@ in
 		crontab_update_cmd="crontab -u $(quote "${user}") -"
 		;;
 	(*)
-		# NOTE: $!N makes sure that matching comment lines are only removed from
-		#       the beginning of the file.
-		# NOTE: the "EDITOR=cat crontab -e" hack produces a default
+		crontab_print_cmd="crontab -u $(quote "${user}") -l 2>/dev/null"
+
+		# NOTE: the "VISUAL= EDITOR=cat crontab -e" hack produces a default
 		#       crontab in case no crontab existed previously.
-		#       On BusyBox it creates a crontab file.
-		crontab_print_cmd="{ crontab -u $(quote "${user}") -l 2>/dev/null | grep ^ || EDITOR=cat crontab -u $(quote "${user}") -e 2>/dev/null; } | sed -e $(quote "/${vixie_comment_filter?}/d") -e '\$!N'"
+		#       This is to include the default wall of text in the newly
+		#       created crontab.
+		#       This hack produces an error on BusyBox's crontab:
+		#       crontab: can't move 'root.new' to 'root': No such file or directory
+		#
+		#       Thus we only apply it on Debian-based systems because
+		#       this seems to be a Debian specialty.
+		#       https://salsa.debian.org/debian/cron/-/blob/debian/3.0pl1-137.1/debian/patches/features/Add-helpful-header-to-new-crontab.patch
+		_crontab_default_cmd="test -f /etc/debian_version && VISUAL= EDITOR=cat crontab -u $(quote "${user}") -e 2>/dev/null"
+		crontab_print_cmd="${crontab_print_cmd} | grep ^ || { ${_crontab_default_cmd}; }"
+
+		# NOTE: Some versions of Vixie cron or its decendants don't
+		#       properly clean up their magic comments on cronab -l.
+		#       We strip them from the beginning of the file because
+		#       otherwise they end up filling the file more with each
+		#       edit.
+		#
+		#       $!N makes sure that matching comment lines are only removed from
+		#       the beginning of the file.
+		_crontab_strip_magic_comments_cmd="sed -e $(quote "/${vixie_comment_filter?}/d") -e '\$!N'"
+		crontab_print_cmd="{ ${crontab_print_cmd}; } | ${_crontab_strip_magic_comments_cmd}"
+
 		crontab_update_cmd="crontab -u $(quote "${user}") -"
 		;;
 esac
