@@ -40,9 +40,11 @@ then
 		echo $$ | cmp -s "${LOCKFILE:?}" - || return 1
 		rm "${LOCKFILE:?}"
 	}
-elif command -v flock >/dev/null 2>&1
+elif command -v flock >/dev/null 2>&1 \
+	&& flock 2>&1 | grep -q ' \(-x\|-u\)'
 then
-	# use flock (if available) on FD 9
+	# use flock on FD 9
+	# NOTE: old util-linux versions don't support the -x and -u arguments.
 	_lock() {
 		if test "$(uname -s)" = 'NetBSD'
 		then
@@ -58,6 +60,15 @@ then
 		:>"${LOCKFILE:?}"
 		flock -u 9
 		exec 9<&-
+	}
+elif command -v lockfile >/dev/null 2>&1
+then
+	# use lockfile (from procmail)
+	_lock() {
+		lockfile "${LOCKFILE}"
+	}
+	_unlock() {
+		rm -f "${LOCKFILE}"
 	}
 else
 	# fallback to mkdir if flock is missing
