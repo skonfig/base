@@ -37,7 +37,7 @@ test "${state_is}" != "${state_should}" || exit 0
 . "${__type:?}/files/commands.sh"
 
 # shellcheck disable=SC2016
-awk_var_filter='index($0, n) == 1 && substr($0, length(n)+1) ~ /^ *=/'
+awk_var_filter='index($0,ENVIRON["ENAME"]) == 1 && substr($0, length(ENVIRON["ENAME"])+1) ~ /^ *=/'
 
 case ${state_should}
 in
@@ -55,11 +55,11 @@ in
 			(*) qvalue="\"${qvalue}\"" ;;
 		esac
 
-		update_script='function prtvar() { printf "%s=%s\n", n, v; p++ } '${awk_var_filter}' { prtvar(); next } /^[ \t]*#[ \t]*(m|minutes?)[ \t](h|hours?)/ || /^[ \t]*[0-9*@]/ { p++ } p==1 { prtvar() } { print } END { if (!p) prtvar() }'
-		modify_crontab_cmd="awk -v n=$(quote "${var_name}") -v v=$(quote "${qvalue}") $(quote "${update_script}")"
+		update_script='function prtvar() { printf "%s=%s\n", ENVIRON["ENAME"], ENVIRON["EVAL"]; p++ } '${awk_var_filter}' { prtvar(); next } /^[ \t]*#[ \t]*(m|minutes?)[ \t](h|hours?)/ || /^[ \t]*[0-9*@]/ { p++ } p==1 { prtvar() } { print } END { if (!p) prtvar() }'
+		modify_crontab_cmd="ENAME=$(quote "${var_name}") EVAL=$(quote "${qvalue}") awk $(quote "${update_script}")"
 		;;
 	(absent)
-		modify_crontab_cmd="awk -v n=$(quote "${var_name}") $(quote "!(${awk_var_filter?})")"
+		modify_crontab_cmd="ENAME=$(quote "${var_name}") awk $(quote "!(${awk_var_filter?})")"
 		;;
 	(*)
 		printf 'Invalid --state: %s\n' "${state_should}" >&2

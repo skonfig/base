@@ -24,7 +24,9 @@
 . "${__type:?}/files/functions.sh"
 
 entry_replace_cmd() {
-	printf "awk -v suffix=%s -v replace=%s 'function prtrepl(){if(!p&&replace)print replace;p=1} !/^[ \\t]*#/ && substr(\$0, length(\$0)-length(suffix)+1) == suffix {prtrepl();next} {print} END {prtrepl()}'\\n" \
+	# NOTE: make sure that the snippet does not process escape sequences in the
+	#       command
+	printf "SUFFIX=%s ENTRY=%s awk 'function prtrepl(){if(!p&&ENVIRON[\"ENTRY\"])print ENVIRON[\"ENTRY\"];p=1} !/^[ \\\\t]*#/ && substr(\$0, length(\$0)-length(ENVIRON[\"SUFFIX\"])+1) == ENVIRON[\"SUFFIX\"] {prtrepl();next} {print} END {prtrepl()}'\\n" \
 		"$(quote "$1")" \
 		"$(quote "$2")"
 }
