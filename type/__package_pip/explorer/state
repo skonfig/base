@@ -20,7 +20,7 @@
 
 comma_join() { sed -e :a -e '$!N' -e 's/\n/,/' -e ta; }
 first_arg() { printf '%s\n' "$1"; }
-shebang_of() { sed -n -e '1s/^#!//p' "$1"; }
+shebang_of() { sed -n -e '1s/^#! *//p' "$1"; }
 
 pip=$("${__type_explorer:?}/pip")
 
