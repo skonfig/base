@@ -59,7 +59,7 @@ in
 		#
 		#       $!N makes sure that matching comment lines are only removed from
 		#       the beginning of the file.
-		_crontab_strip_magic_comments_cmd="sed -e $(quote "/${vixie_comment_filter?}/d") -e '\$!N'"
+		_crontab_strip_magic_comments_cmd="sed -e $(quote "/${vixie_comment_filter?}/d") -e :pl -e n -e bpl"
 		crontab_print_cmd="{ ${crontab_print_cmd}; } | ${_crontab_strip_magic_comments_cmd}"
 
 		crontab_update_cmd="crontab -u $(quote "${user}") -"
