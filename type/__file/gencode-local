@@ -26,102 +26,102 @@ type="$(cat "$__object/explorer/type")"
 [ "$state_should" = "exists" ] && [ "$type" = "file" ] && exit 0 # nothing to do
 
 if [ "$state_should" = "pre-exists" ]; then
-   if [ -f "$__object/parameter/source" ]; then
-      echo "--source cannot be used with --state pre-exists" >&2
-      exit 1
-   fi
+	if [ -f "$__object/parameter/source" ]; then
+		echo "--source cannot be used with --state pre-exists" >&2
+		exit 1
+	fi
 
-   case $type in
-      file)
-         # nothing to do
-         exit 0
-      ;;
-      none)
-         printf 'File "%s" does not exist\n' "$destination" >&2
-         exit 1
-      ;;
-      directory|symlink)
-         printf 'File "%s" exists and is a %s, but should be a regular file\n' "$destination" "$type" >&2
-         exit 1
-      ;;
-      *)
-         printf 'File or directory "%s" is in an unknown state\n' "$destination" >&2
-         exit 1
-      ;;
-   esac
+	case $type in
+		file)
+			# nothing to do
+			exit 0
+			;;
+		none)
+			printf 'File "%s" does not exist\n' "$destination" >&2
+			exit 1
+			;;
+		directory|symlink)
+			printf 'File "%s" exists and is a %s, but should be a regular file\n' "$destination" "$type" >&2
+			exit 1
+			;;
+		*)
+			printf 'File or directory "%s" is in an unknown state\n' "$destination" >&2
+			exit 1
+			;;
+	esac
 fi
 
 upload_file=
 create_file=
 if [ "$state_should" = "present" ] || [ "$state_should" = "exists" ]; then
-   if [ ! -f "$__object/parameter/source" ]; then
-      remote_stat="$(cat "$__object/explorer/stat")"
-      if [ -z "$remote_stat" ]; then
-         create_file=1
-         echo create >> "$__messages_out"
-      fi
-   else
-      source="$(cat "$__object/parameter/source")"
-      if [ "$source" = "-" ]; then
-         source="$__object/stdin"
-      fi
-      if [ ! -f "$source" ]; then
-         echo "Source \"$source\" does not exist." >&2
-         exit 1
-      else
-         if [ "$type" != "file" ]; then
-            # destination is not a regular file, upload source to replace it
-            upload_file=1
-            echo upload >> "$__messages_out"
-         else
-            local_cksum="$(cksum < "$source")"
-            remote_cksum="$(cat "$__object/explorer/cksum")"
-            if [ "$local_cksum" != "$remote_cksum" ]; then
-               # destination is a regular file, but not the right one
-               upload_file=1
-            fi
-         fi
-      fi
-   fi
-   if [ "$create_file" ] || [ "$upload_file" ]; then
-      # tell gencode-remote that we created or uploaded a file and that it must
-      # set all attributes no matter what the explorer retreived
-      mkdir "$__object/files"
-      touch "$__object/files/set-attributes"
+	if [ ! -f "$__object/parameter/source" ]; then
+		remote_stat="$(cat "$__object/explorer/stat")"
+		if [ -z "$remote_stat" ]; then
+			create_file=1
+			echo create >> "$__messages_out"
+		fi
+	else
+		source="$(cat "$__object/parameter/source")"
+		if [ "$source" = "-" ]; then
+			source="$__object/stdin"
+		fi
+		if [ ! -f "$source" ]; then
+			echo "Source \"$source\" does not exist." >&2
+			exit 1
+		else
+			if [ "$type" != "file" ]; then
+				# destination is not a regular file, upload source to replace it
+				upload_file=1
+				echo upload >> "$__messages_out"
+			else
+				local_cksum="$(cksum < "$source")"
+				remote_cksum="$(cat "$__object/explorer/cksum")"
+				if [ "$local_cksum" != "$remote_cksum" ]; then
+					# destination is a regular file, but not the right one
+					upload_file=1
+				fi
+			fi
+		fi
+	fi
+	if [ "$create_file" ] || [ "$upload_file" ]; then
+		# tell gencode-remote that we created or uploaded a file and that it must
+		# set all attributes no matter what the explorer retreived
+		mkdir "$__object/files"
+		touch "$__object/files/set-attributes"
 
-      if [ "$create_file" ]; then
-         # When creating an empty file we create it locally and then
-         # upload it so that permissions can be set before moving the file
-         # into place.
-         source="$__object/files/empty"
-         touch "$source"
-      fi
+		if [ "$create_file" ]; then
+			# When creating an empty file we create it locally and then
+			# upload it so that permissions can be set before moving the file
+			# into place.
+			source="$__object/files/empty"
+			touch "$source"
+		fi
 
-      # upload file to temp location
-      upload_destination="$(mktemp -u "/__cdist${destination}.cdist.XXXXXXXXXX" | sed 's|^/__cdist||')"
-      # Yes, we are aware that this is a race condition.
-      # However:
-      # a) cdist usually writes to directories that are not user writable
-      #    (probably > 99.9%)
-      # b) if they are user owned, the user / attacker always wins
-      #    (probably < 0.1%)
-      # c) the only case which we could improve are tmp directories and we
-      #    don't think managing tmp directories with cdist is a typical case
-      #    ("the rest %)"
+		# upload file to temp location
+		upload_destination="$(mktemp -u "/__cdist${destination}.cdist.XXXXXXXXXX" | sed 's|^/__cdist||')"
+		# Yes, we are aware that this is a race condition.
+		# However:
+		# a) cdist usually writes to directories that are not user writable
+		#	 (probably > 99.9%)
+		# b) if they are user owned, the user / attacker always wins
+		#	 (probably < 0.1%)
+		# c) the only case which we could improve are tmp directories and we
+		#	 don't think managing tmp directories with cdist is a typical case
+		#	 ("the rest %)"
 
-      # Tell gencode-remote to where we uploaded the file so it can move
-      # it to its final destination.
-      echo "$upload_destination" > "$__object/files/upload-destination"
+		# Tell gencode-remote to where we uploaded the file so it can move
+		# it to its final destination.
+		echo "$upload_destination" > "$__object/files/upload-destination"
 
-      # IPv6 fix
-      if echo "${__target_host}" | grep -q -E '^[0-9a-fA-F:]+$'
-      then
-          my_target_host="[${__target_host}]"
-      else
-          my_target_host="${__target_host}"
-      fi
-      cat << DONE
+		# IPv6 fix
+		if echo "${__target_host}" | grep -q -E '^[0-9a-fA-F:]+$'
+		then
+			 my_target_host="[${__target_host}]"
+		else
+			 my_target_host="${__target_host}"
+		fi
+		cat << DONE
 $__remote_copy "$source" "${my_target_host}:${upload_destination}"
 DONE
-   fi
+	fi
 fi

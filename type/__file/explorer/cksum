@@ -11,7 +11,7 @@
 #
 # cdist is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
@@ -23,12 +23,14 @@
 
 destination="/$__object_id"
 
-if [ -e "$destination" ]; then
-    if [ -f  "$destination" ]; then
-        cksum < "$destination"
-    else
-        echo "NO REGULAR FILE"
-    fi
+if test -e "$destination"
+then
+	if test -f "$destination"
+	then
+		cksum < "$destination"
+	else
+		echo "NO REGULAR FILE"
+	fi
 else
-    echo "NO FILE FOUND, NO CHECKSUM CALCULATED."
+	echo "NO FILE FOUND, NO CHECKSUM CALCULATED."
 fi
