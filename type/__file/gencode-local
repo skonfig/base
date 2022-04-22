@@ -2,6 +2,7 @@
 #
 # 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
 # 2013-2022 Steven Armstrong (steven-cdist armstrong.cc)
+# 2022 Dennis Camera (cdist at dtnr.ch)
 #
 # This file is part of cdist.
 #
@@ -19,109 +20,122 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-destination="/$__object_id"
-state_should="$(cat "$__object/parameter/state")"
-type="$(cat "$__object/explorer/type")"
+quote() { printf '%s\n' "$*" | sed "s/'/'\\\\''/g;1s/^/'/;\$s/\$/'/"; }
 
-[ "$state_should" = "exists" ] && [ "$type" = "file" ] && exit 0 # nothing to do
+destination="/${__object_id:?}"
+state_should=$(cat "${__object:?}/parameter/state")
+type_is=$(cat "${__object:?}/explorer/type")
 
-if [ "$state_should" = "pre-exists" ]; then
-	if [ -f "$__object/parameter/source" ]; then
-		echo "--source cannot be used with --state pre-exists" >&2
-		exit 1
-	fi
+upload_file() {
+	# source $1
+	# destination $2
 
-	case $type in
-		file)
-			# nothing to do
-			exit 0
-			;;
-		none)
-			printf 'File "%s" does not exist\n' "$destination" >&2
-			exit 1
-			;;
-		directory|symlink)
-			printf 'File "%s" exists and is a %s, but should be a regular file\n' "$destination" "$type" >&2
-			exit 1
-			;;
-		*)
-			printf 'File or directory "%s" is in an unknown state\n' "$destination" >&2
-			exit 1
-			;;
-	esac
-fi
+	# tell gencode-remote that we created or uploaded a file and that it
+	# must set all attributes no matter what the explorer retreived
+	mkdir "${__object:?}/files"
+	touch "${__object:?}/files/file-uploaded"
 
-upload_file=
-create_file=
-if [ "$state_should" = "present" ] || [ "$state_should" = "exists" ]; then
-	if [ ! -f "$__object/parameter/source" ]; then
-		remote_stat="$(cat "$__object/explorer/stat")"
-		if [ -z "$remote_stat" ]; then
-			create_file=1
-			echo create >> "$__messages_out"
-		fi
+	# upload file to temp location
+	_upload_destination=$(mktemp -u "/__cdist${2:?}.cdist.XXXXXX" | sed 's|^/__cdist||')
+	# Yes, we are aware that this is a race condition.
+	# However:
+	# a) cdist usually writes to directories that are not user writable
+	#	 (probably > 99.9%)
+	# b) if they are user owned, the user / attacker always wins
+	#	 (probably < 0.1%)
+	# c) the only case which we could improve are tmp directories and we
+	#	 don't think managing tmp directories with cdist is a typical case
+	#	 ("the rest %)"
+
+	# Tell gencode-remote to where we uploaded the file so it can move
+	# it to its final destination.
+	echo "${_upload_destination}" >"${__object:?}/files/upload-destination"
+
+	# IPv6 fix
+	if expr "${__target_host:?}" : '[0-9a-fA-F:]\{1,\}$' >/dev/null
+	then
+		_destination_host="[${__target_host:?}]"
 	else
-		source="$(cat "$__object/parameter/source")"
-		if [ "$source" = "-" ]; then
-			source="$__object/stdin"
-		fi
-		if [ ! -f "$source" ]; then
-			echo "Source \"$source\" does not exist." >&2
-			exit 1
-		else
-			if [ "$type" != "file" ]; then
-				# destination is not a regular file, upload source to replace it
-				upload_file=1
-				echo upload >> "$__messages_out"
-			else
-				local_cksum="$(cksum < "$source")"
-				remote_cksum="$(cat "$__object/explorer/cksum")"
-				if [ "$local_cksum" != "$remote_cksum" ]; then
-					# destination is a regular file, but not the right one
-					upload_file=1
-				fi
-			fi
-		fi
+		_destination_host=${__target_host:?}
 	fi
-	if [ "$create_file" ] || [ "$upload_file" ]; then
-		# tell gencode-remote that we created or uploaded a file and that it must
-		# set all attributes no matter what the explorer retreived
-		mkdir "$__object/files"
-		touch "$__object/files/set-attributes"
 
-		if [ "$create_file" ]; then
-			# When creating an empty file we create it locally and then
-			# upload it so that permissions can be set before moving the file
-			# into place.
-			source="$__object/files/empty"
-			touch "$source"
-		fi
+	cat <<-EOF
+	${__remote_copy:?} $(quote "${1:?}") $(quote "${_destination_host}"):$(quote "${_upload_destination}")
+	EOF
 
-		# upload file to temp location
-		upload_destination="$(mktemp -u "/__cdist${destination}.cdist.XXXXXXXXXX" | sed 's|^/__cdist||')"
-		# Yes, we are aware that this is a race condition.
-		# However:
-		# a) cdist usually writes to directories that are not user writable
-		#	 (probably > 99.9%)
-		# b) if they are user owned, the user / attacker always wins
-		#	 (probably < 0.1%)
-		# c) the only case which we could improve are tmp directories and we
-		#	 don't think managing tmp directories with cdist is a typical case
-		#	 ("the rest %)"
+	unset _destination_host _upload_destination
+}
 
-		# Tell gencode-remote to where we uploaded the file so it can move
-		# it to its final destination.
-		echo "$upload_destination" > "$__object/files/upload-destination"
-
-		# IPv6 fix
-		if echo "${__target_host}" | grep -q -E '^[0-9a-fA-F:]+$'
+case ${state_should}
+in
+	(pre-exists)
+		if test -f "${__object:?}/parameter/source"
 		then
-			 my_target_host="[${__target_host}]"
-		else
-			 my_target_host="${__target_host}"
+			echo '--source cannot be used with --state pre-exists' >&2
+			exit 1
 		fi
-		cat << DONE
-$__remote_copy "$source" "${my_target_host}:${upload_destination}"
-DONE
-	fi
-fi
+
+		case ${type_is}
+		in
+			(file)
+				# nothing to do
+				exit 0
+				;;
+			(none)
+				printf 'File "%s" does not exist\n' "${destination}" >&2
+				exit 1
+				;;
+			(directory|symlink)
+				printf 'File "%s" exists and is a %s, but should be a regular file\n' "${destination}" "${type_is}" >&2
+				exit 1
+				;;
+			(*)
+				printf 'File or directory "%s" is in an unknown state\n' "${destination}" >&2
+				exit 1
+				;;
+		esac
+		;;
+	(present|exists)
+		upload_file=false
+
+		if test "${type_is}" != 'file'
+		then
+			# destination is not a regular file
+			upload_file=true
+		elif test "${state_should}" = 'present' \
+		&& ! cksum <"${source}" | cmp -s "${__object:?}/explorer/cksum" -
+		then
+			# destination is a regular file, but not the right one
+			upload_file=true
+		fi
+
+		if ${upload_file?}
+		then
+			# determine source
+			if test -f "${__object:?}/parameter/source"
+			then
+				source=$(cat "${__object:?}/parameter/source")
+				if test "${source}" = '-'
+				then
+					source="${__object:?}/stdin"
+				fi
+
+				test -f "${source}" || {
+					printf 'Source "%s" does not exist.\n' "${source}" >&2
+					exit 1
+				}
+
+				echo upload >>"${__messages_out:?}"
+			else
+				# when creating an empty file we create it locally and then
+				# upload it so that permissions can be set before moving the file
+				# into place.
+				source=/dev/null
+
+				echo create >>"${__messages_out:?}"
+			fi
+
+			upload_file "${source}" "${destination}"
+		fi
+		;;
+esac

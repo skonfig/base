@@ -1,6 +1,7 @@
-#!/bin/sh
+#!/bin/sh -e
 #
 # 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2022 Dennis Camera (cdist at dtnr.ch)
 #
 # This file is part of cdist.
 #
@@ -17,20 +18,15 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
-#
-# Retrieve the md5sum of a file to be created, if it is already existing.
+# Retrieve the cksum of the file if it already exists.
 #
 
-destination="/$__object_id"
+destination="/${__object_id:?}"
+state_should=$(cat "${__object:?}/parameter/state")
 
-if test -e "$destination"
+if test -f "${destination}" -a "${state_should}" = 'present'
 then
-	if test -f "$destination"
-	then
-		cksum < "$destination"
-	else
-		echo "NO REGULAR FILE"
-	fi
-else
-	echo "NO FILE FOUND, NO CHECKSUM CALCULATED."
+	# only calculate cksum if --state present, because it is ignored for other
+	# --states
+	cksum <"${destination}"
 fi

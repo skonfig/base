@@ -1,6 +1,7 @@
-#!/bin/sh
+#!/bin/sh -e
 #
 # 2013 Steven Armstrong (steven-cdist armstrong.cc)
+# 2022 Dennis Camera (cdist at dtnr.ch)
 #
 # This file is part of cdist.
 #
@@ -18,18 +19,20 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-destination="/$__object_id"
+destination="/${__object_id:?}"
 
-if test ! -e "$destination"
-then
-	echo none
-elif test -h "$destination"
+# NOTE: check for symlink first, because if the file the symlink points to is
+#       non-existent -h is true, but -e is false.
+if test -h "${destination}"
 then
 	echo symlink
-elif test -f "$destination"
+elif test ! -e "${destination}"
+then
+	echo none
+elif test -f "${destination}"
 then
 	echo file
-elif test -d "$destination"
+elif test -d "${destination}"
 then
 	echo directory
 else
