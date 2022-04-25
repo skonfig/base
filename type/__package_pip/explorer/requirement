@@ -17,32 +17,30 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
+# Prints the assembled requirement that can be passed to pip for installation.
+#
+# This explorer can be removed when the deprecated --name and --extra parameters
+# are removed.
+#
 
-first_arg() { printf '%s\n' "$1"; }
+comma_join() { sed ':a; $!N; s/\n/,/; ta'; }
 
-first_command() {
-	while test $# -gt 0
-	do
-		command -v "$1" 2>/dev/null && return
-		shift
-	done
-	return 1
-}
-
-if test -s "${__object:?}/parameter/pip"
+if test -f "${__object:?}/parameter/requirement"
 then
-	cat "${__object:?}/parameter/pip"
-elif first_command pip3 pip
-then
-	:  # nothing to do, first_command printed path already
-elif pycmd=$(first_command python3 python)
-then
-	# no pip executable installed, use python -m pip
+	requirement=$(cat "${__object:?}/parameter/requirement")
+else
+	if test -f "${__object:?}/parameter/name"  # deprecated
+	then
+		requirement=$(cat "${__object:?}/parameter/name")
+	else
+		requirement=${__object_id:?}
+	fi
 
-	# FIXME: pipcmd construction is incorrect if path contains whitespace
-	pipcmd="${pycmd} -m pip"
-
-	# check if the pip module is actually installed
-	${pipcmd} -V >/dev/null 2>&1 || exit 0
-	printf '%s\n' "${pipcmd}"
+	if test -s "${__object:?}/parameter/extra"  # deprecated
+	then
+		extras=$(comma_join <"${__object:?}/parameter/extra")
+		requirement="${requirement}[${extras}]"
+	fi
 fi
+
+printf '%s\n' "${requirement}"

@@ -1,6 +1,6 @@
-#!/bin/sh
+#!/bin/sh -e
 #
-# 2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2022 Dennis Camera (cdist at dtnr.ch)
 #
 # This file is part of cdist.
 #
@@ -17,32 +17,37 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
-#
-# Development supported by Local AG (www.local.ch)
-#
 
-nameparam="$__object/parameter/name"
-if [ -f "$nameparam" ]; then
-    name=$(cat "$nameparam")
-else
-    name="$__object_id"
-fi
+comma_join() { sed -e :a -e '$!N' -e 's/\n/,/' -e ta; }
+first_arg() { printf '%s\n' "$1"; }
+shebang_of() { sed -n -e '1s/^#! *//p' "$1"; }
 
-pipparam="$__object/parameter/pip"
-if [ -f "$pipparam" ]; then
-    pip=$(cat "$pipparam")
-else
-    pip="$( "$__type_explorer/pip" )"
-fi
+pip=$("${__type_explorer:?}/pip")
 
-# If there is no pip, it may get created from somebody else.
-# If it will be created, there is probably no package installed.
-if ! command -v "$pip" >/dev/null 2>&1; then
-    echo absent
+if test -z "${pip}"
+then
+	# no pip, no packages
+	echo absent
+	exit
+elif test -x "${pip}"
+then
+	# we have a pip executable -> extract python interpreter
+	pyinterp=$(shebang_of "${pip}")
 else
-    if "$pip" list --format=freeze --disable-pip-version-check | grep -iq "^$name=="; then
-        echo present
-    else
-        echo absent
-    fi
+	pyinterp=$(expr "${pip}" : '\(.*\)-m *pip')
 fi
+test -n "${pyinterp}" || {
+	printf 'Could not determine the matching Python interpreter for %s\n' \
+		"${pip}" >&2
+	exit 1
+}
+
+# Execute the matching Python interpreter of pip.
+pip_python() { eval set -- "${pyinterp}" '"$@"'; "$@"; }
+
+requirement=$("${__type_explorer:?}/requirement")
+
+pip_python -c '__import__("pkg_resources").require(__import__("sys").argv[1])' \
+	"${requirement}" >/dev/null 2>&1 \
+&& echo present \
+|| echo absent

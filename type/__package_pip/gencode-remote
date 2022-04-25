@@ -1,8 +1,6 @@
 #!/bin/sh -e
 #
-# 2012 Nico Schottelius (nico-cdist at schottelius.org)
-# 2016 Darko Poljak (darko.poljak at gmail.com)
-# 2021 Matthias Stecher (matthiasstecher at gmx.de)
+# 2022 Dennis Camera (cdist at dtnr.ch)
 #
 # This file is part of cdist.
 #
@@ -19,76 +17,47 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
-#
-# Development supported by Local AG (www.local.ch)
-#
 
-state_is=$(cat "$__object/explorer/state")
-state_should="$(cat "$__object/parameter/state")"
+quote() { printf '%s\n' "$*" | sed "s/'/'\\\\''/g;1s/^/'/;\$s/\$/'/"; }
 
-# short circuit if state is the same and no extras to install
-[ "$state_is" = "$state_should" ] && ! [ -s "$__object/explorer/extras" ] \
-    && exit 0
+state_is=$(cat "${__object:?}/explorer/state")
+state_should=$(cat "${__object:?}/parameter/state")
 
-requirementparam="$__object/parameter/requirement"
-nameparam="$__object/parameter/name"
-if [ -f "$requirementparam" ]; then
-    requirement=$(cat "$requirementparam")
-elif [ -f "$nameparam" ]; then
-    requirement=$(cat "$nameparam")
-else
-    requirement="$__object_id"
-fi
+# short circuit if state is the same and no further extras to install
+test "${state_is}" != "${state_should}" || exit 0
 
-pipparam="$__object/parameter/pip"
-if [ -f "$pipparam" ]; then
-    pip=$(cat "$pipparam")
-else
-    pip="$( cat "$__object/explorer/pip" )"
-    if [ -z "$pip" ]
-    then
-        echo 'pip not found in path' >&2
-        exit 1
-    fi
-fi
+requirement=$(cat "${__object:?}/explorer/requirement")
 
-runasparam="$__object/parameter/runas"
-if [ -f "$runasparam" ]
-then
-    runas=$(cat "$runasparam")
-else
-    runas=""
-fi
+pip=$(cat "${__object:?}/explorer/pip")
+test -n "${pip}" || {
+	echo 'Could not find pip.' >&2
+	echo 'Please make sure that pip is installed or specify the command to use in --pip.' >&2
+	exit 1
+}
 
-case "$state_should" in
-    present)
-        if [ -s "$__object/explorer/extras" ]
-        then
-            # all extras are passed to pip in a comma-separated list in the name
-            # sed loops through all input lines and add commas between them
-            extras="$(sed ':a; $!N; s/\n/,/; ta' "$__object/explorer/extras")"
-            requirement="${requirement}[${extras}]"
-        fi
+runas=$(cat "${__object:?}/parameter/runas" 2>/dev/null || :)
 
-        if [ "$runas" ]
-        then
-            echo "su -c \"$pip install -q '$requirement'\" $runas"
-        else
-            echo "$pip install -q '$requirement'"
-        fi
-        echo "installed" >> "$__messages_out"
-    ;;
-    absent)
-        if [ "$runas" ]
-        then
-            echo "su -c \"$pip uninstall -q -y '$requirement'\" $runas"
-        else
-            echo "$pip uninstall -q -y '$requirement'"
-        fi
-        echo "removed" >> "$__messages_out"
-    ;;
-    *)
-        echo "Unknown state: $state_should" >&2
-        exit 1
-    ;;
+do_cmd() {
+	if test -n "${runas}"
+	then
+		printf 'su -l %s -c %s\n' "$(quote "${runas}")" "$(quote "$1")"
+	else
+		printf '%s\n' "$1"
+	fi
+}
+
+case ${state_should}
+in
+	(present)
+		do_cmd "${pip} install -q $(quote "${requirement}")"
+		echo installed >> "${__messages_out:?}"
+		;;
+	(absent)
+		do_cmd "${pip} uninstall -q -y $(quote "${requirement}")"
+		echo removed >> "${__messages_out:?}"
+		;;
+	(*)
+		printf 'Invalid --state: %s\n' "${state_should}" >&2
+		exit 1
+		;;
 esac
