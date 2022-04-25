@@ -17,11 +17,17 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
-# Prints the line matching $__object_name in --user’s current crontab.
+# Returns the current state of the cron variable.
 #
 
-name=${__object_name:?}
 user=$(cat "${__object:?}/parameter/user")
+
+if test -f "${__object:?}/parameter/name"
+then
+	read -r var_name <"${__object:?}/parameter/name"
+else
+	var_name=${__object_id:?}
+fi
 
 crontab_list() {
 	case $(uname -s)
@@ -31,10 +37,37 @@ crontab_list() {
 		(*)
 			crontab -u "${user}" -l 2>/dev/null ;;
 	esac
+
 }
 
-grep_suffix() {
-	awk -v suffix="$1" 'substr($0, length($0) - length(suffix) + 1) == suffix'
+grep_var() {
+	awk -v var_name="$1" '
+	function unquote(s,    qc) {
+		if (s ~ /^["'\'']/) {
+			qc = substr(s, 1, 1)
+			match(v, "^"qc"[^"qc"]*"qc)
+			return substr(v, RSTART+1, RLENGTH-2)
+		} else {
+			return s
+		}
+	}
+
+	index($0, var_name) == 1 && match(substr($0, length(var_name)+1), /^ *= */) {
+		print unquote(substr($0, length(var_name)+RSTART+RLENGTH))
+	}'
 }
 
-crontab_list | grep -v '^[[:blank:]]*#' | grep_suffix " # ${name}"
+value_is=$(crontab_list | grep_var "${var_name}")
+
+if test -z "${value_is}"
+then
+	echo absent
+elif
+	# NOTE: only produce "different" state if --value is set
+	value_should=$(cat "${__object:?}/parameter/value" 2>/dev/null) \
+	&& test "${value_is}" != "${value_should}"
+then
+	echo different
+else
+	echo present
+fi
