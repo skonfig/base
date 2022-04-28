@@ -20,6 +20,16 @@ Most OSes provide a package to get a default pip installation, so it's usually
 sufficient to add ``__package python3-pip`` to your manifest.
 
 
+**Caveat:** This type can only do proper state detection if the
+``--requirement`` is the name of a package in the PyPI index.
+If it is a URL, this type can only check if the package is already install but
+not e.g. switch a Git branch, because the installed branch is not tracked by the
+package manager.
+Furthermore, if a URL does not start with ``[packagename]@``, the type will fall
+back to assume the ``__object_id`` contains the package name what would be
+installed by the given ``--requirement``.
+
+
 REQUIRED PARAMETERS
 -------------------
 None
