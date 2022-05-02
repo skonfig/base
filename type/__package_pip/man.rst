@@ -92,7 +92,7 @@ EXAMPLES
     __package_pip mautrix-telegram --requirement mautrix-telegram[all]
 
     # Install package from URL
-    __package_pip mkosi --requirement mkosi@git+https://github.com/systemd/mkosi.git    
+    __package_pip mkosi --requirement mkosi@git+https://github.com/systemd/mkosi.git
 
 
 SEE ALSO
