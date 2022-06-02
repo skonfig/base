@@ -45,6 +45,9 @@ state
         The unit is stopped, disabled and uninstalled. If the unit was masked,
         the mask is removed.
 
+drop-in
+    Create drop-in file for existing unit.
+
 BOOLEAN PARAMETERS
 ------------------
 
