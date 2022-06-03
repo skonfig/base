@@ -51,7 +51,24 @@ if [ "${enablement_state}" = "masked" ]; then
     unitfile_state="absent"
 fi
 
-__config_file "/etc/systemd/system/${name}" \
+unitfile_dir="/etc/systemd/system"
+
+if [ -f "${__object}/parameter/drop-in" ]; then
+    unitfile_dir="${unitfile_dir}/${name}.d"
+
+    __directory "${unitfile_dir}" \
+        --owner root \
+        --group root \
+        --mode 755
+
+    export require="__directory/${unitfile_dir}"
+
+    unitfile="${unitfile_dir}/cdist.conf"
+else
+    unitfile="${unitfile_dir}/${name}"
+fi
+
+__file "${unitfile}" \
     --mode 644 \
     --onchange "systemctl daemon-reload" \
     --source "${source}" \
