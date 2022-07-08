@@ -24,7 +24,7 @@ arch
    set this if you need to force and specific arch (ubuntu specific)
 
 signed-by
-   provide a GPG key fingerprint or keyring path for signature checks
+   provide a GPG key fingerprint or keyring path for signature checks. May be repeated.
 
 state
    'present' or 'absent', defaults to 'present'
@@ -68,6 +68,7 @@ EXAMPLES
 AUTHORS
 -------
 Steven Armstrong <steven-cdist--@--armstrong.cc>
+Daniel Fancsali <fancsali--@--gmail.com>
 
 
 COPYING

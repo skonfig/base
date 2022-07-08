@@ -31,11 +31,11 @@ fi
 component="$(cat "$__object/parameter/component")"
 
 if [ -f "$__object/parameter/arch" ]; then
-   options="arch=$(cat "$__object/parameter/arch")"
+	forcedarch="arch=$(cat "$__object/parameter/arch")"
 fi
 
 if [ -f "$__object/parameter/signed-by" ]; then
-   options="$options signed-by=$(cat "$__object/parameter/signed-by")"
+   signed_by="${signed_by:${signed_by} }signed-by=$(cat "$__object/parameter/signed-by")"
 fi
 
 if [ "$options" ]; then
