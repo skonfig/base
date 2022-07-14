@@ -23,9 +23,6 @@ OPTIONAL PARAMETERS
 arch
    set this if you need to force and specific arch (ubuntu specific)
 
-signed-by
-   provide a GPG key fingerprint or keyring path for signature checks. May be repeated.
-
 state
    'present' or 'absent', defaults to 'present'
 
@@ -35,6 +32,12 @@ distribution
 
 component
    space delimited list of components to enable. Defaults to an empty string.
+
+
+OPTIONAL MULTIPLE PARAMETERS
+----------------------------
+signed-by
+   provide a GPG key fingerprint or keyring path for signature checks. May be repeated.
 
 
 BOOLEAN PARAMETERS
