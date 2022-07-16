@@ -37,7 +37,7 @@ component
 OPTIONAL MULTIPLE PARAMETERS
 ----------------------------
 signed-by
-   provide a GPG key fingerprint or keyring path for signature checks. May be repeated.
+   provide a GPG key fingerprint or keyring path for signature checks.
 
 
 BOOLEAN PARAMETERS
