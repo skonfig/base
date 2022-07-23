@@ -3,22 +3,24 @@ cdist-type__apt_backports(7)
 
 NAME
 ----
-cdist-type__apt_backports - Install backports
+cdist-type__apt_backports - Configure the backports APT repository
 
 
 DESCRIPTION
 -----------
-This singleton type installs backports for the current OS release.
-It aborts if backports are not supported for the specified OS or
-no version codename could be fetched (like Debian unstable).
 
-The package index will be automatically updated if required.
+This singleton type manages the backports repository for the current OS
+release and updates the package index if required.
 
-It supports backports from following OSes:
+It supports backports for the following OSes:
 
 - Debian
 - Devuan
 - Ubuntu
+
+NB: The type aborts if no distribuition codename could be detected. This is
+common for unstable releases, but there is no backports repository for these
+anyway.
 
 
 REQUIRED PARAMETERS
@@ -29,16 +31,15 @@ None.
 OPTIONAL PARAMETERS
 -------------------
 state
-    Represents the state of the backports repository. ``present`` or
-    ``absent``, defaults to ``present``.
+   The should state of the backports repository. ``present`` or
+   ``absent``.
 
-    Will be directly passed to :strong:`cdist-type__apt_source`\ (7).
+   Defaults to: ``present``
 
 mirror
-    The mirror to fetch the backports from. Will defaults to the generic
-    mirror of the current OS.
+   The mirror to fetch the backports from.
 
-    Will be directly passed to :strong:`cdist-type__apt_source`\ (7).
+   Defaults to the generic mirror of the current OS.
 
 
 BOOLEAN PARAMETERS
@@ -67,38 +68,21 @@ EXAMPLES
         --target-release buster-backports
 
 
-ABORTS
-------
-Aborts if the detected os is not Debian.
-
-Aborts if no distribuition codename could be detected. This is common for the
-unstable distribution, but there is no backports repository for it already.
-
-
-CAVEATS
--------
-For Ubuntu, it setup all componenents for the backports repository: ``main``,
-``restricted``, ``universe`` and ``multiverse``. The user may not want to
-install proprietary packages, which will only be installed if the user
-explicitly uses the backports target-release. The user may change this behavior
-to install backports packages without the need of explicitly select it.
-
-
 SEE ALSO
 --------
-`Official Debian Backports site <https://backports.debian.org/>`_
-
-:strong:`cdist-type__apt_source`\ (7)
+- `Official Debian Backports site <https://backports.debian.org/>`_
+- :strong:`cdist-type__apt_source`\ (7)
 
 
 AUTHORS
 -------
-Matthias Stecher <matthiasstecher at gmx.de>
+Matthias Stecher <matthiasstecher--@--gmx.de>,
+Dennis Camera <cdist--@--dtnr.ch>
 
 
 COPYING
 -------
-Copyright \(C) 2020 Matthias Stecher. You can redistribute it
-and/or modify it under the terms of the GNU General Public License as
-published by the Free Software Foundation, either version 3 of the
-License, or (at your option) any later version.
+Copyright \(C) 2020 Matthias Stecher, 2022 Dennis Camera.
+You can redistribute it and/or modify it under the terms of the GNU General
+Public License as published by the Free Software Foundation, either version 3 of
+the License, or (at your option) any later version.
