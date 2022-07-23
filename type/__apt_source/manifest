@@ -35,7 +35,7 @@ if [ -f "$__object/parameter/arch" ]; then
 fi
 
 if [ -f "$__object/parameter/signed-by" ]; then
-   signed_by="${signed_by:${signed_by} }signed-by=$(cat "$__object/parameter/signed-by")"
+   signed_by="${signed_by:${signed_by} }signed-by=$(sed -e ':a' -e '$!N' -e 's/\n/,/' -e 'ta' "$__object/parameter/signed-by")"
 fi
 
 if [ "$options" ]; then
