@@ -30,6 +30,13 @@ None.
 
 OPTIONAL PARAMETERS
 -------------------
+component
+   The components to use for the backports repository.
+
+   Can be used multiple times to specify more than one component.
+
+   Defaults to: ``main``
+
 state
    The should state of the backports repository. ``present`` or
    ``absent``.
