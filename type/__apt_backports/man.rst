@@ -1,5 +1,5 @@
-cdist-type__debian_backports(7)
-===============================
+cdist-type__apt_backports(7)
+============================
 
 NAME
 ----
