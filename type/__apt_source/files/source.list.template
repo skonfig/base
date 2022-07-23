@@ -2,14 +2,17 @@
 set -u
 
 entry="$uri $distribution $component"
+options="$forcedarch $signed_by"
+options=${options## }; options=${options%% }
+
 cat << DONE
 # Created by cdist ${__type##*/}
 # Do not change. Changes will be overwritten.
 #
 
 # $name
-deb ${forcedarch} $entry
+deb ${options:+[${options}] }$entry
 DONE
 if [ -f "$__object/parameter/include-src" ]; then
-   echo "deb-src $entry"
+   echo "deb-src ${signed_by:+[${signed_by}] }$entry"
 fi

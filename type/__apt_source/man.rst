@@ -34,6 +34,12 @@ component
    space delimited list of components to enable. Defaults to an empty string.
 
 
+OPTIONAL MULTIPLE PARAMETERS
+----------------------------
+signed-by
+   provide a GPG key fingerprint or keyring path for signature checks.
+
+
 BOOLEAN PARAMETERS
 ------------------
 include-src
@@ -56,10 +62,16 @@ EXAMPLES
        --uri http://archive.canonical.com/ \
        --component partner --state present
 
+    __apt_source goaccess \
+       --uri http://deb.goaccess.io/ \
+       --component main \
+       --signed-by C03B48887D5E56B046715D3297BD1A0133449C3D
+
 
 AUTHORS
 -------
 Steven Armstrong <steven-cdist--@--armstrong.cc>
+Daniel Fancsali <fancsali--@--gmail.com>
 
 
 COPYING
