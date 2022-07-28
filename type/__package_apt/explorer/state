@@ -1,7 +1,7 @@
 #!/bin/sh -e
 #
 # 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
-# 2021 Dennis Camera (cdist at dtnr.ch)
+# 2021-2022 Dennis Camera (cdist at dtnr.ch)
 #
 # This file is part of cdist.
 #
@@ -29,7 +29,7 @@ breify() {
 }
 
 
-if test -f "${__object}/parameter/name"
+if test -f "${__object:?}/parameter/name"
 then
 	name=$(cat "${__object:?}/parameter/name")
 else
@@ -55,13 +55,69 @@ do
 			# NOTE: instead of using apt-mark(8) parse the extended_states file
 			#       directly. apt-mark is sloow and didn't have a stable
 			#       interface in older Debian versions.
-			is_auto=$(sed -n -e '/^Package: '$(breify "${name}")'$/,/^$/!d' -e 's/^Auto-Installed: *//p' "${extended_states_file}")
+			is_auto=$(sed -n \
+				-e '/^Package: '"$(breify "${name}")"'$/,/^$/!d' \
+				-e 's/^Auto-Installed: *//p' \
+				"${extended_states_file}")
 		fi
 
 		# NOTE: older versions don't have apt-mark -> all packages are manual
 		auto_word=$(test $((is_auto)) -ne 0 && echo auto || echo manual)
 
-		echo "present ${auto_word} ${pkg} ${version}"
+		state='present'
+		if test -s "${__object:?}/parameter/target-release"
+		then
+			# check if the target release is correct
+
+			read -r target_release <"${__object:?}/parameter/target-release"
+			resolve_suite() {
+				if (set -- /var/lib/apt/lists/*_InRelease && test -f "$1")
+				then
+					# only if any InRelease files exist.
+					awk -v release="$1" -F ': ' '
+					FNR == 1 { for (k in v) delete v[k] }
+					$1 == "Suite" || $1 == "Codename" {
+					  v[$1] = $2
+					  if ($2 == release) exit (f=1)
+					}
+					END { if (f) print v["Suite"] }
+					' /var/lib/apt/lists/*_InRelease
+				fi
+			}
+
+			releases_is=$(
+				awk -v pkg_name="${pkg}" '
+				/^[^ ]/ { p = ($0 == pkg_name ":") }
+				p && /^  [^ ]/ {
+				  match($0, /^  [^:]+:/)
+				  s = substr($0, RSTART+2, RLENGTH-3)
+				}
+				p && s == "Version table" && /^ *\*\*\* / {
+				  while (getline > 0 && /^        [0-9]/ && NF > 2)  # filter repo lines
+				    print substr($3, 1, index($3, "/") - 1)
+				}
+				' <<-EOF
+				$(LC_ALL=C apt-cache policy "${pkg}")
+				EOF
+				)
+
+			if test -n "${releases_is}" \
+				&& ! printf '%s\n' "${releases_is}" \
+					 | while read -r _ln
+					   do
+						   resolve_suite "${_ln}"
+					   done \
+					 | grep -qxF "$(resolve_suite "${target_release}")"
+			then
+				# state=wrong-release iff the currently installed version of the
+				# package is available in at least one of the configured APT
+				# repositories, but none of them match the release given in
+				# --target-release (normalised by Suite name).
+				state='wrong-release'
+			fi
+		fi
+
+		echo "${state} ${auto_word} ${pkg} ${version}"
 		exit 0
 	fi
 done
