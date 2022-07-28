@@ -2,8 +2,14 @@
 set -u
 
 entry="$uri $distribution $component"
-options="$forcedarch $signed_by"
-options=${options## }; options=${options%% }
+if test -n "${forcedarch-}"
+then
+   options=${options-}${options:+ }${forcedarch}
+fi
+if test -n "${signed_by-}"
+then
+   options=${options-}${options:+ }${signed_by}
+fi
 
 cat << DONE
 # Created by cdist ${__type##*/}
