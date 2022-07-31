@@ -51,4 +51,17 @@ then
 		{
 			printf "set %s %s %s %s\n", $1, $2, $3, $4
 		}' "${filename}" >>"${__messages_out:?}"
+
+	if test -f "${__object:?}/parameter/reconfigure"
+	then
+		awk '{print $1}' "${filename}" | sort | uniq | while read -r package
+		do
+			echo "DEBIAN_FRONTEND=noninteractive dpkg-reconfigure ${package} || true"
+		done
+	fi
+
+	if test -f "${__object:?}/parameter/onchange"
+	then
+		cat "${__object:?}/parameter/onchange"
+	fi
 fi
