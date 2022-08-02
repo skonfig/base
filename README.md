@@ -1,17 +1,17 @@
-# cdist-conf
+# skonfig base set
 
-This is the [community maintained](https://github.com/cdist-community)
-fork of [ungleich](https://github.com/ungleich)'s [cdist](https://github.com/ungleich/cdist)
-(after [f061fb1](https://github.com/ungleich/cdist/commit/f061fb168ddacc894cb6e9882ff5c8ba002fadd8)).
+This is the **base set** of explorers and types for use with the [skonfig](https://skonfig.li) configuration management system.
+Most things require it to function.
 
 Work is mostly split between three main repositories:
 
-* [cdist-core](https://github.com/cdist-community/cdist-core) - implementation of the **cdist core** and quick **getting started** bits.
-* **cdist-conf** - **essential** explorers and types (this repository).
-* [cdist-extra](https://github.com/cdist-community/cdist-extra) - **non-essential** explorers, types, scripts, tools etc.
+* [skonfig](https://github.com/skonfig/skonfig) - implementation of the **skonfig tool** and quick **getting started** bits,
+* **base** - **base** explorers and types,
+* [extra](https://github.com/skonfig/extra) - **extra** types (community contributions).
 
-## Essential vs non-essential?
+## base vs extra?
 
-Explorers and types, which are related to changing state of the operating
-system and are not strictly related to some specific piece of software, are
-considered essential.
+Explorers and types which are related to changing state of the operating
+system or core components of it and are not strictly related to some specific
+piece of software, are considered base.
+Furthermore, the quality requirements for inclusion in base are higher than for extra.
