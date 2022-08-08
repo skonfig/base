@@ -1,6 +1,6 @@
 #!/bin/sh -e
 #
-# 2020 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
+# 2020,2022 Dennis Camera (skonfig at dtnr.ch)
 #
 # This file is part of cdist.
 #
@@ -37,6 +37,9 @@ in
 		fi
 		;;
 	(freebsd|netbsd|openbsd)
+		# whitelist
+		;;
+	(macosx)
 		# whitelist
 		;;
 	(openbmc-phosphor)
