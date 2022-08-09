@@ -172,4 +172,8 @@ in
    alpine)
        cat /etc/alpine-release
    ;;
+   sortix)
+      rc_getvar /etc/sortix-release VERSION_ID
+      # alternatively: kernel release `uname -r`
+   ;;
 esac

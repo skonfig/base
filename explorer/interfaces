@@ -1,6 +1,8 @@
 #!/bin/sh -e
 #
+# 2012 Sébastien Gross <seb•ɑƬ•chezwam•ɖɵʈ•org>
 # 2019 Ander Punnar (ander-at-kvlt-dot-ee)
+# 2022 Dennis Camera (skonfig at dtnr.ch)
 #
 # This file is part of cdist.
 #
@@ -23,6 +25,15 @@ then
 	ip -o link show | sed -n 's/^[0-9]\+: \(.\+\): <.*/\1/p'
 elif command -v ifconfig >/dev/null
 then
-	ifconfig -a | sed -n -E 's/^(.*)(:[[:space:]]*flags=|Link encap).*/\1/p'
+	case $(uname -s)
+	in
+		(Sortix)
+			ifconfig | sed -n -e 's/^\([^[:space:]]*\):$/\1/p'
+			;;
+		(*)
+			ifconfig -a \
+			| sed -n -E 's/^(.*)(:[[:space:]]*flags=|Link encap).*/\1/p'
+			;;
+	esac
 fi \
- | sort -u
+| sort -u

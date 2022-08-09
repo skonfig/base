@@ -3,7 +3,7 @@
 # 2014 Daniel Heule  (hda at sfs.biz)
 # 2014 Thomas Oettli (otho at sfs.biz)
 # Copyright 2017, Philippe Gregoire <pg@pgregoire.xyz>
-# 2020 Dennis Camera <dennis.camera at ssrq-sds-fds.ch>
+# 2020,2022 Dennis Camera (skonfig at dtnr.ch)
 #
 # This file is part of cdist.
 #
@@ -27,11 +27,13 @@
 str2bytes() {
 	awk -F' ' '
 	$2 ==   "B" || !$2 { print $1 }
-	$2 ==  "kB" { printf "%.f\n", ($1 * 1000) }
+	$2 ==  "kB" ||
+	$2 ==  "KB" { printf "%.f\n", ($1 * 1000) }
 	$2 ==  "MB" { printf "%.f\n", ($1 * 1000 * 1000) }
 	$2 ==  "GB" { printf "%.f\n", ($1 * 1000 * 1000 * 1000) }
 	$2 ==  "TB" { printf "%.f\n", ($1 * 1000 * 1000 * 1000 * 1000) }
-	$2 == "kiB" { printf "%.f\n", ($1 * 1024) }
+	$2 == "kiB" ||
+	$2 == "KiB" { printf "%.f\n", ($1 * 1024) }
 	$2 == "MiB" { printf "%.f\n", ($1 * 1024 * 1024) }
 	$2 == "GiB" { printf "%.f\n", ($1 * 1024 * 1024 * 1024) }
 	$2 == "TiB" { printf "%.f\n", ($1 * 1024 * 1024 * 1024 * 1024) }'
@@ -39,6 +41,10 @@ str2bytes() {
 
 bytes2kib() {
 	awk '$0 > 0 { printf "%.f\n", ($0 / 1024) }'
+}
+
+sum_lines() {
+	awk '{ sum += $0 } END { printf "%.f\n", sum }'
 }
 
 
@@ -82,6 +88,35 @@ in
 			awk -F ': +' '$1 == "MemTotal" { sub(/B$/, "iB", $2); print $2 }' /proc/meminfo \
 			| str2bytes \
 			| bytes2kib
+		fi
+		;;
+	(Sortix)
+		if command -v memstat >/dev/null 2>&1
+		then
+			memstat \
+			| awk '
+			  NR==1 && /^memory usage: / {
+				  # old format
+				  match($0, /([0-9]+ +[A-Za-z]{0,2}B +)+total/)
+				  total = substr($0, RSTART, RLENGTH)
+				  sub(/ +total$/, "", total)
+				  np = split(total, parts, /B +/)
+				  sub(/B$/, "", parts[np])
+				  for (i = 1; i <= np; i++)
+					  print parts[i] "B"
+				  exit
+			  }
+			  $2 == "total" {
+				  if ($1 ~ /B$/)
+					  sub(/B$/, "", $1)
+				  else
+					  sub(/.$/, " &iB", $1)
+				  print $1
+			  }
+			  ' \
+			| str2bytes \
+			| bytes2kib \
+			| sum_lines
 		fi
 		;;
 	(*)

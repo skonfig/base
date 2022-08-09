@@ -2,6 +2,7 @@
 #
 # 2010-2011 Nico Schottelius (nico-cdist at schottelius.org)
 # Copyright 2017, Philippe Gregoire <pg@pgregoire.xyz>
+# 2019-2022 Dennis Camera (skonfig at dtnr.ch)
 #
 # This file is part of cdist.
 #
@@ -141,6 +142,16 @@ case "$uname_s" in
       exit 0
    ;;
 esac
+
+# Hobby OSes
+
+if [ -f /etc/sortix-release ] || [ "${uname_s}" = 'Sortix' ]; then
+   echo sortix
+   exit 0
+fi
+
+
+# Generic os-release file check
 
 if [ -f /etc/os-release ]; then
    # after sles15, suse don't provide an /etc/SuSE-release anymore, but there is almost no difference between sles and opensuse leap, so call it suse
