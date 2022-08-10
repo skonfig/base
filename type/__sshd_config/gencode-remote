@@ -20,10 +20,6 @@
 
 joinlines() { sed -n -e H -e "\${x;s/^\\n//;s/\\n/${1:?}/g;p;}"; }
 
-version_ge() {
-	test "$(printf '%s\n' "$1" "$2" | sort -t. -n -k1 -k2 -k3 | head -n1)" = "$2"
-}
-
 state_is=$(cat "${__object:?}/explorer/state")
 state_should=$(cat "${__object:?}/parameter/state")
 
@@ -47,25 +43,7 @@ in
 		;;
 esac
 
-if test -s "${__object:?}/parameter/file"
-then
-	sshd_config_file=$(cat "${__object:?}/parameter/file")
-else
-	case $(cat "${__global:?}/explorer/os")
-	in
-		(macosx)
-			if version_ge "$(cat "${global:?}/explorer/os_version")" 10.11
-			then
-				sshd_config_file='/etc/ssh/sshd_config'
-			else
-				sshd_config_file='/etc/sshd_config'
-			fi
-			;;
-		(*)
-			sshd_config_file='/etc/ssh/sshd_config'
-			;;
-	esac
-fi
+sshd_config_file=$(cat "${__object:?}/explorer/config_file")
 
 quote() { printf "'%s'" "$(printf '%s' "$*" | sed -e "s/'/'\\\\''/g")"; }
 drop_awk_comments() { quote "$(sed '/^[[:blank:]]*#.*$/d;/^$/d' "$@")"; }
