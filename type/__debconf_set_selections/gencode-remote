@@ -54,10 +54,11 @@ then
 
 	if test -f "${__object:?}/parameter/reconfigure"
 	then
-		awk '{print $1}' "${filename}" | sort | uniq | while read -r package
-		do
-			echo "DEBIAN_FRONTEND=noninteractive dpkg-reconfigure ${package} || true"
-		done
+		awk '{ if (!m[$1]++) print $1 }' "${filename}" \
+		| while read -r package
+		  do
+			  echo "DEBIAN_FRONTEND=noninteractive dpkg-reconfigure ${package} || true"
+		  done
 	fi
 
 	if test -f "${__object:?}/parameter/onchange"
