@@ -1,6 +1,6 @@
 #!/bin/sh -e
 #
-# 2020 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
+# 2020,2022 Dennis Camera (skonfig at dtnr.ch)
 #
 # This file is part of cdist.
 #
@@ -70,7 +70,7 @@ make_conn_spec() {
 	unset _match_file
 }
 
-sshd_config_file=$(cat "${__object:?}/parameter/file")
+sshd_config_file=$("${__type_explorer:?}/config_file")
 state_should=$(cat "${__object:?}/parameter/state")
 
 if test -s "${__object:?}/parameter/option"
