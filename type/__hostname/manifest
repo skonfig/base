@@ -56,7 +56,7 @@ fi
 
 case ${os}
 in
-    (alpine|debian|devuan|ubuntu|void)
+    (alpine|debian|devuan|sortix|ubuntu|void)
         echo "${name_should}" | __file /etc/hostname --source -
         ;;
     (archlinux)
