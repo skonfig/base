@@ -3,7 +3,7 @@
 # 2012-2016 Steven Armstrong (steven-cdist at armstrong.cc)
 # 2016 Carlos Ortigoza (carlos.ortigoza at ungleich.ch)
 # 2016 Nico Schottelius (nico.schottelius at ungleich.ch)
-# 2020 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
+# 2020,2022 Dennis Camera (skonfig at dtnr.ch)
 #
 # This file is part of cdist.
 #
@@ -25,18 +25,19 @@
 #
 
 version_ge() {
-    awk -F '[^0-9.]' -v target="${1:?}" '
-    function max(x, y) { return x > y ? x : y }
-    BEGIN {
-        getline
-        nx = split($1, x, ".")
-        ny = split(target, y, ".")
-        for (i = 1; i <= max(nx, ny); ++i) {
-            diff = int(x[i]) - int(y[i])
-            if (diff == 0) continue
-            exit (diff < 0)
-        }
-    }'
+	# usage: version_ge version_is min_version_expected
+	#
+	# compares two version numbers (up to three numeric components separated
+	# with dots)
+	# returns 0 if `version_is` >= `min_version_expected`, 1 otherwise.
+	#
+	# NOTES: if the lowest value of the two version numbers is equal to
+	#        `min_version_expected`, `version_is` must be the same or larger.
+	#        `-k n,n` instead of `-k n` is required for some sort(1)s.
+	printf '%s\n' "$1" "$2" \
+	| sort -t '.' -n -k 1,1 -k 2,2 -k 3,3 \
+	| head -1 \
+	| grep -qxF "$2"
 }
 
 
@@ -56,7 +57,8 @@ os=$(cat "$__global/explorer/os")
 case $os
 in
     debian)
-        if version_ge 4 <"${__global}/explorer/os_version"
+        os_version=$(cat "${__global:?}/explorer/os_version")
+        if version_ge "${os_version}" 4
         then
             # Debian 4 (etch) and later
             locale_conf="/etc/default/locale"
@@ -68,7 +70,8 @@ in
         locale_conf="/etc/default/locale"
         ;;
     ubuntu)
-        if version_ge 6.10 <"${__global}/explorer/os_version"
+        os_version=$(cat "${__global:?}/explorer/os_version")
+        if version_ge "${os_version}" 6.10
         then
             # Ubuntu 6.10 (edgy) and later
             locale_conf="/etc/default/locale"
@@ -81,8 +84,8 @@ in
         ;;
     centos|redhat|scientific)
         # shellcheck source=/dev/null
-        version_id=$(. "${__global}/explorer/os_release" && echo "${VERSION_ID:-0}")
-        if echo "${version_id}" | version_ge 7
+        version_id=$(. "${__global:?}/explorer/os_release" && echo "${VERSION_ID:-0}")
+        if version_ge "${version_id}" 7
         then
             locale_conf="/etc/locale.conf"
         else
@@ -91,8 +94,8 @@ in
         ;;
     fedora)
         # shellcheck source=/dev/null
-        version_id=$(. "${__global}/explorer/os_release" && echo "${VERSION_ID:-0}")
-        if echo "${version_id}" | version_ge 18
+        version_id=$(. "${__global:?}/explorer/os_release" && echo "${VERSION_ID:-0}")
+        if version_ge "${version_id}" 18
         then
             locale_conf="/etc/locale.conf"
             quote_value=false
@@ -101,7 +104,8 @@ in
         fi
         ;;
     gentoo)
-        case $(cat "${__global}/explorer/init")
+        init=$(cat "${__global:?}/explorer/init")
+        case ${init}
         in
             (*openrc*)
                 locale_conf="/etc/env.d/02locale"
@@ -121,13 +125,14 @@ in
 
         locale_conf="/etc/profile"
         quote_value=true
-        value="$(catval "${__object}/parameter/value"); export ${key}"
+        value="$(catval "${__object:?}/parameter/value"); export ${key}"
         ;;
     solaris)
         locale_conf="/etc/default/init"
         locale_conf_group="sys"
 
-        if version_ge 5.11 <"${__global}/explorer/os_version"
+        os_version=$(cat "${__global:?}/explorer/os_version")
+        if version_ge "${os_version}" 5.11
         then
             # mode on Oracle Solaris 11 is actually 0444,
             # but the write bit makes sense, IMO
