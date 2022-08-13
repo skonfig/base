@@ -22,13 +22,18 @@
 
 version_ge() {
 	# usage: version_ge version_is min_version_expected
-	# compares two version numbers (up to three components separated with dots)
-	# returns 0 if `version_is` is >= `min_version_expected`, 1 otherwise.
+	#
+	# compares two version numbers (up to three numeric components separated
+	# with dots)
+	# returns 0 if `version_is` >= `min_version_expected`, 1 otherwise.
 	#
 	# NOTES: if the lowest value of the two version numbers is equal to
 	#        `min_version_expected`, `version_is` must be the same or larger.
 	#        `-k n,n` instead of `-k n` is required for some sort(1)s.
-	test "$(printf '%s\n' "$1" "$2" | sort -t. -n -k 1,1 -k 2,2 -k 3,3 | head -n1)" = "$2"
+	printf '%s\n' "$1" "$2" \
+	| sort -t '.' -n -k 1,1 -k 2,2 -k 3,3 \
+	| head -1 \
+	| grep -qxF "$2"
 }
 
 if test -s "${__object:?}/parameter/file"
