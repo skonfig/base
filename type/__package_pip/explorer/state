@@ -43,11 +43,41 @@ test -n "${pyinterp}" || {
 }
 
 # Execute the matching Python interpreter of pip.
-pip_python() { eval set -- "${pyinterp}" '"$@"'; "$@"; }
+# shellcheck disable=SC2120
+pip_python() { eval "set -- \"${pyinterp}\" \"\$@"\"; "$@"; }
 
-requirement=$("${__type_explorer:?}/requirement")
+REQUIREMENT=$("${__type_explorer:?}/requirement")
+export REQUIREMENT
 
-pip_python -c '__import__("pkg_resources").require(__import__("sys").argv[1])' \
-	"${requirement}" >/dev/null 2>&1 \
-&& echo present \
-|| echo absent
+pip_python <<CODE
+import pkg_resources
+import os
+import sys
+
+
+def check_requirement(r):
+    try:
+        pkg_resources.require(requirement)
+        return "present"
+    except pkg_resources.DistributionNotFound:
+        return "absent"
+
+
+def println(line, file):
+    file.write(line + "\n")
+
+
+requirement = os.environ["REQUIREMENT"]
+
+try:
+    println(check_requirement(requirement), sys.stdout)
+except pkg_resources.RequirementParseError:
+    # requirement is probably an URL, fall back to __object_id
+    requirement = os.environ["__object_id"]
+    println(check_requirement(requirement), sys.stdout)
+
+except pkg_resources.UnknownExtra as e:
+    # unknown extras are not acceptable
+    println(str(e), sys.stderr)
+    sys.exit(1)
+CODE
