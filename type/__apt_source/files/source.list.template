@@ -1,15 +1,9 @@
-#!/bin/sh
+#!/bin/sh -e
 set -u
 
 entry="$uri $distribution $component"
-if test -n "${forcedarch-}"
-then
-   options=${options-}${options:+ }${forcedarch}
-fi
-if test -n "${signed_by-}"
-then
-   options=${options-}${options:+ }${signed_by}
-fi
+options="${forcedarch-} ${signed_by-}"
+options=${options## }; options=${options%% } # Trim spaces from either end
 
 cat << DONE
 # Created by cdist ${__type##*/}
