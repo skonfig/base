@@ -35,11 +35,8 @@ if [ -f "$__object/parameter/arch" ]; then
 fi
 
 if [ -f "$__object/parameter/signed-by" ]; then
+   # Take all '--signed-by' parameter values present on separate lines and join them with a comma
    signed_by="signed-by=$(sed -e ':a' -e '$!N' -e 's/\n/,/' -e 'ta' "$__object/parameter/signed-by")"
-fi
-
-if [ "$options" ]; then
-    options="[$options]"
 fi
 
 # export variables for use in template
