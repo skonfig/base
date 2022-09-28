@@ -1,4 +1,4 @@
-#!/bin/sh -e -u
+#!/bin/sh -eu
 
 entry="$uri $distribution $component"
 options="${forcedarch-} ${signed_by-}"
