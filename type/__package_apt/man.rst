@@ -38,6 +38,11 @@ version
     The version of the package to install. Default is to install the version
     chosen by the local package manager.
 
+source
+    Source dpkg package to upload an install (instead of fetching
+    from the repositories). Dependencies will be collected and installed
+    from the usual sources though.
+
 
 BOOLEAN PARAMETERS
 ------------------

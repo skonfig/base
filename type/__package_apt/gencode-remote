@@ -60,11 +60,21 @@ aptget="DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes -o Dpkg::Options::=
 case ${state_should}
 in
     present)
-        if test -n "${version_should}" -a "${version_should}" != "${version_is}"
+        if [ -f "$__object/parameter/source" ]
+        then
+            source_path="$(cat "$__object/parameter/source")"
+            tempfile="$($__remote_exec $__target_host "mktemp -t cidst.XXXXX.${source_path##*/}")"
+
+            $__remote_copy "$source_path" "$__target_host:$tempfile"
+
+            echo "${aptget:?} $recommendsparam install $tempfile"
+        elif test -n "${version_should}" -a "${version_should}" != "${version_is}"
         then
             # other version should be installed
             name="${name}=${version_should}"
             aptget="${aptget:?} -o APT::Get::allow-downgrades=true"
+
+            echo "${aptget} ${recommendsparam} install ${target_release} '${name}'"
         elif test "${state_is}" = 'present'
         then
             if test "${auto_state}" = 'auto'
@@ -132,7 +142,6 @@ then
 fi
 EOF
 
-        echo "${aptget} ${recommendsparam} install ${target_release} '${name}'"
         echo 'installed' >>"${__messages_out:?}"
     ;;
     absent)
