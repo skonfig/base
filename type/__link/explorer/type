@@ -1,6 +1,7 @@
 #!/bin/sh
 #
 # 2013 Steven Armstrong (steven-cdist armstrong.cc)
+# 2023 Dennis Camera (dennis.camera at riiengineering.ch
 #
 # This file is part of cdist.
 #
@@ -23,10 +24,12 @@
 
 destination="/$__object_id"
 
-if [ ! -e "$destination" ]; then
-    echo none
-elif [ -h "$destination" ]; then
+# NOTE: Test for symlink first because a symlink can exist but point to a
+#       non-existing file, in which case `test -h` is 0 but `test -e` is 1.
+if [ -h "$destination" ]; then
     echo symlink
+elif [ ! -e "$destination" ]; then
+    echo none
 elif [ -f "$destination" ]; then
     type="$(cat "$__object/parameter/type")"
     case "$type" in
