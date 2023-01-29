@@ -1,7 +1,7 @@
-#!/bin/sh
+#!/bin/sh -e
 #
 # 2012-2014 Steven Armstrong (steven-cdist at armstrong.cc)
-# 2022 Dennis Camera (cdist at dtnr.ch)
+# 2023 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of cdist.
 #
@@ -19,15 +19,9 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
-destination="/$__object_id"
-type="$(cat "$__object/parameter/type")"
-source="$(cat "$__object/parameter/source")"
-
-# no destination? -> state is absent
-if [ ! -e "$destination" ]; then
-   echo absent
-   exit 0
-fi
+destination="/${__object_id:?}"
+type=$(cat "${__object:?}/parameter/type")
+source=$(cat "${__object:?}/parameter/source")
 
 _readlink() {
 	if command -v readlink >/dev/null 2>&1
@@ -48,11 +42,9 @@ _readlink() {
 	fi
 }
 
-destination_dir="${destination%/*}"
-
-case "$type" in
+case ${type}
+in
    symbolic)
-      cd "$destination_dir" || exit 1
       if [ -h "$destination" ]; then
          source_is=$(_readlink "${destination}")
          # ignore trailing slashes for comparison
@@ -66,28 +58,32 @@ case "$type" in
       fi
    ;;
    hard)
-      cd "$destination_dir" || exit 1
-      # check source relative to destination_dir
-      if [ ! -e "$source" ]; then
+      cd "${destination%/*}" || exit 1
+      # check source relative to destination dir
+      if [ ! -e "${source}" ]; then
          echo sourcemissing
+         exit 0
+      fi
+      if [ ! -e "${destination}" ]; then
+         echo absent
          exit 0
       fi
       # Currently not worth the effor to change it, stat is not defined by POSIX
       # and different OSes has different implementations for it.
       # shellcheck disable=SC2012
-      destination_inode=$(ls -i "$destination" | awk '{print $1}')
+      destination_inode=$(ls -i "${destination}" | awk '{print $1}')
       # Currently not worth the effor to change it, stat is not defined by POSIX
       # and different OSes has different implementations for it.
       # shellcheck disable=SC2012
-      source_inode=$(ls -i "$source" | awk '{print $1}')
-      if [ "$destination_inode" -eq "$source_inode" ]; then
+      source_inode=$(ls -i "${source}" | awk '{print $1}')
+      if [ "${destination_inode}" -eq "${source_inode}" ]; then
          echo present
       else
          echo absent
       fi
    ;;
    *)
-      echo "Unknown type: $type" >&2
+      echo "Unknown type: ${type}" >&2
       exit 1
    ;;
 esac
