@@ -3,7 +3,7 @@ cdist-type__mount(7)
 
 NAME
 ----
-cdit-type__mount - Manage filesystem mounts
+cdist-type__mount - Manage filesystem mounts
 
 
 DESCRIPTION

@@ -1,9 +1,9 @@
-cdist-type__package_akp(7)
+cdist-type__package_apk(7)
 ==========================
 
 NAME
 ----
-cdist-type__package_akp - Manage packages with akp
+cdist-type__package_apk - Manage packages with apk
 
 
 DESCRIPTION

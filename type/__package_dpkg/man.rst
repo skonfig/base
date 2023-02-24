@@ -35,12 +35,6 @@ purge-if-absent
     purged from the system (using `--purge`).
 
 
-EXPLORER
---------
-pkg_state
-    Returns the full package name if package is installed, empty otherwise.
-
-
 MESSAGES
 --------
 installed

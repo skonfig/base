@@ -18,7 +18,7 @@ editor
     Name or path of the editor to be selected.
     On systems other than Debian derivatives an absolute path is required.
 
-	It is permissible to omit this parameter if --state is absent.
+    It is permissible to omit this parameter if --state is absent.
 
 
 OPTIONAL PARAMETERS
@@ -51,11 +51,12 @@ This type depends upon the :strong:`sensible-editor`\ (1) script which
 is part of the sensible-utils package.
 
 Therefore, the following operating systems are supported:
-  * Debian 8 (jessie) or later
-  * Devuan
-  * Ubuntu 8.10 (intrepid) or later
-  * RHEL/CentOS 7 or later (EPEL repo required)
-  * Fedora 21 or later
+
+* Debian 8 (jessie) or later
+* Devuan
+* Ubuntu 8.10 (intrepid) or later
+* RHEL/CentOS 7 or later (EPEL repo required)
+* Fedora 21 or later
 
 Note: on old versions of Ubuntu the sensible-* utils are part of the
 debianutils package.

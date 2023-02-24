@@ -1,9 +1,9 @@
-cdist-type__package_pkg(7)
-==========================
+cdist-type__package_pkg_openbsd(7)
+==================================
 
 NAME
 ----
-cdist-type__package_pkg - Manage OpenBSD packages
+cdist-type__package_pkg_openbsd - Manage OpenBSD packages
 
 
 DESCRIPTION

@@ -14,14 +14,14 @@ attributes on the target.
 If the file already exists on the target, then if it is a:
 
 regular file, and state is:
-  present
-    replace it with the source file if they are not equal
-  exists
-    do nothing
+   present
+     replace it with the source file if they are not equal
+   exists
+     do nothing
 symlink
-  replace it with the source file or remove
+   replace it with the source file or remove
 directory
-  replace it with the source file
+   replace it with the source file
 
 One exception is that when state is pre-exists, an error is raised if
 the file would have been created otherwise (e.g. it is not present or
