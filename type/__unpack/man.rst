@@ -38,8 +38,8 @@ tar-extra-args
     See ``man tar`` for possible arguments.
 
 
-OPTIONAL BOOLEAN PARAMETERS
----------------------------
+BOOLEAN PARAMETERS
+------------------
 backup-destination
     By default destination file will be overwritten. In case destination
     is directory, files from archive will be added to or overwritten in
