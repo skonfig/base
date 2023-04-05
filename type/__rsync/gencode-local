@@ -102,3 +102,10 @@ fi
 echo "export RSYNC_RSH='$__remote_exec'"
 
 echo "rsync $options $src $remote_user@$__target_host:$dst"
+
+if [ -f "$__object/parameter/onchange" ]
+then
+    cat "$__object/parameter/onchange"
+fi
+
+echo 'synced' >> "$__messages_out"

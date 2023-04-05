@@ -42,6 +42,9 @@ options
 remote-user
    Defaults to ``root``.
 
+onchange
+   Command to run in target after sync.
+
 
 OPTIONAL MULTIPLE PARAMETERS
 ----------------------------
@@ -49,6 +52,12 @@ option
    Pass additional options to ``rsync``.
    See ``rsync(1)`` for all possible options.
    Due to `bug in Python's argparse<https://bugs.python.org/issue9334>`_, value must be prefixed with ``\``.
+
+
+MESSAGES
+--------
+synced
+   Sync happened.
 
 
 EXAMPLES
