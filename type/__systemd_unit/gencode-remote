@@ -67,6 +67,8 @@ case "${desired_enablement_state}" in
         echo "systemctl disable ${name}"
     ;;
     masked)
+        # disable before masking to ensure symlinks in *.wants/ are cleaned up
+        echo "systemctl disable ${name}"
         echo "systemctl mask ${name}"
     ;;
     *)
