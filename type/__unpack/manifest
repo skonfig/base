@@ -23,7 +23,7 @@ case "$src" in
             debian|ubuntu|devuan)
                 __package xz-utils
             ;;
-            alpine|centos)
+            alpine|centos|almalinux|eurolinux|rocky)
                 __package xz
             ;;
         esac
