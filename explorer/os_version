@@ -1,7 +1,7 @@
 #!/bin/sh -e
 #
 # 2010-2011 Nico Schottelius (nico-cdist at schottelius.org)
-# 2020-2021 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
+# 2020-2023 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of cdist.
 #
@@ -43,7 +43,10 @@ in
    ;;
    checkpoint)
        awk '{version=$NF; printf("%s\n", substr(version, 2))}' /etc/cp-release
-    ;;
+   ;;
+   chimera)
+      cat /etc/chimera-release
+   ;;
    debian)
       debian_version=$(cat /etc/debian_version)
       case $debian_version
