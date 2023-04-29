@@ -8,24 +8,18 @@ cdist-type__apt_backports - Configure the backports APT repository
 
 DESCRIPTION
 -----------
-
 This singleton type manages the backports repository for the current OS
 release and updates the package index if required.
 
 It supports backports for the following OSes:
 
-- Debian
-- Devuan
-- Ubuntu
+* Debian
+* Devuan
+* Ubuntu
 
-NB: The type aborts if no distribuition codename could be detected. This is
+**NB:** The type aborts if no distribuition codename could be detected. This is
 common for unstable releases, but there is no backports repository for these
 anyway.
-
-
-REQUIRED PARAMETERS
--------------------
-None.
 
 
 OPTIONAL PARAMETERS
@@ -36,27 +30,15 @@ component
    Can be used multiple times to specify more than one component.
 
    Defaults to: ``main``
+mirror
+   The mirror to fetch the backports from.
 
+   Defaults to the generic mirror of the current OS.
 state
    The should state of the backports repository. ``present`` or
    ``absent``.
 
    Defaults to: ``present``
-
-mirror
-   The mirror to fetch the backports from.
-
-   Defaults to the generic mirror of the current OS.
-
-
-BOOLEAN PARAMETERS
-------------------
-None.
-
-
-MESSAGES
---------
-None.
 
 
 EXAMPLES
@@ -77,14 +59,14 @@ EXAMPLES
 
 SEE ALSO
 --------
-- `Official Debian Backports site <https://backports.debian.org/>`_
-- :strong:`cdist-type__apt_source`\ (7)
+* `Official Debian Backports site <https://backports.debian.org/>`_
+* :strong:`cdist-type__apt_source`\ (7)
 
 
 AUTHORS
 -------
-Matthias Stecher <matthiasstecher--@--gmx.de>,
-Dennis Camera <cdist--@--dtnr.ch>
+* Matthias Stecher <matthiasstecher--@--gmx.de>
+* Dennis Camera <cdist--@--dtnr.ch>
 
 
 COPYING

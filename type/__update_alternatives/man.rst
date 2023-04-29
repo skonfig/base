@@ -30,24 +30,25 @@ EXAMPLES
 
 .. code-block:: sh
 
-    # Setup vim as the default editor
-    __update_alternatives editor --path /usr/bin/vim.basic
+   # Setup vim as the default editor
+   __update_alternatives editor --path /usr/bin/vim.basic
 
 
 SEE ALSO
 --------
-:strong:`cdist-type__debconf_set_selections`\ (7), :strong:`update-alternatives`\ (8)
+* :strong:`cdist-type__debconf_set_selections`\ (7)
+* :strong:`update-alternatives`\ (8)
 
 
 AUTHORS
 -------
-Nico Schottelius <nico-cdist--@--schottelius.org>
-Ander Punnar <ander@kvlt.ee>
+* Nico Schottelius <nico-cdist--@--schottelius.org>
+* Ander Punnar <ander@kvlt.ee>
 
 
 COPYING
 -------
-Copyright \(C) 2013 Nico Schottelius and 2020 Ander Punnar. You can
-redistribute it and/or modify it under the terms of the GNU General Public
-License as published by the Free Software Foundation, either version 3 of the
-License, or (at your option) any later version.
+Copyright \(C) 2013 Nico Schottelius and 2020 Ander Punnar.
+You can redistribute it and/or modify it under the terms of the GNU General
+Public License as published by the Free Software Foundation, either version 3 of
+the License, or (at your option) any later version.

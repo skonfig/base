@@ -11,28 +11,18 @@ DESCRIPTION
 Configure apt to not install any recommended or suggested packages.
 
 
-REQUIRED PARAMETERS
--------------------
-None.
-
-
-OPTIONAL PARAMETERS
--------------------
-None.
-
-
 EXAMPLES
 --------
 
 .. code-block:: sh
 
-    __apt_norecommends
+   __apt_norecommends
 
 
 AUTHORS
 -------
-Steven Armstrong <steven-cdist--@--armstrong.cc>
-Dennis Camera <dennis.camera--@--ssrq-sds-fds.ch>
+* Steven Armstrong <steven-cdist--@--armstrong.cc>
+* Dennis Camera <dennis.camera--@--ssrq-sds-fds.ch>
 
 
 COPYING

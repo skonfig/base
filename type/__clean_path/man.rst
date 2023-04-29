@@ -29,14 +29,12 @@ pattern
 
 OPTIONAL PARAMETERS
 -------------------
-path
-   Path which will be cleaned. Defaults to ``$__object_id``.
-
 exclude
    Pattern of files which are excluded from removal.
-
 onchange
    The code to run if files or directories were removed.
+path
+   Path which will be cleaned. Defaults to ``$__object_id``.
 
 
 EXAMPLES
@@ -44,25 +42,26 @@ EXAMPLES
 
 .. code-block:: sh
 
-    __clean_path /etc/apache2/conf-enabled \
-        --pattern '.+' \
-        --exclude '.+\(charset\.conf\|security\.conf\)' \
-        --onchange 'service apache2 restart'
+   __clean_path /etc/apache2/conf-enabled \
+       --pattern '.+' \
+       --exclude '.+\(charset\.conf\|security\.conf\)' \
+       --onchange 'service apache2 restart'
 
-    __clean_path apache2-conf-enabled \
-        --path /etc/apache2/conf-enabled \
-        --pattern '.+' \
-        --exclude '.+\(charset\.conf\|security\.conf\)' \
-        --onchange 'service apache2 restart'
+   __clean_path apache2-conf-enabled \
+       --path /etc/apache2/conf-enabled \
+       --pattern '.+' \
+       --exclude '.+\(charset\.conf\|security\.conf\)' \
+       --onchange 'service apache2 restart'
+
 
 AUTHORS
 -------
-Ander Punnar <ander-at-kvlt-dot-ee>
+* Ander Punnar <ander-at-kvlt-dot-ee>
 
 
 COPYING
 -------
-Copyright \(C) 2019 Ander Punnar. You can redistribute it
-and/or modify it under the terms of the GNU General Public License as
-published by the Free Software Foundation, either version 3 of the
-License, or (at your option) any later version.
+Copyright \(C) 2019 Ander Punnar.
+You can redistribute it and/or modify it under the terms of the GNU General
+Public License as published by the Free Software Foundation, either version 3 of
+the License, or (at your option) any later version.

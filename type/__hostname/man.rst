@@ -14,10 +14,6 @@ Sets the hostname on various operating systems.
 `RFC 1178 <https://tools.ietf.org/html/rfc1178>`_.
 
 
-REQUIRED PARAMETERS
--------------------
-None.
-
 OPTIONAL PARAMETERS
 -------------------
 name
@@ -28,28 +24,30 @@ name
 MESSAGES
 --------
 changed
-    Changed the hostname
+   Changed the hostname
+
 
 EXAMPLES
 --------
 
 .. code-block:: sh
 
-    # take hostname from __target_host
-    __hostname
+   # take hostname from __target_host
+   __hostname
 
-    # set hostname explicitly
-    __hostname --name some-static-hostname
+   # set hostname explicitly
+   __hostname --name some-static-hostname
 
 
 AUTHORS
 -------
-Steven Armstrong <steven-cdist--@--armstrong.cc>
+* Steven Armstrong <steven-cdist--@--armstrong.cc>
+* Dennis Camera <dennis.camera--@--ssrq-sds-fds.ch>
 
 
 COPYING
 -------
-Copyright \(C) 2012 Steven Armstrong. You can redistribute it
-and/or modify it under the terms of the GNU General Public License as
-published by the Free Software Foundation, either version 3 of the
-License, or (at your option) any later version.
+Copyright \(C) 2012 Steven Armstrong, 2019 Dennis Camera.
+You can redistribute it and/or modify it under the terms of the GNU General
+Public License as published by the Free Software Foundation, either version 3 of
+the License, or (at your option) any later version.

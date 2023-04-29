@@ -13,8 +13,6 @@ This cdist type allows you to manage entries in a user's crontab.
 
 REQUIRED PARAMETERS
 -------------------
-user
-   The user whose crontab is edited.
 command
    The command to run.
 
@@ -23,28 +21,32 @@ command
    characters.
    This type will not do any % replacements. The command given will be passed
    literally into the crontab file.
+user
+   The user whose crontab is edited.
 
 
 OPTIONAL PARAMETERS
 -------------------
-**NOTE**: All time-related parameters (``--minute``, ``--hour``,
-``--day-of-month``, ``--month`` and ``--day-of-week``) default to ``*``
-which means to execute it **always**.
-If you set ``--hour 0`` to execute the cronjob only at midnight, it
-will execute **every** minute in the first hour of the morning every day.
-
-state
-   Either present or absent. Defaults to present.
-minute
-   See crontab(5). Defaults to *
-hour
-   See crontab(5). Defaults to *
 day-of-month
-   See crontab(5). Defaults to *
-month
-   See crontab(5). Defaults to *
+   See :strong:`crontab`\ (5).
+
+   Defaults to: ``*`` (i.e. "always")
 day-of-week
-   See crontab(5). Defaults to *
+   See :strong:`crontab`\ (5).
+
+   Defaults to: ``*`` (i.e. "always")
+hour
+   See :strong:`crontab`\ (5).
+
+   Defaults to: ``*`` (i.e. "always")
+minute
+   See :strong:`crontab`\ (5).
+
+   Defaults to: ``*`` (i.e. "always")
+month
+   See :strong:`crontab`\ (5).
+
+   Defaults to: ``*`` (i.e. "always")
 raw
    Take whatever the user has given instead of time and date fields.
    If given, all other time and date fields are ignored.
@@ -52,6 +54,15 @@ raw
    ``@yearly``, etc.
    See :strong:`crontab`\ (5) for the extensions if any that your cron
    implementation implements.
+state
+   One of:
+
+   present
+      the cron job is defined
+   absent
+      the cron job is not defined
+
+   Defaults to: ``present``
 
 
 EXAMPLES
@@ -59,16 +70,23 @@ EXAMPLES
 
 .. code-block:: sh
 
-    # run Monday to Saturday at 23:15
-    __cron some-id --user root --command "/path/to/script" \
-       --hour 23 --minute 15 --day-of-week 1-6
+   # run Monday to Saturday at 23:15
+   __cron some-id \
+      --user root \
+      --command "/path/to/script" \
+      --hour 23 --minute 15 --day-of-week 1-6
 
-    # run on reboot
-    __cron some-id --user root --command "/path/to/script" \
-       --raw @reboot
+   # run on reboot
+   __cron some-id \
+      --user root
+      --command "/path/to/script" \
+      --raw @reboot
 
-    # remove cronjob
-    __cron some-id --user root --command "/path/to/script" --state absent
+   # remove cronjob
+   __cron some-id \
+      --user root \
+      --command "/path/to/script" \
+      --state absent
 
 
 SEE ALSO
@@ -79,8 +97,8 @@ SEE ALSO
 
 AUTHORS
 -------
-| Steven Armstrong <steven-cdist--@--armstrong.cc>
-| Dennis Camera <cdist--@--dtnr.ch>
+* Steven Armstrong <steven-cdist--@--armstrong.cc>
+* Dennis Camera <cdist--@--dtnr.ch>
 
 
 COPYING
