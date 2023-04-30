@@ -8,13 +8,15 @@ cdist-type__acl - Set ACL entries
 
 DESCRIPTION
 -----------
-Fully supported and tested on Linux (ext4 filesystem), partial support for FreeBSD.
+Fully supported and tested on Linux (ext4 filesystem), partial support for
+FreeBSD.
 
-See ``setfacl`` and ``acl`` manpages for more details.
+See :strong:`setfacl`\ (1) and :strong:`acl`\ (5) man pages for more details.
 
 One of ``--entry`` or ``--source`` must be used.
 
-There's special case with (capital) ``X`` perms bit - when used, ``x`` bit is set only for directories.
+There's special case with (capital) ``X`` perms bit - when used, ``x`` bit is
+set only for directories.
 
 
 OPTIONAL MULTIPLE PARAMETERS
@@ -26,17 +28,16 @@ entry
 
 OPTIONAL PARAMETERS
 -------------------
+directory
+   Create/change directory with ``__directory`` using ``user:group:mode``
+   pattern.
+file
+   Create/change file with ``__file`` using ``user:group:mode`` pattern.
 source
    Read ACL entries from stdin or file.
    Ordering of entries is not important.
    When reading from file, comments and empty lines are ignored.
    Must be used if ``--entry`` is not used.
-
-file
-   Create/change file with ``__file`` using ``user:group:mode`` pattern.
-
-directory
-   Create/change directory with ``__directory`` using ``user:group:mode`` pattern.
 
 
 BOOLEAN PARAMETERS
@@ -45,10 +46,8 @@ default
    Set all ACL entries as default too.
    Only directories can have default ACLs.
    Setting default ACL in FreeBSD is currently not supported.
-
 recursive
    Make ``setfacl`` recursive (Linux only), but not ``getfacl`` in explorer.
-
 remove
    Remove undefined ACL entries.
    ``mask`` and ``other`` entries can't be removed, but only changed.
@@ -59,52 +58,52 @@ EXAMPLES
 
 .. code-block:: sh
 
-    __acl /srv/project \
-        --default \
-        --recursive \
-        --remove \
-        --entry user:alice:rwx \
-        --entry user:bob:r-x \
-        --entry group:project-group:rwx \
-        --entry group:some-other-group:r-x \
-        --entry mask::r-x \
-        --entry other::r-x
+   __acl /srv/project \
+       --default \
+       --recursive \
+       --remove \
+       --entry user:alice:rwx \
+       --entry user:bob:r-x \
+       --entry group:project-group:rwx \
+       --entry group:some-other-group:r-x \
+       --entry mask::r-x \
+       --entry other::r-x
 
-    # give Alice read-only access to subdir,
-    # but don't allow her to see parent content.
+   # give Alice read-only access to subdir,
+   # but don't allow her to see parent content.
 
-    __acl /srv/project2 \
-        --remove \
-        --entry default:group:secret-project:rwx \
-        --entry group:secret-project:rwx \
-        --entry user:alice:--x
+   __acl /srv/project2 \
+       --remove \
+       --entry default:group:secret-project:rwx \
+       --entry group:secret-project:rwx \
+       --entry user:alice:--x
 
-    __acl /srv/project2/subdir \
-        --default \
-        --remove \
-        --entry group:secret-project:rwx \
-        --entry user:alice:r-x
+   __acl /srv/project2/subdir \
+       --default \
+       --remove \
+       --entry group:secret-project:rwx \
+       --entry user:alice:r-x
 
-    # read acl from stdin
-    echo 'user:alice:rwx' \
-        | __acl /path/to/directory --source -
+   # read acl from stdin
+   echo 'user:alice:rwx' \
+       | __acl /path/to/directory --source -
 
-    # create/change directory too
-    __acl /path/to/directory \
-        --default \
-        --remove \
-        --directory root:root:770 \
-        --entry user:nobody:rwx
+   # create/change directory too
+   __acl /path/to/directory \
+       --default \
+       --remove \
+       --directory root:root:770 \
+       --entry user:nobody:rwx
 
 
 AUTHORS
 -------
-Ander Punnar <ander-at-kvlt-dot-ee>
+* Ander Punnar <ander-at-kvlt-dot-ee>
 
 
 COPYING
 -------
-Copyright \(C) 2018 Ander Punnar. You can redistribute it
-and/or modify it under the terms of the GNU General Public License as
-published by the Free Software Foundation, either version 3 of the
-License, or (at your option) any later version.
+Copyright \(C) 2018 Ander Punnar.
+You can redistribute it and/or modify it under the terms of the GNU General
+Public License as published by the Free Software Foundation, either version 3 of
+the License, or (at your option) any later version.

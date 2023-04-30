@@ -15,24 +15,26 @@ a given user.
 REQUIRED PARAMETERS
 -------------------
 editor
-    Name or path of the editor to be selected.
-    On systems other than Debian derivatives an absolute path is required.
+   Name or path of the editor to be selected.
+   On systems other than Debian derivatives an absolute path is required.
 
-    It is permissible to omit this parameter if --state is absent.
+   It is permissible to omit this parameter if ``--state absent``.
 
 
 OPTIONAL PARAMETERS
 -------------------
 state
-    'present', 'absent', or 'exists'. Defaults to 'present', where:
+   One of:
 
-    present
-        the sensible-editor is exactly what is specified in --editor.
-    absent
-        no sensible-editor configuration is present.
-    exists
-        the sensible-editor will be set to what is specified in --editor,
-        unless there already is a configuration on the target system.
+   present
+      the sensible-editor is exactly what is specified in --editor.
+   absent
+      no sensible-editor configuration is present.
+   exists
+      the sensible-editor will be set to what is specified in --editor,
+      unless there already is a configuration on the target system.
+
+   Defaults to: ``present``
 
 
 EXAMPLES
@@ -40,13 +42,12 @@ EXAMPLES
 
 .. code-block:: sh
 
-    __sensible_editor root --editor /bin/ed  # ed(1) is the standard
-    __sensible_editor noob --editor nano
+   __sensible_editor root --editor /bin/ed  # ed(1) is the standard
+   __sensible_editor noob --editor nano
 
 
 LIMITATIONS
 -----------
-
 This type depends upon the :strong:`sensible-editor`\ (1) script which
 is part of the sensible-utils package.
 
@@ -61,14 +62,16 @@ Therefore, the following operating systems are supported:
 Note: on old versions of Ubuntu the sensible-* utils are part of the
 debianutils package.
 
+
 SEE ALSO
 --------
-:strong:`select-editor`\ (1), :strong:`sensible-editor`\ (1).
+* :strong:`select-editor`\ (1)
+* :strong:`sensible-editor`\ (1)
 
 
-AUTHOR
+AUTHORS
 -------
-Dennis Camera <dennis.camera--@--ssrq-sds-fds.ch>
+* Dennis Camera <dennis.camera--@--ssrq-sds-fds.ch>
 
 
 COPYING

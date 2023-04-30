@@ -36,11 +36,6 @@ type
    Defaults to auto-detect based on the number of ``--value`` parameters.
 
 
-BOOLEAN PARAMETERS
-------------------
-None.
-
-
 EXAMPLES
 --------
 
@@ -64,12 +59,12 @@ EXAMPLES
 
 SEE ALSO
 --------
-- https://openwrt.org/docs/guide-user/base-system/uci
+* https://openwrt.org/docs/guide-user/base-system/uci
 
 
 AUTHORS
 -------
-Dennis Camera <cdist--@--dtnr.ch>
+* Dennis Camera <cdist--@--dtnr.ch>
 
 
 COPYING

@@ -36,10 +36,6 @@ name
    The name of the variable to configure.
 
    Defaults to: ``__object_id``
-value
-   The value of the variable.
-
-   Required if ``--state present``.
 state
    One of:
 
@@ -47,11 +43,10 @@ state
       the variable should be set to the given value
    ``absent``
       the variable should be removed
+value
+   The value of the variable.
 
-
-BOOLEAN PARAMETERS
-------------------
-None.
+   Required if ``--state present``.
 
 
 EXAMPLES
@@ -74,7 +69,7 @@ SEE ALSO
 
 AUTHORS
 -------
-Dennis Camera <cdist--@--dtnr.ch>
+* Dennis Camera <cdist--@--dtnr.ch>
 
 
 COPYING

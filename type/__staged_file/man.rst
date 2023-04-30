@@ -14,16 +14,11 @@ cdist) and then deployed to the target host using the __file type.
 
 REQUIRED PARAMETERS
 -------------------
-source
-   the URL from which to retrieve the source file.
+cksum
+   the output of running the command: ``cksum $source_file``
    e.g.
 
-   * https://dl.bintray.com/mitchellh/consul/0.4.1_linux_amd64.zip
-   * file:///path/to/local/file
-
-cksum
-   the output of running the command: `cksum $source-file`
-   e.g.::
+   .. code-block:: sh
 
       $ echo foobar > /tmp/foobar
       $ cksum /tmp/foobar
@@ -32,6 +27,12 @@ cksum
    If either checksum or file size has changed the file will be
    (re)fetched from the --source. The file name can be omitted and is
    ignored if given.
+source
+   the URL from which to retrieve the source file.
+   e.g.
+
+   * https://dl.bintray.com/mitchellh/consul/0.4.1_linux_amd64.zip
+   * file:///path/to/local/file
 
 
 OPTIONAL PARAMETERS
@@ -42,16 +43,12 @@ fetch-command
    parameter. The --fetch-command is expected to output the fetched file to
    stdout.
    Defaults to 'curl -s -L "%s"'.
-
 group
-   see cdist-type__file
-
-owner
-   see cdist-type__file
-
+   see :strong:`cdist-type__file`\ (7)
 mode
-   see cdist-type__file
-
+   see :strong:`cdist-type__file`\ (7)
+owner
+   see :strong:`cdist-type__file`\ (7)
 prepare-command
    the optional command used to prepare or preprocess the staged file for later
    use by the file type.
@@ -61,16 +58,17 @@ prepare-command
    It is executed in the same directory into which the fetched file has been
    saved. The --prepare-command is expected to output the final file to stdout.
 
-   So for example given a --source of https://example.com/my-zip.zip, and a
-   --prepare-command of 'unzip -p "%s"', the code `unzip -p "my-zip.zip"` will
-   be executed in the folder containing the downloaded file my-zip.zip.
-   A more complex example might be --prepare-command 'tar -xz "%s"; cat path/from/archive'
+   So for example given ``--source https://example.com/my-zip.zip``, and
+   ``--prepare-command 'unzip -p "%s"'``, the code ``unzip -p "my-zip.zip"``
+   will be executed in the folder containing the downloaded file my-zip.zip.
+   A more complex example might be
+   ``--prepare-command 'tar -xz "%s"; cat path/from/archive'``
 stage-dir
    the directory in which to store downloaded and prepared files.
-   Defaults to '/var/tmp/cdist/__staged_file'
 
+   Defaults to: ``/var/tmp/cdist/__staged_file``
 state
-   see cdist-type__file
+   see :strong:`cdist-type__file`\ (7)
 
 
 EXAMPLES
@@ -78,38 +76,38 @@ EXAMPLES
 
 .. code-block:: sh
 
-    __staged_file /usr/local/bin/consul \
-       --source file:///path/to/local/copy/consul \
-       --cksum '428915666 15738724' \
-       --state present \
-       --group root \
-       --owner root \
-       --mode 755
+   __staged_file /usr/local/bin/consul \
+      --source file:///path/to/local/copy/consul \
+      --cksum '428915666 15738724' \
+      --state present \
+      --group root \
+      --owner root \
+      --mode 755
 
-    __staged_file /usr/local/bin/consul \
-       --source https://dl.bintray.com/mitchellh/consul/0.4.1_linux_amd64.zip \
-       --cksum '428915666 15738724' \
-       --fetch-command 'curl -s -L "%s"' \
-       --prepare-command 'unzip -p "%s"' \
-       --state present \
-       --group root \
-       --owner root \
-       --mode 755
+   __staged_file /usr/local/bin/consul \
+      --source https://dl.bintray.com/mitchellh/consul/0.4.1_linux_amd64.zip \
+      --cksum '428915666 15738724' \
+      --fetch-command 'curl -s -L "%s"' \
+      --prepare-command 'unzip -p "%s"' \
+      --state present \
+      --group root \
+      --owner root \
+      --mode 755
 
 
 SEE ALSO
 --------
-:strong:`cdist-type__file`\ (7)
+* :strong:`cdist-type__file`\ (7)
 
 
 AUTHORS
 -------
-Steven Armstrong <steven-cdist--@--armstrong.cc>
+* Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING
 -------
-Copyright \(C) 2015 Steven Armstrong. You can redistribute it
-and/or modify it under the terms of the GNU General Public License as
-published by the Free Software Foundation, either version 3 of the
-License, or (at your option) any later version.
+Copyright \(C) 2015 Steven Armstrong.
+You can redistribute it and/or modify it under the terms of the GNU General
+Public License as published by the Free Software Foundation, either version 3 of
+the License, or (at your option) any later version.

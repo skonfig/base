@@ -28,20 +28,20 @@ EXAMPLES
 
 .. code-block:: sh
 
-    # hold package
-    __apt_mark quagga --state hold
-    # unhold package
-    __apt_mark quagga --state unhold
+   # hold package
+   __apt_mark quagga --state hold
+   # unhold package
+   __apt_mark quagga --state unhold
 
 
 AUTHORS
 -------
-Ander Punnar <cdist--@--kvlt.ee>
+* Ander Punnar <cdist--@--kvlt.ee>
 
 
 COPYING
 -------
-Copyright \(C) 2016 Ander Punnar. You can redistribute it
-and/or modify it under the terms of the GNU General Public License as
-published by the Free Software Foundation, either version 3 of the
-License, or (at your option) any later version.
+Copyright \(C) 2016 Ander Punnar.
+You can redistribute it and/or modify it under the terms of the GNU General
+Public License as published by the Free Software Foundation, either version 3 of
+the License, or (at your option) any later version.
