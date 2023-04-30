@@ -19,21 +19,45 @@
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
 
+os=$("$__explorer/os")
+
 destination="/$__object_id"
+
+passwd_lookup() {
+   # usage: passwd_lookup file needle match_col print_col
+   awk -F ':' -v needle="${2:?}" -v mcol=$((${3:?})) -v pcol=$((${4:?})) '
+   $mcol == needle {
+      print $pcol
+      f = 1
+   }
+   END {
+      if (!f)
+         print "UNKNOWN"
+   }' "${1:?}"
+}
 
 fallback() {
    # Patch the output together, manually
 
-   ls_line=$(ls -ldn "$destination")
+   if test "${os}" != 'sortix'
+   then
+      read -r mode_text links uid gid size _ <<EOF
+$(ls -ldn "${destination}")
+EOF
 
-   uid=$(echo "$ls_line" | awk '{ print $3 }')
-   gid=$(echo "$ls_line" | awk '{ print $4 }')
+      owner=$(passwd_lookup /etc/passwd $((uid)) 3 1)
+      group=$(passwd_lookup /etc/group $((gid)) 3 1)
+   else
+      # NOTE: Sortix' ls(1) does not currently support the -n option
+      read -r mode_text links owner group size _ <<EOF
+$(ls -ld "${destination}")
+EOF
 
-   owner=$(awk -F: -v uid="$uid" '$3 == uid { print $1; f=1 } END { if (!f) print "UNKNOWN" }' /etc/passwd)
-   group=$(awk -F: -v gid="$gid" '$3 == gid { print $1; f=1 } END { if (!f) print "UNKNOWN" }' /etc/group)
+      uid=$(passwd_lookup /etc/passwd "${owner}" 1 3)
+      gid=$(passwd_lookup /etc/group "${group}" 1 3)
+   fi
 
-   mode_text=$(echo "$ls_line" | awk '{ print $1 }')
-   mode=$(echo "$mode_text" | awk '{for(i=8;i>=0;--i){c=substr($1,10-i,1);k+=((c~/[rwxst]/)*2^i);if(!(i%3))k+=(tolower(c)~/[lst]/)*2^(9+i/3)}printf("%04o",k)}')
+   mode=$(echo "${mode_text}" | awk '{for(i=8;i>=0;--i){c=substr($1,10-i,1);k+=((c~/[rwxst]/)*2^i);if(!(i%3))k+=(tolower(c)~/[lst]/)*2^(9+i/3)}printf("%04o",k)}')
 
    printf 'type: %s\nowner: %d %s\ngroup: %d %s\nmode: %s %s\n' \
       "$("$__type_explorer/type")" \
@@ -50,7 +74,7 @@ command -v stat >/dev/null 2>&1 || {
    exit
 }
 
-case $("$__explorer/os")
+case ${os}
 in
    freebsd|netbsd|openbsd|macosx)
       stat -f 'type: %HT
@@ -58,6 +82,11 @@ owner: %Du %Su
 group: %Dg %Sg
 mode: %Mp%03Lp %Sp
 ' "$destination" | awk '/^type/ { print tolower($0); next } { print }'
+      ;;
+   sortix)
+      # NOTE: currently, Sortix' stat(1) does not allow specifying a
+      #       format string.
+      fallback
       ;;
    *)
       # NOTE: Do not use --printf here as it is not supported by BusyBox stat.

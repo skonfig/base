@@ -48,6 +48,11 @@ in
 		# If dropbear is used, the state explorer will already fail because it
 		# cannot find the sshd binary.
 		;;
+	(sortix)
+		# whitelist
+		# requires `tix-port ssh`, but currently all ports are always
+		# installed in Sortix.
+		;;
 	(*)
 		: "${__type:?}"  # make shellcheck happy
 		printf 'Your operating system (%s) is currently not supported by this type (%s)\n' \

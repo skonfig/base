@@ -51,6 +51,14 @@ else
 				echo '/etc/sshd_config'
 			fi
 			;;
+		(sortix)
+			if test -e '/etc/sshd_config'
+			then
+				echo '/etc/sshd_config'
+			else
+				echo '/etc/default/sshd_config'
+			fi
+			;;
 		(*)
 			echo '/etc/ssh/sshd_config'
 			;;

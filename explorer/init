@@ -2,7 +2,7 @@
 #
 # 2016 Daniel Heule (hda at sfs.biz)
 # Copyright 2017, Philippe Gregoire <pg@pgregoire.xyz>
-# 2020 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
+# 2020,2022 Dennis Camera (skonfig at dtnr.ch)
 #
 # This file is part of cdist.
 #
@@ -66,6 +66,9 @@
 #
 # Solaris/Illumos:
 #   smf, init???
+#
+# Sortix:
+#   init
 
 # NOTE: init systems can be stacked. This is popular to run OpenRC on top of
 # sysvinit (Gentoo) or busybox-init (Alpine), but can also be used to run runit
@@ -411,6 +414,9 @@ find_init() {
 			;;
 		Darwin|SunOS)
 			find_init_ps
+			;;
+		Sortix)
+			echo 'init'
 			;;
 		*)
 			echo "Don't know how to determine init." >&2
