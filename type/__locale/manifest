@@ -30,7 +30,7 @@ case "$os" in
         # Debian needs a seperate package
         __package locales --state present
     ;;
-    archlinux|suse|ubuntu|scientific|centos|alpine)
+    archlinux|suse|ubuntu|scientific|centos|almalinux|eurolinux|rocky|alpine)
         :
     ;;
     *)

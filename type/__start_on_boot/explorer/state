@@ -62,7 +62,7 @@ else
             [ -f "/etc/init/${name}.conf" ] && state="present"
         ;;
 
-        amazon|scientific|centos|fedora|owl|redhat)
+        amazon|scientific|centos|almalinux|eurolinux|rocky|fedora|owl|redhat)
             state=$(chkconfig --level "$runlevel" "$name" || echo absent)
             [ "$state" ] || state="present"
         ;;
