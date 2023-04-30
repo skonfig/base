@@ -61,7 +61,7 @@ in
 		printf '%s does not support locales.\n' "${os}" >&2
 		exit 1
 		;;
-	(archlinux|debian|devuan|ubuntu|suse|centos|fedora|redhat|scientific)
+	(archlinux|debian|devuan|ubuntu|suse|centos|almalinux|eurolinux|rocky|fedora|redhat|scientific)
 		# FIXME: The code below only works for glibc-based installations.
 
 		# NOTE: Hardcoded, create a pull request in case it is at another

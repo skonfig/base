@@ -35,7 +35,7 @@ case "$src" in
     ;;
     *.7z)
         case "$os" in
-            centos|fedora|redhat)
+            centos|almalinux|eurolinux|rocky|fedora|redhat)
                 cmd='7za'
             ;;
             *)

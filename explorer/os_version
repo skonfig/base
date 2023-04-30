@@ -146,7 +146,7 @@ in
    owl)
       cat /etc/owl-release
    ;;
-   redhat|centos|mitel|scientific)
+   redhat|centos|almalinux|eurolinux|rocky|mitel|scientific)
       cat /etc/redhat-release
    ;;
    slackware)

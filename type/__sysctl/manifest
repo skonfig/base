@@ -25,7 +25,7 @@ os=$(cat "$__global/explorer/os")
 
 case "$os" in
    # Linux
-   alpine|redhat|centos|ubuntu|debian|devuan|archlinux|coreos)
+   alpine|redhat|centos|almalinux|eurolinux|rocky|ubuntu|debian|devuan|archlinux|coreos)
       :
    ;;
    # BSD

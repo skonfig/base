@@ -11,18 +11,21 @@ DESCRIPTION
 LuaRocks is a deployment and management system for Lua modules.
 
 
-REQUIRED PARAMETERS
--------------------
-None
-
-
 OPTIONAL PARAMETERS
 -------------------
 name
-    If supplied, use the name and not the object id as the package name.
+   The name of the package to install.
 
+   Defaults to: ``__object_id``
 state
-    Either "present" or "absent", defaults to "present"
+   One of:
+
+   present
+      the package is installed
+   absent
+      the package is uninstalled
+
+   Defaults to: ``present``
 
 
 EXAMPLES
@@ -30,26 +33,27 @@ EXAMPLES
 
 .. code-block:: sh
 
-    # Ensure luasocket is installed
-    __package_luarocks luasocket --state present
+   # Ensure luasocket is installed
+   __package_luarocks luasocket --state present
 
-    # Remove package
-    __package_luarocks luasocket --state absent
+   # Remove package
+   __package_luarocks luasocket --state absent
 
 
 SEE ALSO
 --------
-:strong:`cdist-type__package`\ (7)
+* :strong:`cdist-type__package`\ (7)
+* `<https://luarocks.org/>`_
 
 
 AUTHORS
 -------
-Christian G. Warden <cwarden@xerus.org>
+* Christian G. Warden <cwarden@xerus.org>
 
 
 COPYING
 -------
-Copyright \(C) 2012 SwellPath, Inc. You can redistribute it
-and/or modify it under the terms of the GNU General Public License as
-published by the Free Software Foundation, either version 3 of the
-License, or (at your option) any later version.
+Copyright \(C) 2012 SwellPath, Inc.
+You can redistribute it and/or modify it under the terms of the GNU General
+Public License as published by the Free Software Foundation, either version 3 of
+the License, or (at your option) any later version.

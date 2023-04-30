@@ -19,12 +19,14 @@ uri
 
 OPTIONAL PARAMETERS
 -------------------
-state
-   'present' or 'absent', defaults to 'present'
-
 name
    a name for this key, used when testing if it is already installed.
-   Defaults to __object_id
+
+   Defaults to: ``__object_id``
+state
+   ``present`` or ``absent``
+
+   Defaults to: ``present``
 
 
 EXAMPLES
@@ -32,20 +34,20 @@ EXAMPLES
 
 .. code-block:: sh
 
-    __apt_key_uri rabbitmq \
-       --name 'RabbitMQ Release Signing Key <info@rabbitmq.com>' \
-       --uri http://www.rabbitmq.com/rabbitmq-signing-key-public.asc \
-       --state present
+   __apt_key_uri rabbitmq \
+      --name 'RabbitMQ Release Signing Key <info@rabbitmq.com>' \
+      --uri http://www.rabbitmq.com/rabbitmq-signing-key-public.asc \
+      --state present
 
 
 AUTHORS
 -------
-Steven Armstrong <steven-cdist--@--armstrong.cc>
+* Steven Armstrong <steven-cdist--@--armstrong.cc>
 
 
 COPYING
 -------
-Copyright \(C) 2011-2014 Steven Armstrong. You can redistribute it
-and/or modify it under the terms of the GNU General Public License as
-published by the Free Software Foundation, either version 3 of the
-License, or (at your option) any later version.
+Copyright \(C) 2011-2014 Steven Armstrong.
+You can redistribute it and/or modify it under the terms of the GNU General
+Public License as published by the Free Software Foundation, either version 3 of
+the License, or (at your option) any later version.

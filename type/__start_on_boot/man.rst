@@ -15,17 +15,21 @@ Warning: This type has not been tested intensively and is not fully
 supported.
 
 
-REQUIRED PARAMETERS
--------------------
-None.
-
-
 OPTIONAL PARAMETERS
 -------------------
 state
-    Either "present" or "absent", defaults to "present"
+   One of:
+
+   present
+      the service is auto-started on boot
+   absent
+      the service is not auto-started on boot
+
+   Defaults to: ``present``
 target_runlevel
-    Runlevel which should be modified, defaults to "default" (only used on gentoo systems).
+   Runlevel which should be modified (only used on Gentoo systems).
+
+   Defaults to: ``default``
 
 
 EXAMPLES
@@ -33,29 +37,29 @@ EXAMPLES
 
 .. code-block:: sh
 
-    # Ensure snmpd is started at boot
-    __start_on_boot snmpd
+   # Ensure snmpd is started at boot
+   __start_on_boot snmpd
 
-    # Same, but more explicit
-    __start_on_boot snmpd --state present
+   # Same, but more explicit
+   __start_on_boot snmpd --state present
 
-    # Ensure legacy configuration management will not be started
-    __start_on_boot puppet --state absent
+   # Ensure legacy configuration management will not be started
+   __start_on_boot puppet --state absent
 
 
 SEE ALSO
 --------
-:strong:`cdist-type__process`\ (7)
+* :strong:`cdist-type__process`\ (7)
 
 
 AUTHORS
 -------
-Nico Schottelius <nico-cdist--@--schottelius.org>
+* Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
 COPYING
 -------
-Copyright \(C) 2012-2019 Nico Schottelius. You can redistribute it
-and/or modify it under the terms of the GNU General Public License as
-published by the Free Software Foundation, either version 3 of the
-License, or (at your option) any later version.
+Copyright \(C) 2012-2019 Nico Schottelius.
+You can redistribute it and/or modify it under the terms of the GNU General
+Public License as published by the Free Software Foundation, either version 3 of
+the License, or (at your option) any later version.

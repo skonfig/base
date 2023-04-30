@@ -12,18 +12,14 @@ On Debian and alike systems :strong:`debconf-set-selections`\ (1) can be used
 to setup configuration parameters.
 
 
-REQUIRED PARAMETERS
--------------------
-cf. ``--line``.
-
-
 OPTIONAL PARAMETERS
 -------------------
 file
    Use the given filename as input for :strong:`debconf-set-selections`\ (1)
    If filename is ``-``, read from stdin.
 
-   **This parameter is deprecated, because it doesn't work with state detection.**
+   **This parameter is deprecated, because it doesn't work with state
+   detection.**
 line
    A line in :strong:`debconf-set-selections`\ (1) compatible format.
    This parameter can be used multiple times to set multiple options.
@@ -46,30 +42,33 @@ EXAMPLES
 
 .. code-block:: sh
 
-    # Setup gitolite's gituser
-    __debconf_set_selections nslcd --line 'gitolite gitolite/gituser string git'
+   # Setup gitolite's gituser
+   __debconf_set_selections nslcd \
+      --line 'gitolite gitolite/gituser string git'
 
-    # Setup configuration for nslcd from a file.
-    # NB: Multiple lines can be passed to --line, although this can be considered a hack.
-    __debconf_set_selections nslcd --line "$(cat "${__files:?}/preseed/nslcd.debconf")"
+   # Setup configuration for nslcd from a file.
+   # NB: Multiple lines can be passed to --line, although this can be considered
+   #     a hack.
+   __debconf_set_selections nslcd \
+      --line "$(cat "${__files:?}/preseed/nslcd.debconf")"
 
-    # Reconfigure wireshark-common package
-    require='__package_apt/wireshark' \
-        __debconf_set_selections wireshark \
-            --line 'wireshark-common wireshark-common/install-setuid boolean true' \
-            --reconfigure
+   # Reconfigure wireshark-common package
+   require=__package_apt/wireshark \
+   __debconf_set_selections wireshark \
+      --line 'wireshark-common wireshark-common/install-setuid boolean true' \
+      --reconfigure
 
 
 SEE ALSO
 --------
-- :strong:`cdist-type__update_alternatives`\ (7)
-- :strong:`debconf-set-selections`\ (1)
+* :strong:`cdist-type__update_alternatives`\ (7)
+* :strong:`debconf-set-selections`\ (1)
 
 
 AUTHORS
 -------
-| Nico Schottelius <nico-cdist--@--schottelius.org>
-| Dennis Camera <dennis.camera--@--ssrq-sds-fds.ch>
+* Nico Schottelius <nico-cdist--@--schottelius.org>
+* Dennis Camera <dennis.camera--@--ssrq-sds-fds.ch>
 
 
 COPYING

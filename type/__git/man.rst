@@ -14,52 +14,51 @@ This cdist type allows you to clone git repositories
 REQUIRED PARAMETERS
 -------------------
 source
-    Specifies the git remote to clone from
+   Specifies the git remote to clone from
 
 
 OPTIONAL PARAMETERS
 -------------------
-state
-    Either "present" or "absent", defaults to "present"
-
 branch
-    Create this branch by checking out the remote branch of this name
-
+   Create this branch by checking out the remote branch of this name
 group
-   Group to chgrp to.
-
+   Group to :strong:`chgrp`\ (1) to.
 mode
    Unix permissions, suitable for chmod.
-
 owner
-   User to chown to.
-
+   User to :strong:`chown`\ (1) to.
 recursive
    Passes the --recurse-submodules flag to git when cloning the repository.
-
 shallow
-   Sets --depth=1 and --shallow-submodules for cloning repositories with big history.
+   Sets ``--depth=1`` and ``--shallow-submodules`` for cloning repositories with
+   a big history.
+state
+   Either ``present`` or ``absent``.
 
+   Defaults to: ``present``
 
 EXAMPLES
 --------
 
 .. code-block:: sh
 
-    __git /home/services/dokuwiki --source git://github.com/splitbrain/dokuwiki.git
+   __git /home/services/dokuwiki \
+       --source git://github.com/splitbrain/dokuwiki.git
 
-    # Checkout cdist, stay on branch 2.1
-    __git /home/nico/cdist --source git@code.ungleich.ch:ungleich-public/cdist.git --branch 2.1
+   # Checkout cdist, stay on branch 2.1
+   __git /home/nico/cdist \
+      --source git@code.ungleich.ch:ungleich-public/cdist.git \
+      --branch 2.1
 
 
 AUTHORS
 -------
-Nico Schottelius <nico-cdist--@--schottelius.org>
+* Nico Schottelius <nico-cdist--@--schottelius.org>
 
 
 COPYING
 -------
-Copyright \(C) 2012 Nico Schottelius. You can redistribute it
-and/or modify it under the terms of the GNU General Public License as
-published by the Free Software Foundation, either version 3 of the
-License, or (at your option) any later version.
+Copyright \(C) 2012 Nico Schottelius.
+You can redistribute it and/or modify it under the terms of the GNU General
+Public License as published by the Free Software Foundation, either version 3 of
+the License, or (at your option) any later version.
