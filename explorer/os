@@ -2,6 +2,7 @@
 #
 # 2010-2011 Nico Schottelius (nico-cdist at schottelius.org)
 # Copyright 2017, Philippe Gregoire <pg@pgregoire.xyz>
+# 2019,2020,2023 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of cdist.
 #
@@ -151,6 +152,13 @@ fi
 
 if [ -f /etc/slackware-version ]; then
    echo slackware
+   exit 0
+fi
+
+###
+
+if [ -f /etc/chimera-release ]; then
+   echo chimera
    exit 0
 fi
 
