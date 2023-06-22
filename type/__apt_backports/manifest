@@ -1,7 +1,7 @@
 #!/bin/sh -e
 #
 # 2020 Matthias Stecher (matthiasstecher at gmx.de)
-# 2022 Dennis Camera (cdist at dtnr.ch)
+# 2022-2023 Dennis Camera (skonfig at dtnr.ch)
 #
 # This file is part of cdist.
 #
@@ -31,24 +31,28 @@ codename_os_release() {
     (. "${__global:?}/explorer/os_release" && printf "%s\n" "${VERSION_CODENAME}")
 }
 
-# detect backport distribution
+join_lines() {
+    sed -e ':a' -e '$!N' -e 's/\n/ /' -e 'ta' "$@"
+}
+
+# detect distribution
 read -r os <"${__global:?}/explorer/os"
 case ${os}
 in
     (debian)
         dist=$(codename_os_release)
         mirror='http://deb.debian.org/debian/'
-        components=$(sed -e ':a' -e '$!N' -e 's/\n/ /' -e 'ta' "${__object:?}/parameter/component")
+        components=$(join_lines "${__object:?}/parameter/component")
         ;;
     (devuan)
         dist=$(codename_os_release)
         mirror='http://deb.devuan.org/merged'
-        components=$(sed -e ':a' -e '$!N' -e 's/\n/ /' -e 'ta' "${__object:?}/parameter/component")
+        components=$(join_lines "${__object:?}/parameter/component")
         ;;
     (ubuntu)
         dist=$(codename_os_release)
         mirror='http://archive.ubuntu.com/ubuntu'
-        components=$(sed -e ':a' -e '$!N' -e 's/\n/ /' -e 'ta' "${__object:?}/parameter/component")
+        components=$(join_lines "${__object:?}/parameter/component")
         ;;
     (*)
         : "${__type:?}"  # make shellcheck happy
@@ -60,7 +64,7 @@ esac
 
 # error if no codename given (e.g. on Debian unstable)
 test -n "${dist}" || {
-    printf "No backports for unkown version of distribution %s!\n" "${os}" >&2
+    printf 'No backports for unkown version of distribution %s!\n' "${os}" >&2
     exit 1
 }
 
