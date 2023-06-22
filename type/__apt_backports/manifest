@@ -1,7 +1,7 @@
 #!/bin/sh -e
 #
 # 2020 Matthias Stecher (matthiasstecher at gmx.de)
-# 2022 Dennis Camera (cdist at dtnr.ch)
+# 2022-2023 Dennis Camera (skonfig at dtnr.ch)
 #
 # This file is part of cdist.
 #
@@ -22,33 +22,47 @@
 # Enables/disables backports repository. Utilises __apt_source for it.
 #
 
+distro_codename() {
+    # prefer os_release because lsb_release(1) may not be available on all installations,
+    # fall back to lsb_codename if os-release is empty (old versions)
+    if test -s "${__global:?}/explorer/os_release"
+    then
+        # NOTE: only keep the first word of the release, because (at least) Devuan
+        #       adds a suffix for pre-release versions, e.g. "daedalus ceres"
 
-# Get the distribution codename by /etc/os-release.
-#  is already executed in a subshell by string substitution
-#  lsb_release may not be given in all installations
-codename_os_release() {
-    # shellcheck source=/dev/null
-    (. "${__global:?}/explorer/os_release" && printf "%s\n" "${VERSION_CODENAME}")
+        # shellcheck source=/dev/null
+        (. "${__global:?}/explorer/os_release" && printf '%s\n' "${VERSION_CODENAME%% *}")
+    elif test -s "${__global:?}/explorer/lsb_codename"
+    then
+        # shellcheck source=/dev/null
+        cat "${__global:?}/explorer/lsb_codename"
+    else
+        return 1
+    fi
 }
 
-# detect backport distribution
+join_lines() {
+    sed -e ':a' -e '$!N' -e 's/\n/ /' -e 'ta' "$@"
+}
+
+# detect distribution
 read -r os <"${__global:?}/explorer/os"
 case ${os}
 in
     (debian)
-        dist=$(codename_os_release)
         mirror='http://deb.debian.org/debian/'
-        components=$(sed -e ':a' -e '$!N' -e 's/\n/ /' -e 'ta' "${__object:?}/parameter/component")
+        dist=$(distro_codename)
+        components=$(join_lines "${__object:?}/parameter/component")
         ;;
     (devuan)
-        dist=$(codename_os_release)
         mirror='http://deb.devuan.org/merged'
-        components=$(sed -e ':a' -e '$!N' -e 's/\n/ /' -e 'ta' "${__object:?}/parameter/component")
+        dist=$(distro_codename)
+        components=$(join_lines "${__object:?}/parameter/component")
         ;;
     (ubuntu)
-        dist=$(codename_os_release)
         mirror='http://archive.ubuntu.com/ubuntu'
-        components=$(sed -e ':a' -e '$!N' -e 's/\n/ /' -e 'ta' "${__object:?}/parameter/component")
+        dist=$(distro_codename)
+        components=$(join_lines "${__object:?}/parameter/component")
         ;;
     (*)
         : "${__type:?}"  # make shellcheck happy
@@ -60,7 +74,7 @@ esac
 
 # error if no codename given (e.g. on Debian unstable)
 test -n "${dist}" || {
-    printf "No backports for unkown version of distribution %s!\n" "${os}" >&2
+    printf 'No backports for unkown version of distribution %s!\n' "${os}" >&2
     exit 1
 }
 
