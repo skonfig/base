@@ -58,7 +58,11 @@ case $os
 in
     debian)
         os_version=$(cat "${__global:?}/explorer/os_version")
-        if version_ge "${os_version}" 4
+        if version_ge "${os_version}" 12.99
+        then
+            # Debian "12.99" (trixie/sid) and later
+            locale_conf="/etc/locale.conf"
+        elif version_ge "${os_version}" 4
         then
             # Debian 4 (etch) and later
             locale_conf="/etc/default/locale"
