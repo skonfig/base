@@ -51,6 +51,7 @@ fi
 
 remote_user=$(cat "${__object:?}/parameter/remote-user")
 
+# deprecated parameter
 options=$(cat "${__object:?}/parameter/options")
 
 if [ -f "${__object:?}/parameter/option" ]

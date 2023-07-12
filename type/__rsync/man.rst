@@ -30,6 +30,8 @@ option
    Due to a `bug in Python's argparse<https://bugs.python.org/issue9334>`_,
    the value must be prefixed with ``\``.
 
+   Defaults to: ``--links``, ``--perms``, ``--recursive``, ``--times``
+
 
 OPTIONAL PARAMETERS
 -------------------
@@ -46,10 +48,10 @@ mode
 onchange
    Command to run in target after sync.
 options
-   Defaults to: ``--recursive --links --perms --times``
-
    Due to a `bug in Python's argparse<https://bugs.python.org/issue9334>`_,
    the value must be prefixed with ``\``.
+
+   This parameter is deprecated, please use ``--option`` instead.
 owner
    Will be passed to ``rsync`` as ``--chown=OWNER``.
    Read :strong:`rsync`\ (1) for more details.
