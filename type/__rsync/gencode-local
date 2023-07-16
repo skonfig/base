@@ -51,8 +51,16 @@ fi
 
 remote_user=$(cat "${__object:?}/parameter/remote-user")
 
-# deprecated parameter
-options=$(cat "${__object:?}/parameter/options")
+if test -f "${__object:?}/parameter/no-defaults"
+then
+	options=''
+elif test -f "${__object:?}/parameter/options"
+then
+	# deprecated parameter, used to be used to set default rsync options
+	options=$(cat "${__object:?}/parameter/options")
+else
+	options='--links --perms --recursive --times'
+fi
 
 if [ -f "${__object:?}/parameter/option" ]
 then
