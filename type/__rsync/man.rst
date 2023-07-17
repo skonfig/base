@@ -30,6 +30,12 @@ option
    Due to a `bug in Python's argparse<https://bugs.python.org/issue9334>`_,
    the value must be prefixed with ``\``.
 
+   The options passed to this parameter will be appended to the defaults listed
+   below. If you don't want to use these default options, use the
+   ``--no-defaults`` parameter, too.
+
+   Defaults to: ``--links``, ``--perms``, ``--recursive``, ``--times``
+
 
 OPTIONAL PARAMETERS
 -------------------
@@ -46,15 +52,24 @@ mode
 onchange
    Command to run in target after sync.
 options
-   Defaults to: ``--recursive --links --perms --times``
-
    Due to a `bug in Python's argparse<https://bugs.python.org/issue9334>`_,
    the value must be prefixed with ``\``.
+
+   This parameter is deprecated, please use the ``--option`` and
+   ``--no-defaults`` parameters instead.
 owner
    Will be passed to ``rsync`` as ``--chown=OWNER``.
    Read :strong:`rsync`\ (1) for more details.
 remote-user
    Defaults to: ``root``
+
+
+BOOLEAN PARAMETERS
+------------------
+no-defaults
+   Clear the default options passed to :strong:`rsync`\ (1).
+
+   cf. also ``--option``
 
 
 MESSAGES
@@ -78,11 +93,12 @@ EXAMPLES
 AUTHORS
 -------
 * Ander Punnar <ander-at-kvlt-dot-ee>
+* Dennis Camera <dennis.camera-at-riiengineering.ch>
 
 
 COPYING
 -------
-Copyright \(C) 2021 Ander Punnar.
+Copyright \(C) 2021 Ander Punnar, 2023 Dennis Camera.
 You can redistribute it and/or modify it under the terms of the GNU General
 Public License as published by the Free Software Foundation, either version 3 of
 the License, or (at your option) any later version.
