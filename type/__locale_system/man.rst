@@ -27,7 +27,7 @@ state
 value
    The value for the locale category.
 
-   Defaults to: ``en_US.UTF-8``
+   Defaults to: ``C``
 
 
 EXAMPLES
