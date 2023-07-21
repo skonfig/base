@@ -8,8 +8,8 @@ cdist-type__sensible_editor - Select the sensible-editor
 
 DESCRIPTION
 -----------
-This cdist type allows you to select the :strong:`sensible-editor` for
-a given user.
+This type allows you to select the :strong:`sensible-editor`\ (1) for a given
+user.
 
 
 REQUIRED PARAMETERS
@@ -42,14 +42,17 @@ EXAMPLES
 
 .. code-block:: sh
 
-   __sensible_editor root --editor /bin/ed  # ed(1) is the standard
+   # ed(1) is the standard
+   __sensible_editor root --editor /bin/ed
+
+   # some users may prefer nano(1), though
    __sensible_editor noob --editor nano
 
 
 LIMITATIONS
 -----------
 This type depends upon the :strong:`sensible-editor`\ (1) script which
-is part of the sensible-utils package.
+is part of the ``sensible-utils`` package.
 
 Therefore, the following operating systems are supported:
 
@@ -59,8 +62,8 @@ Therefore, the following operating systems are supported:
 * RHEL/CentOS 7 or later (EPEL repo required)
 * Fedora 21 or later
 
-Note: on old versions of Ubuntu the sensible-* utils are part of the
-debianutils package.
+Note: on old versions of Ubuntu the ``sensible-*`` utils are part of the
+``debianutils`` package.
 
 
 SEE ALSO
@@ -71,12 +74,12 @@ SEE ALSO
 
 AUTHORS
 -------
-* Dennis Camera <dennis.camera--@--ssrq-sds-fds.ch>
+* Dennis Camera <dennis.camera--@--riiengineering.ch>
 
 
 COPYING
 -------
-Copyright \(C) 2019 Dennis Camera.
+Copyright \(C) 2019-2023 Dennis Camera.
 You can redistribute it and/or modify it under the terms of the GNU General
 Public License as published by the Free Software Foundation, either version 3 of
 the License, or (at your option) any later version.
