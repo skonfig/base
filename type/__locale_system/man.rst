@@ -8,9 +8,9 @@ cdist-type__locale_system - Set system-wide locale
 
 DESCRIPTION
 -----------
-This cdist type allows you to modify system-wide locale.
-The name of the locale category is given as the object id
-(usually you are probably interested in using LANG).
+This type allows you to modify system-wide locale.
+The name of the locale category is given as the ``__object_id``
+(usually you are probably interested in using ``LANG``).
 
 
 OPTIONAL PARAMETERS
@@ -60,11 +60,14 @@ AUTHORS
 * Steven Armstrong <steven-cdist--@--armstrong.cc>
 * Carlos Ortigoza <carlos.ortigoza--@--ungleich.ch>
 * Nico Schottelius <nico.schottelius--@--ungleich.ch>
+* Dennis Camera <dennis.camera--@--riiengineering.ch>
 
 
 COPYING
 -------
-Copyright \(C) 2016 Nico Schottelius.
+Copyright \(C) 2012-2016 Steven Armstrong;
+2016 Carlos Ortigoza, Nico Schottelius;
+2020-2023 Dennis Camera.
 You can redistribute it and/or modify it under the terms of the GNU General
 Public License as published by the Free Software Foundation, either version 3 of
 the License, or (at your option) any later version.
