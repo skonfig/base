@@ -36,18 +36,25 @@ first_command() {
 if test -s "${__object:?}/parameter/pip"
 then
 	pip=$(cat "${__object:?}/parameter/pip")
-	case ${pip}
+
+	if pipinterp=$(expr "${pip}" : '\(.*[^ ]\) *-m *pip')
+	then
+		pip_suffix=${pip#"${pycmd}"}
+	else
+		pipinterp=${pip}
+	fi
+
+	case ${pipinterp}
 	in
 		(/*)
-			pipexe=${pip}
 			;;
 		(*)
-			pipexe=$(command -v "${pip}" 2>/dev/null) || :
+			pipinterp=$(command -v "${pip}" 2>/dev/null) || :
 			;;
 	esac
 
-	test -x "${pipexe}" || exit 0
-	printf '%s\n' "${pipexe}"
+	test -x "${pipinterp}" || exit 0
+	printf '%s%s\n' "${pipinterp}" "${pip_suffix-}"
 elif first_command pip3 pip
 then
 	:  # nothing to do, first_command printed path already

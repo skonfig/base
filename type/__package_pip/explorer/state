@@ -32,7 +32,7 @@ then
 	# we have a pip executable -> extract Python interpreter from shebang
 	pyinterp=$(shebang_of "${pip}")
 else
-	pyinterp=$(expr "${pip}" : '\(.*\)-m *pip') || :
+	pyinterp=$(expr "${pip}" : '\(.*[^ ]\) *-m *pip') || :
 fi
 test -n "${pyinterp}" || {
 	printf 'Could not determine the matching Python interpreter for %s\n' \
