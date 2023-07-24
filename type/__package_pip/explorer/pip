@@ -1,6 +1,6 @@
 #!/bin/sh -e
 #
-# 2022 Dennis Camera (cdist at dtnr.ch)
+# 2022-2023 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of cdist.
 #
@@ -17,8 +17,12 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
+# Prints a command that can be used to execute pip(1).
+# If a pip binary exists, its path will be printed, a fallback to
+# {python} -m pip, otherwise.
+# In any case, the first word will be an absolute path.
+#
 
-first_arg() { printf '%s\n' "$1"; }
 
 first_command() {
 	while test $# -gt 0
@@ -31,7 +35,19 @@ first_command() {
 
 if test -s "${__object:?}/parameter/pip"
 then
-	cat "${__object:?}/parameter/pip"
+	pip=$(cat "${__object:?}/parameter/pip")
+	case ${pip}
+	in
+		(/*)
+			pipexe=${pip}
+			;;
+		(*)
+			pipexe=$(command -v "${pip}" 2>/dev/null) || :
+			;;
+	esac
+
+	test -x "${pipexe}" || exit 0
+	printf '%s\n' "${pipexe}"
 elif first_command pip3 pip
 then
 	:  # nothing to do, first_command printed path already
