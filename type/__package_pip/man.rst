@@ -35,9 +35,9 @@ runas
 state
    One of:
 
-   present
+   ``present``
       the package is installed
-   absent
+   ``absent``
       the package is uninstalled
 
    Defaults to: ``present``
@@ -96,12 +96,12 @@ AUTHORS
 -------
 * Nico Schottelius <nico-cdist--@--schottelius.org>
 * Matthias Stecher <matthiasstecher--@--gmx.de>
-* Dennis Camera <cdist--@--dtnr.ch>
+* Dennis Camera <dennis.camera--@--riiengineering.ch>
 
 
 COPYING
 -------
-Copyright \(C) 2012 Nico Schottelius, 2021 Matthias Stecher, 2022 Dennis Camera.
+Copyright \(C) 2012 Nico Schottelius, 2021 Matthias Stecher, 2022-2023 Dennis Camera.
 You can redistribute it and/or modify it under the terms of the GNU General
 Public License as published by the Free Software Foundation, either version 3 of
 the License, or (at your option) any later version.

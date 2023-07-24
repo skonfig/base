@@ -1,27 +1,31 @@
 #!/bin/sh -e
 #
-# 2022 Dennis Camera (cdist at dtnr.ch)
+# 2022 Dennis Camera (dennis.camera at riiengineering.ch)
 #
-# This file is part of cdist.
+# This file is part of skonfig-base.
 #
-# cdist is free software: you can redistribute it and/or modify
+# skonfig-base is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# cdist is distributed in the hope that it will be useful,
+# skonfig-base is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+# along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-quote() { printf '%s\n' "$*" | sed "s/'/'\\\\''/g;1s/^/'/;\$s/\$/'/"; }
+shquot() {
+	sed -e "s/'/'\\\\''/g" -e "1s/^/'/" -e "\$s/\$/'/" <<-EOF
+	$*
+	EOF
+}
 
-state_is=$(cat "${__object:?}/explorer/state")
-state_should=$(cat "${__object:?}/parameter/state")
+read -r state_is <"${__object:?}/explorer/state"
+read -r state_should <"${__object:?}/parameter/state"
 
 # short circuit if state is the same and no further extras to install
 test "${state_is}" != "${state_should}" || exit 0
@@ -31,7 +35,13 @@ requirement=$(cat "${__object:?}/explorer/requirement")
 pip=$(cat "${__object:?}/explorer/pip")
 test -n "${pip}" || {
 	echo 'Could not find pip.' >&2
-	echo 'Please make sure that pip is installed or specify the command to use in --pip.' >&2
+	if test -f "${__object:?}/parameter/pip"
+	then
+		printf 'Please make sure that "%s" is a path to an executable or name of a command on the target.' \
+			"$(cat "${__object:?}/parameter/pip")" >&2
+	else
+		echo 'Please make sure that pip is installed on the target or specify the command to use in --pip.' >&2
+	fi
 	exit 1
 }
 
@@ -40,7 +50,7 @@ runas=$(cat "${__object:?}/parameter/runas" 2>/dev/null || :)
 do_cmd() {
 	if test -n "${runas}"
 	then
-		printf 'su -l %s -c %s\n' "$(quote "${runas}")" "$(quote "$1")"
+		printf 'su - %s -c %s\n' "$(shquot "${runas}")" "$(shquot "exec $1")"
 	else
 		printf '%s\n' "$1"
 	fi
@@ -49,12 +59,12 @@ do_cmd() {
 case ${state_should}
 in
 	(present)
-		do_cmd "${pip} install -q $(quote "${requirement}")"
-		echo installed >> "${__messages_out:?}"
+		do_cmd "${pip} install -q $(shquot "${requirement}")"
+		echo installed >>"${__messages_out:?}"
 		;;
 	(absent)
-		do_cmd "${pip} uninstall -q -y $(quote "${requirement}")"
-		echo removed >> "${__messages_out:?}"
+		do_cmd "${pip} uninstall -q -y $(shquot "${requirement}")"
+		echo removed >>"${__messages_out:?}"
 		;;
 	(*)
 		printf 'Invalid --state: %s\n' "${state_should}" >&2
