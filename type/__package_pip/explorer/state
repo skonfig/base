@@ -43,7 +43,12 @@ test -n "${pyinterp}" || {
 # Execute the matching Python interpreter of pip.
 pip_python() { eval set -- "${pyinterp}" '"$@"'; "$@"; }
 
-requirement=$("${__type_explorer:?}/requirement")
+if test -f "${__object:?}/parameter/requirement"
+then
+	requirement=$(cat "${__object:?}/parameter/requirement")
+else
+	requirement=${__object_id:?}
+fi
 
 if pip_python -c '__import__("pkg_resources").require(__import__("sys").argv[1])' \
 	"${requirement}" >/dev/null 2>&1

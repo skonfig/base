@@ -30,6 +30,8 @@ pip
 requirement
    Can be anything supported by ``pip install`` - package name, URL, package
    with extras etc.
+
+   Defaults to: ``__object_id``
 runas
    Run pip as specified user. By default it runs as root.
 state
@@ -41,21 +43,6 @@ state
       the package is uninstalled
 
    Defaults to: ``present``
-
-
-DEPRECATED OPTIONAL PARAMETERS
-------------------------------
-extra
-   Extra optional dependencies which should be installed along the selected
-   package. Can be specified multiple times. Multiple extras can be passed
-   in one ``--extra`` as a comma-separated list.
-
-   Extra optional dependencies will be installed even when the base package
-   is already installed. Notice that the type will not remove installed extras
-   that are not explicitly named for the type because pip does not offer a
-   management for orphaned packages and they may be used by other packages.
-name
-   If supplied, use the name and not the object id as the package name.
 
 
 EXAMPLES

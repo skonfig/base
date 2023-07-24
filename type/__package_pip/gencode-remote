@@ -30,7 +30,12 @@ read -r state_should <"${__object:?}/parameter/state"
 # short circuit if state is the same and no further extras to install
 test "${state_is}" != "${state_should}" || exit 0
 
-requirement=$(cat "${__object:?}/explorer/requirement")
+if test -f "${__object:?}/parameter/requirement"
+then
+	requirement=$(cat "${__object:?}/parameter/requirement")
+else
+	requirement=${__object_id:?}
+fi
 
 pip=$(cat "${__object:?}/explorer/pip")
 test -n "${pip}" || {
