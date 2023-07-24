@@ -1,28 +1,29 @@
 #!/bin/sh -e
 #
 # based on previous work by other people, modified by:
-# 2020,2022 Dennis Camera <cdist at dtnr.ch>
+# 2020,2022,2023 Dennis Camera <dennis.camera at riiengineering.ch>
 #
-# This file is part of cdist.
+# This file is part of skonfig-base.
 #
-# cdist is free software: you can redistribute it and/or modify
+# skonfig-base is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# cdist is distributed in the hope that it will be useful,
+# skonfig-base is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+# along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 # Finds disks of the system (excl. ram disks, floppy, cdrom)
 
-uname_s="$(uname -s)"
+uname_s=$(uname -s)
 
-case $uname_s in
+case ${uname_s}
+in
     FreeBSD)
         sysctl -n kern.disks
     ;;
@@ -32,6 +33,20 @@ case $uname_s in
     NetBSD)
         PATH=$(getconf PATH)
         sysctl -n hw.disknames | awk -v RS=' ' '/^[lsw]d[0-9]+/'
+    ;;
+    Darwin)
+        diskutil list \
+        | awk '
+          /^\/dev\// {
+              if (match($0, /\(.*\):$/)) {
+                  NA = split(substr($0, RSTART + 1, RLENGTH - 3), attrs, ", *")
+                  for (i = 1; i <= NA; i++)
+                      if (attrs[i] == "synthesized")
+                          next
+              }
+              sub(/^\/dev\//, "", $1)
+              print $1
+          }'
     ;;
     Linux)
         # list of major device numbers toexclude:
