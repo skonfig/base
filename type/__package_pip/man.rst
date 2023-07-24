@@ -19,43 +19,35 @@ to guess which pip to use.
 Most OSes provide a package to get a default pip installation, so it's usually
 sufficient to add ``__package python3-pip`` to your manifest.
 
+On Debian-derived systems you may need to install setuptools
+(``__package python3-setuptools``) for pip to work correctly, as well.
+
 
 OPTIONAL PARAMETERS
 -------------------
 pip
    Instead of using pip from ``PATH``, use the specified command to execute
    pip.
-   The value to this parameter can be a path, executable name or a string of
-   the form ``pythonX.Y -m pip`` or ``/path/to/venv/bin/python -m pip``.
+   The value to this parameter can be either
+   * an absolute path to a pip executable,
+   * a command name, or
+   * a string of the form ``pythonX.Y -m pip`` / ``/path/to/venv/bin/python -m pip``.
 requirement
    Can be anything supported by ``pip install`` - package name, URL, package
    with extras etc.
+
+   Defaults to: ``__object_id``
 runas
    Run pip as specified user. By default it runs as root.
 state
    One of:
 
-   present
+   ``present``
       the package is installed
-   absent
+   ``absent``
       the package is uninstalled
 
    Defaults to: ``present``
-
-
-DEPRECATED OPTIONAL PARAMETERS
-------------------------------
-extra
-   Extra optional dependencies which should be installed along the selected
-   package. Can be specified multiple times. Multiple extras can be passed
-   in one ``--extra`` as a comma-separated list.
-
-   Extra optional dependencies will be installed even when the base package
-   is already installed. Notice that the type will not remove installed extras
-   that are not explicitly named for the type because pip does not offer a
-   management for orphaned packages and they may be used by other packages.
-name
-   If supplied, use the name and not the object id as the package name.
 
 
 EXAMPLES
@@ -64,15 +56,19 @@ EXAMPLES
 .. code-block:: sh
 
    # Install a package
-   __package_pip pyro --state present
+   __package_pip supervisor
+
+   # Install a package using a specific version of pip
+   __package_pip Sphinx \
+      --pip pip3.11
 
    # Use pip in a virtualenv located at /root/shinken_virtualenv
    __package_pip pyro \
-      --state present --pip /root/shinken_virtualenv/bin/pip
+      --pip /root/shinken_virtualenv/bin/pip
 
    # Use pip in a virtualenv located at /foo/shinken_virtualenv as user foo
    __package_pip pyro \
-      --state present --pip /foo/shinken_virtualenv/bin/pip --runas foo
+      --pip /foo/shinken_virtualenv/bin/pip --runas foo
 
    # Install package with extras
    __package_pip mautrix-telegram \
@@ -86,6 +82,9 @@ EXAMPLES
    __package_pip mkosi \
       --requirement git+https://github.com/systemd/mkosi.git
 
+   # Uninstall a package :-)
+   __package_pip cdist --state absent
+
 
 SEE ALSO
 --------
@@ -96,12 +95,12 @@ AUTHORS
 -------
 * Nico Schottelius <nico-cdist--@--schottelius.org>
 * Matthias Stecher <matthiasstecher--@--gmx.de>
-* Dennis Camera <cdist--@--dtnr.ch>
+* Dennis Camera <dennis.camera--@--riiengineering.ch>
 
 
 COPYING
 -------
-Copyright \(C) 2012 Nico Schottelius, 2021 Matthias Stecher, 2022 Dennis Camera.
+Copyright \(C) 2012 Nico Schottelius, 2021 Matthias Stecher, 2022-2023 Dennis Camera.
 You can redistribute it and/or modify it under the terms of the GNU General
 Public License as published by the Free Software Foundation, either version 3 of
 the License, or (at your option) any later version.

@@ -1,24 +1,28 @@
 #!/bin/sh -e
 #
-# 2022 Dennis Camera (cdist at dtnr.ch)
+# 2022-2023 Dennis Camera (dennis.camera at riiengineering.ch)
 #
-# This file is part of cdist.
+# This file is part of skonfig-base.
 #
-# cdist is free software: you can redistribute it and/or modify
+# skonfig-base is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# cdist is distributed in the hope that it will be useful,
+# skonfig-base is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+# along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
+#
+# Prints a command that can be used to execute pip(1).
+# If a pip binary exists, its path will be printed, a fallback to
+# {python} -m pip, otherwise.
+# In any case, the first word will be an absolute path.
 #
 
-first_arg() { printf '%s\n' "$1"; }
 
 first_command() {
 	while test $# -gt 0
@@ -31,7 +35,26 @@ first_command() {
 
 if test -s "${__object:?}/parameter/pip"
 then
-	cat "${__object:?}/parameter/pip"
+	pip=$(cat "${__object:?}/parameter/pip")
+
+	if pipinterp=$(expr "${pip}" : '\(.*[^ ]\) *-m *pip')
+	then
+		pip_suffix=${pip#"${pycmd}"}
+	else
+		pipinterp=${pip}
+	fi
+
+	case ${pipinterp}
+	in
+		(/*)
+			;;
+		(*)
+			pipinterp=$(command -v "${pip}" 2>/dev/null) || :
+			;;
+	esac
+
+	test -x "${pipinterp}" || exit 0
+	printf '%s%s\n' "${pipinterp}" "${pip_suffix-}"
 elif first_command pip3 pip
 then
 	:  # nothing to do, first_command printed path already

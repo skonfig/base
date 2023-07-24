@@ -1,25 +1,23 @@
 #!/bin/sh -e
 #
-# 2022 Dennis Camera (cdist at dtnr.ch)
+# 2022-2023 Dennis Camera (dennis.camera at riiengineering.ch)
 #
-# This file is part of cdist.
+# This file is part of skonfig-base.
 #
-# cdist is free software: you can redistribute it and/or modify
+# skonfig-base is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# cdist is distributed in the hope that it will be useful,
+# skonfig-base is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+# along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-comma_join() { sed -e :a -e '$!N' -e 's/\n/,/' -e ta; }
-first_arg() { printf '%s\n' "$1"; }
 shebang_of() { sed -n -e '1s/^#! *//p' "$1"; }
 
 pip=$("${__type_explorer:?}/pip")
@@ -28,13 +26,13 @@ if test -z "${pip}"
 then
 	# no pip, no packages
 	echo absent
-	exit
+	exit 0
 elif test -x "${pip}"
 then
-	# we have a pip executable -> extract python interpreter
+	# we have a pip executable -> extract Python interpreter from shebang
 	pyinterp=$(shebang_of "${pip}")
 else
-	pyinterp=$(expr "${pip}" : '\(.*\)-m *pip')
+	pyinterp=$(expr "${pip}" : '\(.*[^ ]\) *-m *pip') || :
 fi
 test -n "${pyinterp}" || {
 	printf 'Could not determine the matching Python interpreter for %s\n' \
@@ -45,9 +43,17 @@ test -n "${pyinterp}" || {
 # Execute the matching Python interpreter of pip.
 pip_python() { eval set -- "${pyinterp}" '"$@"'; "$@"; }
 
-requirement=$("${__type_explorer:?}/requirement")
+if test -f "${__object:?}/parameter/requirement"
+then
+	requirement=$(cat "${__object:?}/parameter/requirement")
+else
+	requirement=${__object_id:?}
+fi
 
-pip_python -c '__import__("pkg_resources").require(__import__("sys").argv[1])' \
-	"${requirement}" >/dev/null 2>&1 \
-&& echo present \
-|| echo absent
+if pip_python -c '__import__("pkg_resources").require(__import__("sys").argv[1])' \
+	"${requirement}" >/dev/null 2>&1
+then
+	echo present
+else
+	echo absent
+fi
