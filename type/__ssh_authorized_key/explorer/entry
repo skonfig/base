@@ -1,35 +1,60 @@
-#!/bin/sh
+#!/bin/sh -e
 #
 # 2014 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2023 Dennis Camera (dennis.camera at riiengineering.ch)
 #
-# This file is part of cdist.
+# This file is part of skonfig-base.
 #
-# cdist is free software: you can redistribute it and/or modify
+# skonfig-base is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# cdist is distributed in the hope that it will be useful,
+# skonfig-base is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+# along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
+#
+# Print sorted lines from --file where the type and key match --key.
 #
 
 # extract the keytype and base64 encoded key ignoring any options and comment
-type_and_key="$(tr ' ' '\n' < "$__object/parameter/key"| awk '/^(ssh|ecdsa)-[^ ]+/ { printf $1" "; getline; printf $1 }')"
-# If type_and_key is empty, which is the case with an invalid key, do not grep $file because it results
-# in greping everything in file and all entries from file are removed.
-if [ -n "${type_and_key}" ]
-then
-    file="$(cat "$__object/parameter/file")"
-    test -e "$file" || exit 0
+type_and_key=$(
+	awk <"${__object:?}/parameter/key" '
+	!/^(ssh|ecdsa|sk)-/ && /.(ssh|ecdsa|sk)-[^ ]+/ {
+		# collapse quoted sections (quotes cannot be nested as per OpenSSH code)
+		gsub(/".*[^\\]"/, "\"\"")
+		# remove options ($1)
+		$1 = ""; $0 = substr($0, index($0, $2))
+	}
+	/^(ssh|ecdsa|sk)-[^ ]+/ {
+		printf "%s %s" ORS, $1, $2
+		exit  # only print first key of file
+	}'
+)
 
-    # get any entries that match the type and key
+file=$(cat "${__object:?}/parameter/file")
+test -e "${file}" || exit 0
 
-    # NOTE: Do not match from the beginning of the line as there may be options
-    # preceeding the key.
-    grep "${type_and_key}\\([ \\n].*\\)*$" "$file" || true
-fi
+# get entries which match the type and key
+
+awk -v tk="${type_and_key}" <"${file}" '
+# ensure to not print lines if tk is empty, which is the case with an
+# invalid key, because it would result in all entries being removed from the
+# file.
+
+/^[^#]/ && tk {
+	# NOTE: do not require tk to be at the beginning of the line as there may be
+	#       options preceesing the key.
+	p = index($0, tk)
+	if (0 < p) {
+		rest = substr($0, p + length(tk))
+		if (!rest || rest ~ /^ /) {
+			print
+		}
+	}
+}
+' | sort

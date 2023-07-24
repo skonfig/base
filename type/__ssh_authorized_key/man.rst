@@ -17,10 +17,10 @@ This type was created to be used by
 REQUIRED PARAMETERS
 -------------------
 file
-   The authorized_keys file where the given key should be managed.
+   The authorized_keys file which should be managed.
 key
-   The ssh key which shall be managed in this authorized_keys file.
-   Must be a string containing the ssh keytype, base 64 encoded key and
+   The SSH key which shall be managed in ``--file``.
+   Must be a string containing the ssh keytype, base64-encoded key and
    optional trailing comment which shall be added to the given
    authorized_keys file.
 
@@ -78,11 +78,12 @@ SEE ALSO
 AUTHORS
 -------
 * Steven Armstrong <steven-cdist--@--armstrong.cc>
+* Dennis Camera <dennis.camera--@--riiengineering.ch>
 
 
 COPYING
 -------
-Copyright \(C) 2014 Steven Armstrong.
+Copyright \(C) 2014 Steven Armstrong, 2023 Dennis Camera.
 You can redistribute it and/or modify it under the terms of the GNU General
 Public License as published by the Free Software Foundation, either version 3 of
 the License, or (at your option) any later version.
