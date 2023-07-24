@@ -19,6 +19,9 @@ to guess which pip to use.
 Most OSes provide a package to get a default pip installation, so it's usually
 sufficient to add ``__package python3-pip`` to your manifest.
 
+On Debian-derived systems you may need to install setuptools
+(``__package python3-setuptools``) for pip to work correctly, as well.
+
 
 OPTIONAL PARAMETERS
 -------------------
