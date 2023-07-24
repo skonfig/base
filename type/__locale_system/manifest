@@ -3,23 +3,22 @@
 # 2012-2016 Steven Armstrong (steven-cdist at armstrong.cc)
 # 2016 Carlos Ortigoza (carlos.ortigoza at ungleich.ch)
 # 2016 Nico Schottelius (nico.schottelius at ungleich.ch)
-# 2020,2022 Dennis Camera (skonfig at dtnr.ch)
+# 2020,2022,2023 Dennis Camera (dennis.camera at riiengineering.ch
 #
-# This file is part of cdist.
+# This file is part of skonfig-base.
 #
-# cdist is free software: you can redistribute it and/or modify
+# skonfig-base is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# cdist is distributed in the hope that it will be useful,
+# skonfig-base is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with cdist. If not, see <http://www.gnu.org/licenses/>.
-#
+# along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 # Configure system-wide locale by modifying i18n file.
 #
@@ -34,106 +33,106 @@ version_ge() {
 	# NOTES: if the lowest value of the two version numbers is equal to
 	#        `min_version_expected`, `version_is` must be the same or larger.
 	#        `-k n,n` instead of `-k n` is required for some sort(1)s.
-	printf '%s\n' "$1" "$2" \
-	| sort -t '.' -n -k 1,1 -k 2,2 -k 3,3 \
-	| head -1 \
-	| grep -qxF "$2"
+	sort -t. -n -k1,1 -k2,2 -k3,3 <<-EOF | { read -r _x; test "${_x}" = "$2"; }
+	$1
+	$2
+	EOF
 }
 
 
-key=$__object_id
+key=${__object_id:?}
 onchange_cmd=  # none, by default
 quote_value=false
 
 catval() {
     # shellcheck disable=SC2059
-    printf "$($quote_value && echo '"%s"' || echo '%s')" "$(cat "$1")"
+    printf "$(${quote_value?} && echo '"%s"' || echo '%s')" "$(cat "$1")"
 }
 
-state_should=$(cat "${__object}/parameter/state")
+read -r state_should <"${__object:?}/parameter/state"
 
-os=$(cat "$__global/explorer/os")
+os=$(cat "${__global:?}/explorer/os")
 
-case $os
+case ${os}
 in
-    debian)
+    (debian)
         os_version=$(cat "${__global:?}/explorer/os_version")
         if version_ge "${os_version}" 12.99
         then
             # Debian "12.99" (trixie/sid) and later
-            locale_conf="/etc/locale.conf"
+            locale_conf='/etc/locale.conf'
         elif version_ge "${os_version}" 4
         then
             # Debian 4 (etch) and later
-            locale_conf="/etc/default/locale"
+            locale_conf='/etc/default/locale'
         else
-            locale_conf="/etc/environment"
+            locale_conf='/etc/environment'
         fi
         ;;
-    devuan)
-        locale_conf="/etc/default/locale"
+    (devuan)
+        locale_conf='/etc/default/locale'
         ;;
-    ubuntu)
+    (ubuntu)
         os_version=$(cat "${__global:?}/explorer/os_version")
         if version_ge "${os_version}" 6.10
         then
             # Ubuntu 6.10 (edgy) and later
-            locale_conf="/etc/default/locale"
+            locale_conf='/etc/default/locale'
         else
-            locale_conf="/etc/environment"
+            locale_conf='/etc/environment'
         fi
         ;;
-    archlinux)
-        locale_conf="/etc/locale.conf"
+    (archlinux)
+        locale_conf='/etc/locale.conf'
         ;;
-    centos|redhat|scientific)
+    (centos|redhat|scientific)
         # shellcheck source=/dev/null
         version_id=$(. "${__global:?}/explorer/os_release" && echo "${VERSION_ID:-0}")
         if version_ge "${version_id}" 7
         then
-            locale_conf="/etc/locale.conf"
+            locale_conf='/etc/locale.conf'
         else
-            locale_conf="/etc/sysconfig/i18n"
+            locale_conf='/etc/sysconfig/i18n'
         fi
         ;;
-    fedora)
+    (fedora)
         # shellcheck source=/dev/null
         version_id=$(. "${__global:?}/explorer/os_release" && echo "${VERSION_ID:-0}")
         if version_ge "${version_id}" 18
         then
-            locale_conf="/etc/locale.conf"
+            locale_conf='/etc/locale.conf'
             quote_value=false
         else
-            locale_conf="/etc/sysconfig/i18n"
+            locale_conf='/etc/sysconfig/i18n'
         fi
         ;;
-    gentoo)
+    (gentoo)
         init=$(cat "${__global:?}/explorer/init")
         case ${init}
         in
             (*openrc*)
-                locale_conf="/etc/env.d/02locale"
-                onchange_cmd="env-update --no-ldconfig"
+                locale_conf='/etc/env.d/02locale'
+                onchange_cmd='env-update --no-ldconfig'
                 quote_value=true
                 ;;
             (systemd)
-                locale_conf="/etc/locale.conf"
+                locale_conf='/etc/locale.conf'
                 ;;
         esac
         ;;
-    freebsd|netbsd)
+    (freebsd|netbsd)
         # NetBSD doesn't have a separate configuration file to set locales.
         # In FreeBSD locales could be configured via /etc/login.conf but parsing
         # that would be annoying, so the shell login file will have to do.
         # "Non-POSIX" shells like csh will not be updated here.
 
-        locale_conf="/etc/profile"
+        locale_conf='/etc/profile'
         quote_value=true
         value="$(catval "${__object:?}/parameter/value"); export ${key}"
         ;;
-    solaris)
-        locale_conf="/etc/default/init"
-        locale_conf_group="sys"
+    (solaris)
+        locale_conf='/etc/default/init'
+        locale_conf_group='sys'
 
         os_version=$(cat "${__global:?}/explorer/os_version")
         if version_ge "${os_version}" 5.11
@@ -150,34 +149,34 @@ in
             # NOTE: Remember not to use "cool" POSIX features like -q or -e with
             # Solaris grep.
             release_regex='Oracle Solaris 11.[2-9][0-9]*'
-            case $state_should
+            case ${state_should}
             in
                 (present)
-                    svccfg_cmd="svccfg -s svc:/system/environment:init setprop environment/${key} = astring: '$(cat "${__object}/parameter/value")'"
+                    svccfg_cmd="svccfg -s svc:/system/environment:init setprop environment/${key} = astring: '$(cat "${__object:?}/parameter/value")'"
                     ;;
                 (absent)
                     svccfg_cmd="svccfg -s svc:/system/environment:init delprop environment/${key}"
                     ;;
             esac
             refresh_cmd='svcadm refresh svc:/system/environment'
-            onchange_cmd="grep '${release_regex}' /etc/release >&- || exit 0; ${svccfg_cmd:-:} && ${refresh_cmd}"
+            onchange_cmd="grep '${release_regex}' /etc/release >&- || exit 0; ${svccfg_cmd:-:} && ${refresh_cmd:-:}"
         else
             locale_conf_mode=0555
         fi
         ;;
-    slackware)
+    (slackware)
         # NOTE: lang.csh (csh config) is ignored here.
-        locale_conf="/etc/profile.d/lang.sh"
+        locale_conf='/etc/profile.d/lang.sh'
         locale_conf_mode=0755
-        key="export ${__object_id}"
+        key="export ${__object_id:?}"
         ;;
-    suse)
-        if test -s "${__global}/explorer/os_release"
+    (suse)
+        if test -s "${__global:?}/explorer/os_release"
         then
             # shellcheck source=/dev/null
-            os_version=$(. "${__global}/explorer/os_release" && echo "${VERSION}")
+            os_version=$(. "${__global:?}/explorer/os_release" && echo "${VERSION}")
         else
-            os_version=$(sed -n 's/^VERSION\ *=\ *//p' "${__global}/explorer/os_version")
+            os_version=$(sed -n 's/^VERSION\ *=\ *//p' "${__global:?}/explorer/os_version")
         fi
         os_major=$(expr "${os_version}" : '\([0-9]\{1,\}\)')
 
@@ -189,33 +188,34 @@ in
             # /etc/sysconfig/language is still available.
             # Older documentation doesn't mention /etc/locale.conf, even though
             # is it created when localectl is used.
-            locale_conf="/etc/locale.conf"
+            locale_conf='/etc/locale.conf'
         else
-            locale_conf="/etc/sysconfig/language"
+            locale_conf='/etc/sysconfig/language'
             quote_value=true
-            key="RC_${__object_id}"
+            key="RC_${__object_id:?}"
         fi
         ;;
-    voidlinux)
-        locale_conf="/etc/locale.conf"
+    (voidlinux)
+        locale_conf='/etc/locale.conf'
         ;;
-    *)
+    (*)
         echo "Your operating system ($os) is currently not supported by this type (${__type##*/})." >&2
         echo "Please contribute an implementation for it if you can." >&2
         exit 1
         ;;
 esac
 
-__file "${locale_conf}" --state exists \
+__file "${locale_conf}" \
+    --state exists \
     --owner "${locale_conf_owner:-0}" \
     --group "${locale_conf_group:-0}" \
     --mode "${locale_conf_mode:-0644}"
 
-require="__file/${locale_conf}" \
+require="__file${locale_conf}" \
 __key_value "${locale_conf}:${key#export }" \
     --file "${locale_conf}" \
     --key "${key}" \
     --delimiter '=' --exact_delimiter \
     --state "${state_should}" \
-    --value "${value:-$(catval "${__object}/parameter/value")}" \
-    --onchange "${onchange_cmd}"
+    --value "${value:-$(catval "${__object:?}/parameter/value")}" \
+    --onchange "${onchange_cmd-}"
