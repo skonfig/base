@@ -25,8 +25,10 @@ OPTIONAL PARAMETERS
 pip
    Instead of using pip from ``PATH``, use the specified command to execute
    pip.
-   The value to this parameter can be a path, executable name or a string of
-   the form ``pythonX.Y -m pip`` or ``/path/to/venv/bin/python -m pip``.
+   The value to this parameter can be either
+   * an absolute path to a pip executable,
+   * a command name, or
+   * a string of the form ``pythonX.Y -m pip`` / ``/path/to/venv/bin/python -m pip``.
 requirement
    Can be anything supported by ``pip install`` - package name, URL, package
    with extras etc.
@@ -51,15 +53,19 @@ EXAMPLES
 .. code-block:: sh
 
    # Install a package
-   __package_pip pyro --state present
+   __package_pip supervisor
+
+   # Install a package using a specific version of pip
+   __package_pip Sphinx \
+      --pip pip3.11
 
    # Use pip in a virtualenv located at /root/shinken_virtualenv
    __package_pip pyro \
-      --state present --pip /root/shinken_virtualenv/bin/pip
+      --pip /root/shinken_virtualenv/bin/pip
 
    # Use pip in a virtualenv located at /foo/shinken_virtualenv as user foo
    __package_pip pyro \
-      --state present --pip /foo/shinken_virtualenv/bin/pip --runas foo
+      --pip /foo/shinken_virtualenv/bin/pip --runas foo
 
    # Install package with extras
    __package_pip mautrix-telegram \
@@ -72,6 +78,9 @@ EXAMPLES
    # Install package from URL
    __package_pip mkosi \
       --requirement git+https://github.com/systemd/mkosi.git
+
+   # Uninstall a package :-)
+   __package_pip cdist --state absent
 
 
 SEE ALSO
