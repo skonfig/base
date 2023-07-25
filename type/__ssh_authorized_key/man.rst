@@ -20,9 +20,11 @@ file
    The authorized_keys file which should be managed.
 key
    The SSH key which shall be managed in ``--file``.
-   Must be a string containing the ssh keytype, base64-encoded key and
-   optional trailing comment which shall be added to the given
-   authorized_keys file.
+
+   The value can either be:
+
+   * a string containing the SSH public key "line", or
+   * a path to a file local to the config host which contains the SSH public key.
 
 
 OPTIONAL PARAMETERS
@@ -57,16 +59,24 @@ EXAMPLES
 
 .. code-block:: sh
 
+   # Install an SSH public key given as a parameter
    __ssh_authorized_key some-id \
       --file /home/user/.ssh/autorized_keys \
-      --key "$(cat ~/.ssh/id_rsa.pub)"
+      --key 'ssh-rsa AAAA...'
 
+   # Install an SSH public key from a local file
    __ssh_authorized_key some-id \
       --file /home/user/.ssh/autorized_keys \
-      --key "$(cat ~/.ssh/id_rsa.pub)" \
+      --key "${__files:?}/ssh/id_rsa.pub" \
       --option 'command="/path/to/script"' \
       --option 'environment="FOO=bar"' \
       --comment 'one to rule them all'
+
+   # Remove an SSH public key (from a local file)
+   __ssh_authorized_key ex-employee \
+      --state absent \
+      --file /home/user/.ssh/autorized_keys \
+      --key ~/.ssh/id_rsa.pub \
 
 
 SEE ALSO

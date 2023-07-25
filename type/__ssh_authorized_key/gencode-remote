@@ -23,33 +23,47 @@ set -e -u
 
 file=$(cat "${__object:?}/parameter/file")
 
-test -s "${__object:?}/parameter/key" || {
-	echo 'The --key must not be empty' >&2
-	exit 1
-}
+case $(cat "${__object:?}/parameter/key")
+in
+	('')
+		echo 'The --key must not be empty' >&2
+		exit 1
+		;;
+	(/*)
+		keyfile=$(cat "${__object:?}/parameter/key")
+
+		test -r "${keyfile}" || {
+			printf 'The --key looks like a file path, but no such file could be found.\n' >&2
+			exit 1
+		}
+		;;
+	(*)
+		keyfile="${__object:?}/parameter/key"
+		;;
+esac
 
 # generate the entry as it should be (incl. any forced --options or --comment)
 # errors, if any are found, are reported in the exit status
-entry_should=$(awk -f "${__type:?}/files/genentry.awk" <"${__object:?}/parameter/key") || {
+entry_should=$(awk -f "${__type:?}/files/genentry.awk" <"${keyfile:?}") || {
 	case $?
 	in
 		(1)
-			echo 'An unexpected error occurred during the parsing of --key' >&2
+			echo 'An unexpected error occurred during the parsing of the SSH public key (file)' >&2
 			exit 1
 			;;
 		(2)
-			echo 'No public key found be found in --key:' >&2
-			cat "${__object:?}/parameter/key" >&2
+			echo 'No SSH public key could be found in:' >&2
+			cat "${keyfile}" >&2
 			exit 1
 			;;
 		(3)
-			echo 'Invalid --key:' >&2
-			cat "${__object:?}/parameter/key" >&2
+			echo 'Invalid SSH public key:' >&2
+			cat "${keyfile}" >&2
 			exit 1
 			;;
 		(4)
-			echo 'Multiple keys found in --key:' >&2
-			cat "${__object:?}/parameter/key" >&2
+			echo 'Multiple SSH public keys found in the key (file):' >&2
+			cat "${keyfile}" >&2
 			exit 1
 			;;
 	esac
