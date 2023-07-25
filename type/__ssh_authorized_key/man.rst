@@ -17,12 +17,14 @@ This type was created to be used by
 REQUIRED PARAMETERS
 -------------------
 file
-   The authorized_keys file where the given key should be managed.
+   The authorized_keys file which should be managed.
 key
-   The ssh key which shall be managed in this authorized_keys file.
-   Must be a string containing the ssh keytype, base 64 encoded key and
-   optional trailing comment which shall be added to the given
-   authorized_keys file.
+   The SSH key which shall be managed in ``--file``.
+
+   The value can either be:
+
+   * a string containing the SSH public key "line", or
+   * a path to a file local to the config host which contains the SSH public key.
 
 
 OPTIONAL PARAMETERS
@@ -57,16 +59,24 @@ EXAMPLES
 
 .. code-block:: sh
 
+   # Install an SSH public key given as a parameter
    __ssh_authorized_key some-id \
       --file /home/user/.ssh/autorized_keys \
-      --key "$(cat ~/.ssh/id_rsa.pub)"
+      --key 'ssh-rsa AAAA...'
 
+   # Install an SSH public key from a local file
    __ssh_authorized_key some-id \
       --file /home/user/.ssh/autorized_keys \
-      --key "$(cat ~/.ssh/id_rsa.pub)" \
+      --key "${__files:?}/ssh/id_rsa.pub" \
       --option 'command="/path/to/script"' \
       --option 'environment="FOO=bar"' \
       --comment 'one to rule them all'
+
+   # Remove an SSH public key (from a local file)
+   __ssh_authorized_key ex-employee \
+      --state absent \
+      --file /home/user/.ssh/autorized_keys \
+      --key ~/.ssh/id_rsa.pub \
 
 
 SEE ALSO
@@ -78,11 +88,12 @@ SEE ALSO
 AUTHORS
 -------
 * Steven Armstrong <steven-cdist--@--armstrong.cc>
+* Dennis Camera <dennis.camera--@--riiengineering.ch>
 
 
 COPYING
 -------
-Copyright \(C) 2014 Steven Armstrong.
+Copyright \(C) 2014 Steven Armstrong, 2023 Dennis Camera.
 You can redistribute it and/or modify it under the terms of the GNU General
 Public License as published by the Free Software Foundation, either version 3 of
 the License, or (at your option) any later version.

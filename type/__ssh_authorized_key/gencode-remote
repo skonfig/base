@@ -1,121 +1,155 @@
 #!/bin/sh -e
 #
 # 2014 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2023 Dennis Camera (dennis.camera at riiengineering.ch)
 #
-# This file is part of cdist.
+# This file is part of skonfig-base.
 #
-# cdist is free software: you can redistribute it and/or modify
+# skonfig-base is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# cdist is distributed in the hope that it will be useful,
+# skonfig-base is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+# along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-set -u
+set -e -u
 
-the_key="$(cat "$__object/parameter/key")"
-# validate key
-validated_key="$(echo "${the_key}" | tr ' ' '\n' | awk '/^(ssh|ecdsa)-[^ ]+/ { printf $1" "; getline; printf $1 }')"
-if [ -z "${validated_key}" ]
-then
-    echo "Key is invalid: \"${the_key}\"" >&2
-    exit 1
-fi
+file=$(cat "${__object:?}/parameter/file")
 
-remove_line() {
-   file="$1"
-   line="$2"
-   cat << DONE
-tmpfile=\$(mktemp ${file}.cdist.XXXXXXXXXX)
-# preserve ownership and permissions of existing file
-if [ -f "$file" ]; then
-   cp -p "$file" "\$tmpfile"
-   grep -v -F -x '$line' '$file' >\$tmpfile
-fi
-cat "\$tmpfile" >"$file"
-rm -f "\$tmpfile"
-DONE
+case $(cat "${__object:?}/parameter/key")
+in
+	('')
+		echo 'The --key must not be empty' >&2
+		exit 1
+		;;
+	(/*)
+		keyfile=$(cat "${__object:?}/parameter/key")
+
+		test -r "${keyfile}" || {
+			printf 'The --key looks like a file path, but no such file could be found.\n' >&2
+			exit 1
+		}
+		;;
+	(*)
+		keyfile="${__object:?}/parameter/key"
+		;;
+esac
+
+# generate the entry as it should be (incl. any forced --options or --comment)
+# errors, if any are found, are reported in the exit status
+entry_should=$(awk -f "${__type:?}/files/genentry.awk" <"${keyfile:?}") || {
+	case $?
+	in
+		(1)
+			echo 'An unexpected error occurred during the parsing of the SSH public key (file)' >&2
+			exit 1
+			;;
+		(2)
+			echo 'No SSH public key could be found in:' >&2
+			cat "${keyfile}" >&2
+			exit 1
+			;;
+		(3)
+			echo 'Invalid SSH public key:' >&2
+			cat "${keyfile}" >&2
+			exit 1
+			;;
+		(4)
+			echo 'Multiple SSH public keys found in the key (file):' >&2
+			cat "${keyfile}" >&2
+			exit 1
+			;;
+	esac
+}
+
+
+shquot() {
+	sed -e "s/'/'\\\\''/g" -e "1s/^/'/" -e "\$s/\$/'/" <<-EOF
+	$*
+	EOF
+}
+
+_umask=0077
+ensure_remote_umask() {
+	${_umask:+printf 'umask %03o\n' "${_umask}"}
+	unset -v _umask
+}
+
+remove_lines() {
+	test -n "${2-}" || return 0
+
+	ensure_remote_umask
+	cat <<-EOF
+	tmpfile=\$(mktemp $(shquot "${1:?}.cdist.XXXXXX"))
+	grep -v -x -F \\
+	$(printf '%s\n' "${2:?}" | sort -u | sed -e "s/'/'\\\\''/g" -e "s/^.*\$/       -e '&' \\\\/")
+	<$(shquot "${1:?}") >"\${tmpfile}" || :
+	cat "\${tmpfile}" >$(shquot "${1:?}")
+	rm -f "\${tmpfile}"
+
+	EOF
+
+	awk -v f="${1:?}" '{printf "removed from %s (%s)" ORS, f, $0}' <<-EOF >>"${__messages_out:?}"
+	$2
+	EOF
 }
 
 add_line() {
-   file="$1"
-   line="$2"
-   # escape single quotes
-   line_sanitised=$(echo "$line" | sed -e "s/'/'\"'\"'/g")
-   printf '%s' "printf '%s\\n' '$line_sanitised' >> $file"
+	ensure_remote_umask
+	printf 'cat <<'\''EOF'\'' >>%s\n%s\nEOF\n' \
+		"$(shquot "${1:?}")" \
+		"${2:?}"
+
+	printf 'added to %s (%s)\n' "${1:?}" "${2:?}" >>"${__messages_out:?}"
 }
 
 
-file="$(cat "$__object/parameter/file")"
-mkdir "$__object/files"
-
-# Generate the entry as it should be
-(
-   if [ -f "$__object/parameter/option" ]; then
-      # comma seperated list of options
-      options="$(tr '\n' ',' < "$__object/parameter/option")"
-      printf '%s ' "${options%*,}"
-   fi
-   if [ -f "$__object/parameter/comment" ]; then
-      # extract the keytype and base64 encoded key ignoring any options and comment
-      printf '%s ' "$(echo "${the_key}" | tr ' ' '\n' | awk '/^(ssh|ecdsa)-[^ ]+/ { printf $1" "; getline; printf $1 }')"
-      # override the comment with the one explicitly given
-      printf '%s' "$(cat "$__object/parameter/comment")"
-   else
-      printf '%s' "${the_key}"
-   fi
-   printf '\n'
-) > "$__object/files/should"
-
-# Remove conflicting entries if any
-if [ -s "$__object/explorer/entry" ]; then
-   # Note that the files have to be sorted for comparison with `comm`.
-   sort "$__object/explorer/entry" > "$__object/files/is"
-   comm -13 "$__object/files/should" "$__object/files/is" | {
-      while read -r entry; do
-         remove_line "$file" "$entry"
-      done
-   }
-fi
-
-# Determine the current state
-entry="$(cat "$__object/files/should")"
-state_should="$(cat "$__object/parameter/state")"
-num_existing_entries=$(grep -c -F -x "$entry" "$__object/explorer/entry" || true)
-if [ "$num_existing_entries" -eq 1 ]; then
-   state_is="present"
+if ! test -s "${__object:?}/explorer/entry"
+then
+	state_is=absent
+elif printf '%s\n' "${entry_should}" | cmp -s "${__object:?}/explorer/entry" -
+then
+	state_is=present
 else
-   # Posix grep does not define the -m option, so we can not remove a single
-   # occurence of a string from a file in the `remove_line` function. Instead
-   # _all_ occurences are removed.
-   # By using `comm` to detect conflicting entries this could lead to the
-   # situation that the key we want to add is actually removed.
-   # To workaround this we must treat 0 or more then 1 existing entries to
-   # mean current state is 'absent'. By doing this, the key is readded
-   # again after cleaning up conflicting entries.
-   state_is="absent"
+	state_is=different
 fi
+read -r state_should <"${__object:?}/parameter/state"
 
-# Manage the actual entry as it should be
-if [ "$state_should" = "$state_is" ]; then
-   # Nothing to do
-   exit 0
-fi
 
-case "$state_should" in
-   present)
-      add_line "$file" "$entry"
-      echo "added to $file ($entry)" >> "$__messages_out"
-   ;;
-   absent)
-      remove_line "$file" "$entry"
-      echo "removed from $file ($entry)" >> "$__messages_out"
-   ;;
+test "${state_should}" != "${state_is}" || exit 0
+
+case ${state_should}
+in
+	(present)
+		# remove conflicting entries if any
+		if test -s "${__object:?}/explorer/entry"
+		then
+			# ensure that the files are sorted for comparison with comm(1).
+			remove_lines \
+				"${file}" \
+				"$(printf '%s\n' "${entry_should}" | comm -13 - "${__object:?}/explorer/entry")"
+		fi
+
+		key_present_count=$(grep -c -x -F "${entry_should}" "${__object:?}/explorer/entry") || :
+		# NOTE: the key needs to be (re-)added iff it didn't occur exactly once in
+		#       the --file.  In case the same key occurs multiple times in --file,
+		#       all occurrences will have been removed by remove_lines() above.
+		if test $((key_present_count)) -ne 1
+		then
+			# add desired entry if it doesn't exist already
+			add_line "${file}" "${entry_should}"
+		fi
+		;;
+	(absent)
+		remove_lines \
+			"${file}" \
+			"$(cat "${__object:?}/explorer/entry")"
+		;;
 esac
