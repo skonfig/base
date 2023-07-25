@@ -86,13 +86,13 @@ awk $(drop_awk_comments "${__type:?}/files/update_sshd_config.awk") \\
 	-o ${mode} \\
 	-m $(quote "${match_only}") \\
 	-l $(quote "${option_line}") \\
-	$(quote "${sshd_config_file}") >$(quote "${sshd_config_file}.tmp") \\
+	$(quote "${sshd_config_file}") >$(quote "${sshd_config_file}.skonfig.tmp") \\
 || exit
 
-cmp -s $(quote "${sshd_config_file}") $(quote "${sshd_config_file}.tmp") || {
-	sshd -t -f $(quote "${sshd_config_file}.tmp") \\
-	&& cat $(quote "${sshd_config_file}.tmp") >$(quote "${sshd_config_file}") \\
+cmp -s $(quote "${sshd_config_file}") $(quote "${sshd_config_file}.skonfig.tmp") || {
+	sshd -t -f $(quote "${sshd_config_file}.skonfig.tmp") \\
+	&& cat $(quote "${sshd_config_file}.skonfig.tmp") >$(quote "${sshd_config_file}") \\
 	|| exit  # stop if sshd_config file check fails
 }
-rm -f $(quote "${sshd_config_file}.tmp")
+rm -f $(quote "${sshd_config_file}.skonfig.tmp")
 EOF
