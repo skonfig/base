@@ -1,45 +1,63 @@
 #!/bin/sh -e
+#
+# 2020-2021 Ander Punnar (ander at kvlt.ee)
+# 2023 Dennis Camera (dennis.camera at riiengineering.ch)
+#
+# This file is part of skonfig-base.
+#
+# skonfig-base is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# skonfig-base is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
+#
+# Prints the current state of the destionation file on the target.
+#   "present" if the file exists (and the --sum matches)
+#   "mismatch" if the file exists (and the --sum does not match)
+#   "absent" if the file does not exist
 
-if [ -f "$__object/parameter/destination" ]
+if test -f "${__object:?}/parameter/destination"
 then
-    dst="$( cat "$__object/parameter/destination" )"
+	dst=$(cat "${__object:?}/parameter/destination")
 else
-    dst="/$__object_id"
+	dst="/${__object_id:?}"
 fi
 
-if [ ! -f "$dst" ]
+if test ! -f "${dst}"
 then
-    echo 'absent'
-    exit 0
+	echo 'absent'
+	exit 0
 fi
 
-if [ ! -f "$__object/parameter/sum" ]
+if test ! -f "${__object:?}/parameter/sum"
 then
-    echo 'present'
-    exit 0
+	echo 'present'
+	exit 0
 fi
 
-sum_should="$( cat "$__object/parameter/sum" )"
+sum_should=$(cat "${__object:?}/parameter/sum")
+sum_should=${sum_should#*:}
 
-if echo "$sum_should" | grep -Fq ':'
+sum_cmd=$("${__type_explorer:?}/remote_cmd_sum")
+
+# shellcheck disable=SC2016,SC2059
+sum_is=$(eval " $(printf "${sum_cmd}" '"${dst}"')")
+
+test -n "${sum_is}" || {
+	echo 'existing destination checksum failed' >&2
+	exit 1
+}
+
+if test "${sum_is}" = "${sum_should}"
 then
-    sum_should="$( echo "$sum_should" | cut -d : -f 2 )"
-fi
-
-sum_cmd="$( "$__type_explorer/remote_cmd_sum" )"
-
-# shellcheck disable=SC2059
-sum_is="$( eval "$( printf "$sum_cmd" "'$dst'" )" )"
-
-if [ -z "$sum_is" ]
-then
-    echo 'existing destination checksum failed' >&2
-    exit 1
-fi
-
-if [ "$sum_is" = "$sum_should" ]
-then
-    echo 'present'
+	echo 'present'
 else
-    echo 'mismatch'
+	echo 'mismatch'
 fi
