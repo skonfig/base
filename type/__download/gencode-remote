@@ -1,59 +1,49 @@
 #!/bin/sh -e
+#
+# 2020-2021 Ander Punnar (ander at kvlt.ee)
+# 2022 Matthias Stecher (matthiasstecher at gmx.de)
+# 2023 Dennis Camera (dennis.camera at riiengineering.ch)
+#
+# This file is part of skonfig-base.
+#
+# skonfig-base is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# skonfig-base is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
+#
 
-download="$( cat "$__object/parameter/download" )"
+gencode=remote
+# shellcheck source=SCRIPTDIR/files/common.sh
+. "${__type:?}/files/common.sh"
 
-state_is="$( cat "$__object/explorer/state" )"
+download=$(cat "${__object:?}/parameter/download")
+state_is=$(cat "${__object:?}/explorer/state")
 
-if [ "$download" = 'remote' ] && [ "$state_is" != 'present' ]
+test "${state_is}" != 'present' || exit 0
+
+download_tmp_q=$(shquot "$(remote_download_tmp)")
+
+if test "${download}" = 'remote'
 then
-    cmd_get="$( cat "$__object/explorer/remote_cmd_get" )"
-
-    url="$( cat "$__object/parameter/url" )"
-
-    if [ -f "$__object/parameter/destination" ]
-    then
-        dst="$( cat "$__object/parameter/destination" )"
-    else
-        dst="/$__object_id"
-    fi
-
-    echo "download_tmp=\"${dst}.cdist__download_tmp\""
-
-    # shellcheck disable=SC2059
-    printf "$cmd_get > \"\$download_tmp\"\n" "$url"
-
-    if [ -f "$__object/parameter/sum" ]
-    then
-        sum_should="$( cat "$__object/parameter/sum" )"
-
-        if [ -f "$__object/parameter/cmd-sum" ]
-        then
-            remote_cmd_sum="$( cat "$__object/parameter/cmd-sum" )"
-        else
-            remote_cmd_sum="$( cat "$__object/explorer/remote_cmd_sum" )"
-
-            if echo "$sum_should" | grep -Fq ':'
-            then
-                sum_should="$( echo "$sum_should" | cut -d : -f 2 )"
-            fi
-        fi
-
-        # shellcheck disable=SC2059
-        echo "sum_is=\"\$( $( printf "$remote_cmd_sum" "\"\$download_tmp\"" ) )\""
-
-        echo "if [ \"\$sum_is\" != '$sum_should' ]; then"
-
-        echo "echo 'remote download checksum mismatch' >&2"
-
-        echo "rm -f \"\$download_tmp\""
-
-        echo 'exit 1; fi'
-    fi
-
-    echo "mv \"\$download_tmp\" '$dst'"
+	gencode_get "${download_tmp_q}"
 fi
 
-if [ -f "$__object/parameter/onchange" ] && [ "$state_is" != "present" ]
+# check remote cksum before move to final destination
+gencode_cksum "${download_tmp_q}"
+
+# move file to real destination after cksum check
+printf 'mv %s %s\n' "${download_tmp_q}" "$(shquot "${remote_dst:?}")"
+
+# execute --onchange (both for local and remote download)
+if test -f "${__object:?}/parameter/onchange"
 then
-    cat "$__object/parameter/onchange"
+	cat "${__object:?}/parameter/onchange"
 fi

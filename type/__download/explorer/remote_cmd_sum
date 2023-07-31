@@ -1,82 +1,106 @@
 #!/bin/sh -e
+#
+# 2021 Ander Punnar (ander at kvlt.ee)
+# 2023 Dennis Camera (dennis.camera at riiengineering.ch)
+#
+# This file is part of skonfig-base.
+#
+# skonfig-base is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# skonfig-base is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
+#
+# Prints a command available to verify the checksum of a file in the checksum
+# format given in --sum with an unquoted %s format specifier where the file name
+# should be inserted.
+# Nothing will be printed if --sum is not used or no command is available.
+#
 
-if [ ! -f "$__object/parameter/sum" ]
+test -f "${__object:?}/parameter/sum" || exit 0
+
+if test -f "${__object:?}/parameter/cmd-sum"
 then
-    exit 0
+	cat "${__object:?}/parameter/cmd-sum"
+	exit 0
 fi
 
-if [ -f "$__object/parameter/cmd-sum" ]
+if grep -qF ':' "${__object:?}/parameter/sum"
 then
-    cat "$__object/parameter/cmd-sum"
-    exit 0
-fi
-
-sum_should="$( cat "$__object/parameter/sum" )"
-
-if echo "$sum_should" | grep -Fq ':'
-then
-    sum_hash="$( echo "$sum_should" | cut -d : -f 1 )"
+	IFS=: read -r sum_hash sum_should <"${__object:?}/parameter/sum"
 else
-    if echo "$sum_should" | grep -Eq '^[0-9]+\s[0-9]+$'
-    then
-        sum_hash='cksum'
-    elif
-        echo "$sum_should" | grep -Eiq '^[a-f0-9]{32}$'
-    then
-        sum_hash='md5'
-    elif
-        echo "$sum_should" | grep -Eiq '^[a-f0-9]{40}$'
-    then
-        sum_hash='sha1'
-    elif
-        echo "$sum_should" | grep -Eiq '^[a-f0-9]{64}$'
-    then
-        sum_hash='sha256'
-    else
-        echo 'hash format detection failed' >&2
-        exit 1
-    fi
+	sum_should=$(cat "${__object:?}/parameter/sum")
+
+	if expr "${sum_should}" : '[0-9]\{1,\} [0-9]\{1,\}$' >/dev/null
+	then
+		sum_hash='cksum'
+	elif expr "${sum_should}" : '[0-9a-f]\{1,\}$' >/dev/null
+	then
+		case ${#sum_should}
+		in
+			(32)
+				sum_hash='md5' ;;
+			(40)
+				sum_hash='sha1' ;;
+			(64)
+				sum_hash='sha256' ;;
+		esac
+	fi
 fi
 
-os="$( "$__explorer/os" )"
-
-case "$sum_hash" in
-    cksum)
-        echo "cksum %s | awk '{print \$1\" \"\$2}'"
-    ;;
-    md5)
-        case "$os" in
-            freebsd)
-                echo "md5 -q %s"
-            ;;
-            *)
-                echo "md5sum %s | awk '{print \$1}'"
-            ;;
-        esac
-    ;;
-    sha1)
-        case "$os" in
-            freebsd)
-                echo "sha1 -q %s"
-            ;;
-            *)
-                echo "sha1sum %s | awk '{print \$1}'"
-            ;;
-        esac
-    ;;
-    sha256)
-        case "$os" in
-            freebsd)
-                echo "sha256 -q %s"
-            ;;
-            *)
-                echo "sha256sum %s | awk '{print \$1}'"
-            ;;
-        esac
-    ;;
-    *)
-        # we arrive here only if --sum is given with unknown format prefix
-        echo "unknown hash format: $sum_hash" >&2
-        exit 1
-    ;;
+case ${sum_hash}
+in
+	('')
+		echo 'checksum format detection failed' >&2
+		exit 1
+		;;
+	(cksum)
+		# POSIX
+		echo 'cksum <%s'
+		;;
+	(md5)
+		if command -v md5 >/dev/null 2>&1
+		then
+			# BSD
+			echo 'md5 -q %s'
+		elif command -v md5sum >/dev/null 2>&1
+		then
+			# GNU coreutils
+			echo "md5sum %s | awk '{print \$1}'"
+		fi
+		;;
+	(sha1)
+		if command -v sha1 >/dev/null 2>&1
+		then
+			# BSD
+			echo 'sha1 -q %s'
+		elif command -v sha1sum >/dev/null 2>&1
+		then
+			# GNU coreutils
+			echo "sha1sum %s | awk '{print \$1}'"
+		fi
+		;;
+	(sha256)
+		if command -v sha256 >/dev/null 2>&1
+		then
+			# BSD
+			echo 'sha256 -q %s'
+		elif command -v sha256sum >/dev/null 2>&1
+		then
+			# GNU coreutils
+			echo "sha256sum %s | awk '{print \$1}'"
+		fi
+		;;
+	(*)
+		# we arrive here only if --sum is given with unknown format prefix
+		printf 'unknown checksum format: %s\n' "${sum_hash}" >&2
+		exit 1
+		;;
 esac
