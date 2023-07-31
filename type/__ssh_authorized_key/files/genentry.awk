@@ -81,7 +81,7 @@ BEGIN {
 
 	$0 = raw_key
 
-	if (type_and_key !~ /^(ssh|ecdsa|sk)-[^ ]+ AAAA[A-Za-z0-9+/=]+$/) {
+	if (type_and_key !~ /^(ssh|ecdsa|sk)-[^ ]+ AAAA[A-Za-z0-9+\/=]+$/) {
 		exit (e=3)
 	}
 
