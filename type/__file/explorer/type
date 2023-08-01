@@ -1,33 +1,42 @@
-#!/bin/sh
+#!/bin/sh -e
 #
 # 2013 Steven Armstrong (steven-cdist armstrong.cc)
+# 2023 Dennis Camera (dennis.camera at riiengineering.ch)
 #
-# This file is part of cdist.
+# This file is part of skonfig-base.
 #
-# cdist is free software: you can redistribute it and/or modify
+# skonfig-base is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# cdist is distributed in the hope that it will be useful,
+# skonfig-base is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+# along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
+#
+# Print the type of the current file/directory at the destination.
 #
 
-destination="/$__object_id"
+destination="/${__object_id:?}"
 
-if [ ! -e "$destination" ]; then
-   echo none
-elif [ -h "$destination" ]; then
-   echo symlink
-elif [ -f "$destination" ]; then
-   echo file
-elif [ -d "$destination" ]; then
-   echo directory
+# NOTE: check for symlink first, because if the file is a symlink which points
+#       to a non-existent location -h is true, but -e is false.
+if test -h "${destination}"
+then
+	echo symlink
+elif test ! -e "${destination}"
+then
+	echo none
+elif test -f "${destination}"
+then
+	echo file
+elif test -d "${destination}"
+then
+	echo directory
 else
-   echo unknown
+	echo unknown
 fi
