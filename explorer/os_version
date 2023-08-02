@@ -1,7 +1,7 @@
 #!/bin/sh -e
 #
 # 2010-2011 Nico Schottelius (nico-cdist at schottelius.org)
-# 2020-2021 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
+# 2020-2023 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of cdist.
 #
@@ -41,6 +41,12 @@ in
       # empty, but well...
       cat /etc/arch-release
    ;;
+   checkpoint)
+       awk '{version=$NF; printf("%s\n", substr(version, 2))}' /etc/cp-release
+   ;;
+   chimera)
+      cat /etc/chimera-release
+   ;;
    debian)
       debian_version=$(cat /etc/debian_version)
       case $debian_version
@@ -54,6 +60,7 @@ in
               # sid versions don't have a number, so we decode by codename:
               case $(expr "$debian_version" : '\([a-z]\{1,\}\)/')
               in
+                  forky) echo 13.99 ;;
                   trixie) echo 12.99 ;;
                   bookworm) echo 11.99 ;;
                   bullseye) echo 10.99 ;;
@@ -140,7 +147,7 @@ in
    owl)
       cat /etc/owl-release
    ;;
-   redhat|centos|mitel|scientific)
+   redhat|centos|almalinux|eurolinux|rocky|mitel|scientific)
       cat /etc/redhat-release
    ;;
    slackware)

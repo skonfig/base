@@ -1,0 +1,43 @@
+#!/bin/sh -e
+#
+# 2023 Dennis Camera (dennis.camera at riiengineering.ch)
+#
+# This file is part of skonfig.
+#
+# skonfig is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# skonfig is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with skonfig. If not, see <http://www.gnu.org/licenses/>.
+#
+
+shquot() {
+	sed -e "s/'/'\\\\''/g" -e "1s/^/'/" -e "\$s/\$/'/" <<-EOF
+	$*
+	EOF
+}
+
+destination=$(cat "${__object:?}/parameter/destination")
+if test -s "${__object:?}/parameter/format"
+then
+	format=$(cat "${__object:?}/parameter/format")
+fi
+
+printf 'date -u %s>%s\n' \
+	"${format:++$(shquot "${format}") }" \
+	"$(shquot "${destination}")"
+
+if cmp -s "${__type:?}/parameter/default/destination" "${__object:?}/parameter/destination"
+then
+	# if the user doesn't override --destination, also create a
+	# cdist-configured file for compatibility with cdist-type__cdistmarker(7)
+	printf 'cat %s >/etc/cdist-configured\n' \
+		"$(shquot "${destination}")"
+fi

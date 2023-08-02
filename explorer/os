@@ -2,6 +2,7 @@
 #
 # 2010-2011 Nico Schottelius (nico-cdist at schottelius.org)
 # Copyright 2017, Philippe Gregoire <pg@pgregoire.xyz>
+# 2019,2020,2023 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of cdist.
 #
@@ -80,27 +81,65 @@ if [ -f /etc/owl-release ]; then
 fi
 
 ### Redhat and derivatives
-if grep -q ^Scientific /etc/redhat-release 2>/dev/null; then
-    echo scientific
+
+if [ -f /etc/fedora-release ]; then
+    echo fedora
     exit 0
 fi
 
-if grep -q ^CentOS /etc/redhat-release 2>/dev/null; then
+if [ -f /etc/almalinux-release ]; then
+    echo almalinux
+    exit 0
+fi
+
+if [ -f /etc/rocky-release ]; then
+    echo rocky
+    exit 0
+fi
+
+# NOTE: check for centos-release after checking for AlmaLinux/Rocky Linux,
+#       because these two also have a centos-release file.
+if [ -f /etc/centos-release ]; then
     echo centos
     exit 0
 fi
 
-if grep -q ^Fedora /etc/redhat-release 2>/dev/null; then
-   echo fedora
-   exit 0
-fi
-
-if grep -q ^Mitel /etc/redhat-release 2>/dev/null; then
-   echo mitel
-   exit 0
-fi
-
 if [ -f /etc/redhat-release ]; then
+   if grep -q '^CentOS ' /etc/redhat-release; then
+       echo centos
+       exit 0
+   fi
+
+   if grep -q '^Fedora ' /etc/redhat-release; then
+      echo fedora
+      exit 0
+   fi
+
+   if grep -q '^AlmaLinux ' /etc/redhat-release; then
+      echo almalinux
+      exit 0
+   fi
+
+   if grep -q '^Rocky Linux ' /etc/redhat-release; then
+      echo rocky
+      exit 0
+   fi
+
+   if grep -q '^EuroLinux ' /etc/redhat-release; then
+       echo eurolinux
+       exit 0
+   fi
+
+   if grep -q ^Scientific /etc/redhat-release; then
+       echo scientific
+       exit 0
+   fi
+
+   if grep -q ^Mitel /etc/redhat-release; then
+      echo mitel
+      exit 0
+   fi
+
    echo redhat
    exit 0
 fi
@@ -114,6 +153,20 @@ fi
 if [ -f /etc/slackware-version ]; then
    echo slackware
    exit 0
+fi
+
+###
+
+if [ -f /etc/chimera-release ]; then
+   echo chimera
+   exit 0
+fi
+
+# Appliances
+
+if grep -q '^Check Point Gaia' /etc/cp-release 2>/dev/null; then
+    echo checkpoint
+    exit 0
 fi
 
 uname_s="$(uname -s)"

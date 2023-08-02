@@ -1,21 +1,30 @@
-# cdist-conf
+# skonfig base set
 
-This is the [community maintained](https://github.com/cdist-community)
-fork of [ungleich](https://github.com/ungleich)'s [cdist](https://github.com/ungleich/cdist)
-(after [f061fb1](https://github.com/ungleich/cdist/commit/f061fb168ddacc894cb6e9882ff5c8ba002fadd8)).
+[skonfig](https://skonfig.li) is a configuration management system forked from [cdist](https://cdi.st)
+(after [e250024](https://code.ungleich.ch/ungleich-public/cdist/commit/e2500248f2ddc83129e77f2e6b8dffb64904dbae)).
 
-Work is split between four repositories:
+We have three main repositories:
 
-* [cdist](https://github.com/cdist-community/cdist) - documentation, project wide issues etc.
-* [cdist-core](https://github.com/cdist-community/cdist-core) - implementation of the **cdist core**.
-* **cdist-conf** - **essential** explorers and types (this repository).
-* [cdist-extra](https://github.com/cdist-community/cdist-extra) - **non-essential** explorers, types, scripts, tools etc.
+* [skonfig](https://github.com/skonfig/skonfig) - implementation of the **skonfig tool** and quick **getting started** bits,
+* **base** - explorer and types for **general use**,
+* [extra](https://github.com/skonfig/extra) - **special purpose** types and incubator for new types.
 
-Difference between essential and non-essential? Explorers and types which are
-used to manage state of the operating system (modify files and directories,
-install packages, manage services, etc.) and are not strictly related to some
-specific piece of software are considered essential.
+You can find us in `#skonfig:matrix.org` ([matrix?](https://matrix.org/faq/)).
 
-## Getting Started
+## Documentation
 
-See [cdist](https://github.com/cdist-community/cdist) repository.
+Most parts of [cdist documentation](https://www.cdi.st/manual/latest/) apply, but there are differences:
+
+* `skonfig` does only `config` (see `skonfig -h`),
+* some types behave differently and it's recommended to consult manuals in *base* and *extra*.
+
+## Split between *base* and *extra*
+
+**Base** explorers and types are used to change the state of the operating
+system or core components of it and are not for some specific piece of
+software. Furthermore, the quality requirements for inclusion in base are
+higher than for extra.
+
+**Extra** contains types for specific purposes like configuring software or
+services which don't belong to the operating system and also serves as an
+incubator for new types.

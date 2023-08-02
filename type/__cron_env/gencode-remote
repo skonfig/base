@@ -1,0 +1,88 @@
+#!/bin/sh -e
+#
+# 2022 Dennis Camera (cdist at dtnr.ch)
+#
+# This file is part of cdist.
+#
+# cdist is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cdist is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+#
+
+. "${__type:?}/files/functions.sh"
+
+user=$(cat "${__object:?}/parameter/user")
+
+if test -f "${__object:?}/parameter/name"
+then
+	read -r var_name <"${__object:?}/parameter/name"
+else
+	var_name=${__object_id:?}
+fi
+
+read -r state_is <"${__object:?}/explorer/state"
+read -r state_should <"${__object:?}/parameter/state"
+
+test "${state_is}" != "${state_should}" || exit 0
+
+. "${__type:?}/files/commands.sh"
+
+# shellcheck disable=SC2016
+awk_var_filter='index($0,ENVIRON["ENAME"]) == 1 && substr($0, length(ENVIRON["ENAME"])+1) ~ /^ *=/'
+
+case ${state_should}
+in
+	(present)
+		test -f "${__object:?}/parameter/value" || {
+			echo 'Parameter --value is required when --state present.' >&2
+			exit 1
+		}
+
+		qvalue=$(cat "${__object:?}/parameter/value")
+		case $(grep -o '[ "'\'']' "${__object:?}/parameter/value" | tr -d '\n')
+		in
+			('') ;;
+			(*\"*) qvalue="'${qvalue}'" ;;
+			(*) qvalue="\"${qvalue}\"" ;;
+		esac
+
+		update_script='function prtvar() { printf "%s=%s\n", ENVIRON["ENAME"], ENVIRON["EVAL"]; p++ } '${awk_var_filter}' { prtvar(); next } /^[ \t]*#[ \t]*(m|minutes?)[ \t](h|hours?)/ || /^[ \t]*[0-9*@]/ { p++ } p==1 { prtvar() } { print } END { if (!p) prtvar() }'
+		modify_crontab_cmd="ENAME=$(quote "${var_name}") EVAL=$(quote "${qvalue}") awk $(quote "${update_script}")"
+		;;
+	(absent)
+		modify_crontab_cmd="ENAME=$(quote "${var_name}") awk $(quote "!(${awk_var_filter?})")"
+		;;
+	(*)
+		printf 'Invalid --state: %s\n' "${state_should}" >&2
+		exit 1
+		;;
+esac
+
+
+# assert that $entry only has one line to avoid fucking up the crontab
+test $(count_lines "${qvalue-}") -le 1 || {
+	echo 'crontab environment values must contain exactly one line.' >&2
+	exit 1
+}
+
+# print commands necessary to execute other commands, first
+prepare_cmds
+
+# NOTE: We need to lock against parallel execution with __cron because
+#       both types modify the same "file" and crontab(1) does not
+#       synchronization of its own.
+sed -e '/^#/d' -e '/^$/d' "${__type:?}/files/lock.sh"
+
+printf '%s | %s | %s\n' \
+	"${crontab_print_cmd?}" \
+	"${modify_crontab_cmd?}" \
+	"${crontab_update_cmd?}"

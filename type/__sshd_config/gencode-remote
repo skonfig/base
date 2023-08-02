@@ -1,6 +1,6 @@
 #!/bin/sh -e
 #
-# 2020 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
+# 2020,2022 Dennis Camera (skonfig at dtnr.ch)
 #
 # This file is part of cdist.
 #
@@ -43,7 +43,7 @@ in
 		;;
 esac
 
-sshd_config_file=$(cat "${__object:?}/parameter/file")
+sshd_config_file=$(cat "${__object:?}/explorer/config_file")
 
 quote() { printf "'%s'" "$(printf '%s' "$*" | sed -e "s/'/'\\\\''/g")"; }
 drop_awk_comments() { quote "$(sed '/^[[:blank:]]*#.*$/d;/^$/d' "$@")"; }
@@ -86,13 +86,13 @@ awk $(drop_awk_comments "${__type:?}/files/update_sshd_config.awk") \\
 	-o ${mode} \\
 	-m $(quote "${match_only}") \\
 	-l $(quote "${option_line}") \\
-	$(quote "${sshd_config_file}") >$(quote "${sshd_config_file}.tmp") \\
+	$(quote "${sshd_config_file}") >$(quote "${sshd_config_file}.skonfig.tmp") \\
 || exit
 
-cmp -s $(quote "${sshd_config_file}") $(quote "${sshd_config_file}.tmp") || {
-	sshd -t -f $(quote "${sshd_config_file}.tmp") \\
-	&& cat $(quote "${sshd_config_file}.tmp") >$(quote "${sshd_config_file}") \\
+cmp -s $(quote "${sshd_config_file}") $(quote "${sshd_config_file}.skonfig.tmp") || {
+	sshd -t -f $(quote "${sshd_config_file}.skonfig.tmp") \\
+	&& cat $(quote "${sshd_config_file}.skonfig.tmp") >$(quote "${sshd_config_file}") \\
 	|| exit  # stop if sshd_config file check fails
 }
-rm -f $(quote "${sshd_config_file}.tmp")
+rm -f $(quote "${sshd_config_file}.skonfig.tmp")
 EOF

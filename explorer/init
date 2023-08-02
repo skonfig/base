@@ -2,7 +2,7 @@
 #
 # 2016 Daniel Heule (hda at sfs.biz)
 # Copyright 2017, Philippe Gregoire <pg@pgregoire.xyz>
-# 2020 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
+# 2020,2023 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of cdist.
 #
@@ -30,6 +30,8 @@
 #    busybox-init+openrc
 #  ArchLinux:
 #    systemd, sysvinit
+#  Chimera Linux:
+#    dinit
 #  CRUX:
 #    sysvinit
 #  Debian:
@@ -86,23 +88,22 @@ set -e
 
 KERNEL_NAME=$(uname -s)
 
-KNOWN_INIT_SYSTEMS=$(cat <<EOF
+KNOWN_INIT_SYSTEMS="\
 systemd
 sysvinit
 upstart
 runit
+dinit
 procd
 smf
 launchd
 init
 hurd_init
-systemstarter
-EOF
-)
+systemstarter"
 
 
 common_candidates_by_kernel() {
-	case $KERNEL_NAME
+	case ${KERNEL_NAME}
 	in
 		FreeBSD|NetBSD|OpenBSD)
 			echo init
@@ -111,6 +112,7 @@ common_candidates_by_kernel() {
 			echo systemd
 			echo sysvinit
 			echo upstart
+			echo openrc
 			;;
 		GNU)
 			echo sysvinit
@@ -159,6 +161,13 @@ check_busybox_init() (
 	fi
 )
 
+check_dinit() {
+	init_exe=${1:-/sbin/dinit}
+	test -x "${init_exe}" || return 1
+	test -S /run/dinitctl -o -S /var/run/dinitctl || return 1
+	echo dinit
+}
+
 check_hurd_init() (
 	init_exe=${1:-/hurd/init}
 	test -x "${init_exe}" || return 1
@@ -170,11 +179,17 @@ check_init() {
 	# Checks for various BSD inits...
 	test -x /sbin/init || return 1
 
-	if grep -q -E '(Free|Net|Open)BSD' /sbin/init
-	then
-		echo init
-		return 0
-	fi
+
+	case ${KERNEL_NAME}
+	in
+		(*BSD)
+			if grep -q -F "${KERNEL_NAME}" /sbin/init
+			then
+				echo init
+				return 0
+			fi
+			;;
+	esac
 }
 
 check_launchd() {
@@ -267,7 +282,7 @@ find_init_procfs() (
 	init_exe=$(ls -l /proc/1/exe 2>/dev/null) || return 1
 	init_exe=${init_exe#* -> }
 
-	if ! test -x "$init_exe"
+	if ! test -x "${init_exe}"
 	then
 		# On some rare occasions it can happen that the
 		# running init's binary has been replaced. In this
@@ -279,7 +294,7 @@ find_init_procfs() (
 		# lrwxrwxrwx. 1 root root 0 2020-01-30 23:00 /proc/1/exe -> /sbin/init (deleted)
 
 		init_exe=${init_exe% (deleted)}
-		test -x "$init_exe" || return 1
+		test -x "${init_exe}" || return 1
 	fi
 
 	echo "${init_exe}"
@@ -288,32 +303,35 @@ find_init_procfs() (
 guess_by_path() {
 	case $1
 	in
-		/bin/busybox)
+		(/bin/busybox)
 			check_busybox_init "$1" && return
 			;;
-		/lib/systemd/systemd)
+		(/lib/systemd/systemd)
 			check_systemd "$1" && return
 			;;
-		/hurd/init)
+		(/hurd/init)
 			check_hurd_init "$1" && return
 			;;
-		/sbin/launchd)
+		(/sbin/launchd)
 			check_launchd "$1" && return
 			;;
-		/usr/bin/runit|/sbin/runit)
+		(/usr/bin/runit|/sbin/runit)
 			check_runit "$1" && return
 			;;
-		/sbin/openrc-init)
+		(/sbin/openrc-init)
 			if check_openrc "$1" >/dev/null
 			then
 				echo openrc-init
 				return
 			fi
 			;;
-		/sbin/procd)
+		(/sbin/procd)
 			check_procd "$1" && return
 			;;
-		/sbin/init|*/init)
+		(/sbin/dinit|/usr/bin/dinit)
+			check_dinit "$1" && return
+			;;
+		(/sbin/init|*/init)
 			# init: it could be anything -> (explicit) no match
 			return 1
 			;;
@@ -326,21 +344,21 @@ guess_by_path() {
 guess_by_comm_name() {
 	case $1
 	in
-		busybox)
+		(busybox)
 			check_busybox_init && return
 			;;
-		openrc-init)
+		(openrc-init)
 			if check_openrc >/dev/null
 			then
 				echo openrc-init
 				return 0
 			fi
 			;;
-		init)
+		(init)
 			# init could be anything -> no match
 			return 1
 			;;
-		*)
+		(*)
 			# Run check function by comm name if available.
 			# Fall back to comm name if either it does not exist or
 			# returns non-zero.
@@ -348,7 +366,8 @@ guess_by_comm_name() {
 			then
 				"check_$1" && return
 			else
-				echo "$1" ; return 0
+				echo "$1"
+				return 0
 			fi
 	esac
 
@@ -359,8 +378,11 @@ check_list() (
 	# List must be a multi-line input on stdin (one name per line)
 	while read -r init
 	do
-		"check_${init}" || continue
-		return 0
+		if type "check_${init}" >/dev/null
+		then
+			"check_${init}" || continue
+			return 0
+		fi
 	done
 	return 1
 )
@@ -374,45 +396,46 @@ find_init_pgrep() {
 }
 
 find_init_ps() {
-	case $KERNEL_NAME
+	case ${KERNEL_NAME}
 	in
-		Darwin)
+		(Darwin)
 			ps -o command -p 1 2>/dev/null | tail -n +2
 			;;
-		FreeBSD)
+		(FreeBSD)
 			ps -o args= -p 1 2>/dev/null | cut -d ' ' -f 1
 			;;
-		Linux)
+		(Linux)
 			ps -o comm= -p 1 2>/dev/null
 			;;
-		NetBSD)
+		(NetBSD)
 			ps -o comm= -p 1 2>/dev/null
 			;;
-		OpenBSD)
+		(OpenBSD)
 			ps -o args -p 1 2>/dev/null | tail -n +2 | cut -d ' ' -f 1
 			;;
-		*)
+		(*)
 			ps -o args= -p 1 2>/dev/null
 			;;
-	esac | trim  # trim trailing whitespace (some ps like Darwin add it)
+	esac \
+	| trim  # trim trailing whitespace (some ps like Darwin add it)
 }
 
 find_init() {
-	case $KERNEL_NAME
+	case ${KERNEL_NAME}
 	in
-		Linux|GNU|NetBSD)
+		(Linux|GNU|NetBSD)
 			find_init_procfs || find_init_pgrep || find_init_ps
 			;;
-		FreeBSD)
+		(FreeBSD)
 			find_init_procfs || find_init_ps
 			;;
-		OpenBSD)
+		(OpenBSD)
 			find_init_pgrep || find_init_ps
 			;;
-		Darwin|SunOS)
+		(Darwin|SunOS)
 			find_init_ps
 			;;
-		*)
+		(*)
 			echo "Don't know how to determine init." >&2
 			echo 'Please send a patch.' >&2
 			exit 1

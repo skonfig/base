@@ -46,7 +46,7 @@ fi
 
 remove_block() {
    cat << DONE
-tmpfile=\$(mktemp ${quoted_file}.cdist.XXXXXXXXXX)
+tmpfile=\$(mktemp ${quoted_file}.skonfig.XXXXXX)
 # preserve ownership and permissions of existing file
 if [ -f $quoted_file ]; then
    cp -p $quoted_file "\$tmpfile"

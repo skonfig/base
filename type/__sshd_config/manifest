@@ -1,6 +1,6 @@
 #!/bin/sh -e
 #
-# 2020 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
+# 2020,2022 Dennis Camera (skonfig at dtnr.ch)
 #
 # This file is part of cdist.
 #
@@ -24,7 +24,7 @@ state_should=$(cat "${__object:?}/parameter/state")
 
 case ${os}
 in
-	(alpine|centos|fedora|redhat|scientific|debian|devuan|ubuntu)
+	(alpine|centos|almalinux|eurolinux|rocky|fedora|redhat|scientific|debian|devuan|ubuntu)
 		if test "${state_should}" != 'absent'
 		then
 			__package openssh-server --state present
@@ -37,6 +37,9 @@ in
 		fi
 		;;
 	(freebsd|netbsd|openbsd)
+		# whitelist
+		;;
+	(macosx)
 		# whitelist
 		;;
 	(openbmc-phosphor)

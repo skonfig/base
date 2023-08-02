@@ -17,7 +17,7 @@ else
 fi
 export exact_delimiter
 
-tmpfile=$(mktemp "${file}.cdist.XXXXXXXXXX")
+tmpfile=$(mktemp "${file}.skonfig.XXXXXX")
 # preserve ownership and permissions by copying existing file over tmpfile
 if [ -f "$file" ]; then
     cp -p "$file" "$tmpfile"

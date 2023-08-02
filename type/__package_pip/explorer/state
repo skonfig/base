@@ -1,49 +1,59 @@
-#!/bin/sh
+#!/bin/sh -e
 #
-# 2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2022-2023 Dennis Camera (dennis.camera at riiengineering.ch)
 #
-# This file is part of cdist.
+# This file is part of skonfig-base.
 #
-# cdist is free software: you can redistribute it and/or modify
+# skonfig-base is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# cdist is distributed in the hope that it will be useful,
+# skonfig-base is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with cdist. If not, see <http://www.gnu.org/licenses/>.
-#
-#
-# Development supported by Local AG (www.local.ch)
+# along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-nameparam="$__object/parameter/name"
-if [ -f "$nameparam" ]; then
-    name=$(cat "$nameparam")
+shebang_of() { sed -n -e '1s/^#! *//p' "$1"; }
+
+pip=$("${__type_explorer:?}/pip")
+
+if test -z "${pip}"
+then
+	# no pip, no packages
+	echo absent
+	exit 0
+elif test -x "${pip}"
+then
+	# we have a pip executable -> extract Python interpreter from shebang
+	pyinterp=$(shebang_of "${pip}")
 else
-    name="$__object_id"
+	pyinterp=$(expr "${pip}" : '\(.*[^ ]\) *-m *pip') || :
+fi
+test -n "${pyinterp}" || {
+	printf 'Could not determine the matching Python interpreter for %s\n' \
+		"${pip}" >&2
+	exit 1
+}
+
+# Execute the matching Python interpreter of pip.
+pip_python() { eval set -- "${pyinterp}" '"$@"'; "$@"; }
+
+if test -f "${__object:?}/parameter/requirement"
+then
+	requirement=$(cat "${__object:?}/parameter/requirement")
+else
+	requirement=${__object_id:?}
 fi
 
-pipparam="$__object/parameter/pip"
-if [ -f "$pipparam" ]; then
-    pip=$(cat "$pipparam")
+if pip_python -c '__import__("pkg_resources").require(__import__("sys").argv[1])' \
+	"${requirement}" >/dev/null 2>&1
+then
+	echo present
 else
-    pip="$( "$__type_explorer/pip" )"
-fi
-
-# If there is no pip, it may get created from somebody else.
-# If it will be created, there is probably no package installed.
-if ! command -v "$pip" >/dev/null 2>&1; then
-    echo absent
-else
-
-    if "$pip" freeze | grep -i -q "^$name=="; then
-        echo present
-    else
-        echo absent
-    fi
+	echo absent
 fi

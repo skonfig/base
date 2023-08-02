@@ -1,16 +1,38 @@
 #!/bin/sh -e
+#
+# 2021 Ander Punnar (ander at kvlt.ee)
+# 2023 Dennis Camera (dennis.camera at riiengineering.ch)
+#
+# This file is part of skonfig-base.
+#
+# skonfig-base is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# skonfig-base is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
+#
+# Prints a command available to download files with an unquoted %s format
+# specifier where the URL should be inserted.
+# The downloaded data will be written to stdout.
+#
 
-if [ -f "$__object/parameter/cmd-get" ]
+if test -f "${__object:?}/parameter/cmd-get"
 then
-    cat "$__object/parameter/cmd-get"
-elif
-    command -v curl > /dev/null
+	cat "${__object:?}/parameter/cmd-get"
+elif command -v curl >/dev/null 2>&1
 then
-    echo "curl -sSL -o - '%s'"
-elif
-    command -v fetch > /dev/null
+	echo 'curl -sSL -o - %s'
+elif command -v fetch >/dev/null 2>&1
 then
-    echo "fetch -o - '%s'"
-else
-    echo "wget -O - '%s'"
+	echo 'fetch -o - %s'
+elif command -v wget >/dev/null 2>&1
+then
+	echo 'wget -q -O - %s'
 fi

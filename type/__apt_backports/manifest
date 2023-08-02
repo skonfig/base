@@ -1,7 +1,7 @@
 #!/bin/sh -e
-# __apt_backports/manifest
 #
 # 2020 Matthias Stecher (matthiasstecher at gmx.de)
+# 2022-2023 Dennis Camera (skonfig at dtnr.ch)
 #
 # This file is part of cdist.
 #
@@ -22,61 +22,76 @@
 # Enables/disables backports repository. Utilises __apt_source for it.
 #
 
+distro_codename() {
+    # prefer os_release because lsb_release(1) may not be available on all installations,
+    # fall back to lsb_codename if os-release is empty (old versions)
+    if test -s "${__global:?}/explorer/os_release"
+    then
+        # NOTE: only keep the first word of the release, because (at least) Devuan
+        #       adds a suffix for pre-release versions, e.g. "daedalus ceres"
 
-# Get the distribution codename by /etc/os-release.
-#  is already executed in a subshell by string substitution
-#  lsb_release may not be given in all installations
-codename_os_release() {
-    # shellcheck disable=SC1090
-    # shellcheck disable=SC1091
-    . "$__global/explorer/os_release"
-    printf "%s" "$VERSION_CODENAME"
+        # shellcheck source=/dev/null
+        (. "${__global:?}/explorer/os_release" && printf '%s\n' "${VERSION_CODENAME%% *}")
+    elif test -s "${__global:?}/explorer/lsb_codename"
+    then
+        # shellcheck source=/dev/null
+        cat "${__global:?}/explorer/lsb_codename"
+    else
+        return 1
+    fi
 }
 
-# detect backport distribution
-os="$(cat "$__global/explorer/os")"
-case "$os" in
-    debian)
-        dist="$( codename_os_release )"
-        components="main"
-        mirror="http://deb.debian.org/debian/"
-        ;;
-    devuan)
-        dist="$( codename_os_release )"
-        components="main"
-        mirror="http://deb.devuan.org/merged"
-        ;;
-    ubuntu)
-        dist="$( codename_os_release )"
-        components="main restricted universe multiverse"
-        mirror="http://archive.ubuntu.com/ubuntu"
-        ;;
+join_lines() {
+    sed -e ':a' -e '$!N' -e 's/\n/ /' -e 'ta' "$@"
+}
 
-    *)
-        printf "Backports for %s are not supported!\n" "$os" >&2
+# detect distribution
+read -r os <"${__global:?}/explorer/os"
+case ${os}
+in
+    (debian)
+        mirror='http://deb.debian.org/debian/'
+        dist=$(distro_codename)
+        components=$(join_lines "${__object:?}/parameter/component")
+        ;;
+    (devuan)
+        mirror='http://deb.devuan.org/merged'
+        dist=$(distro_codename)
+        components=$(join_lines "${__object:?}/parameter/component")
+        ;;
+    (ubuntu)
+        mirror='http://archive.ubuntu.com/ubuntu'
+        dist=$(distro_codename)
+        components=$(join_lines "${__object:?}/parameter/component")
+        ;;
+    (*)
+        : "${__type:?}"  # make shellcheck happy
+        printf "Your operating system (%s) is currently not supported by this type (%s)\n" "${os}" "${__type##*/}" >&2
+        printf "Please contribute an implementation for it if you can.\n" >&2
         exit 1
         ;;
 esac
 
 # error if no codename given (e.g. on Debian unstable)
-if [ -z "$dist" ]; then
-    printf "No backports for unkown version of distribution %s!\n" "$os" >&2
+test -n "${dist}" || {
+    printf 'No backports for unkown version of distribution %s!\n' "${os}" >&2
     exit 1
-fi
+}
 
 
 # parameters
-state="$(cat "$__object/parameter/state")"
+read -r state <"${__object:?}/parameter/state"
 
 # mirror already set for the os, only override user-values
-if [ -f "$__object/parameter/mirror" ]; then
-    mirror="$(cat "$__object/parameter/mirror")"
+if test -f "${__object:?}/parameter/mirror"
+then
+    read -r mirror <"${__object:?}/parameter/mirror"
 fi
 
 
-# install the given backports repository
+# configure the backports repository
 __apt_source "${dist}-backports" \
-    --state "$state" \
+    --state "${state}" \
     --distribution "${dist}-backports" \
-    --component "$components" \
-    --uri "$mirror"
+    --component "${components}" \
+    --uri "${mirror}"

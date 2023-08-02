@@ -14,12 +14,27 @@ This cdist type allows you to check out Subversion (SVN) repositories.
 REQUIRED PARAMETERS
 -------------------
 source
-    the SVN repository to check out.
-    The value may be a subdirectory of the repository to check out.
+   the SVN repository to check out.
+   The value may be a subdirectory of the repository to check out.
 
 
 OPTIONAL PARAMETERS
 -------------------
+group
+   Group to :strong:`chgrp`\ (1) all the files in the working copy to.
+mode
+   Unix mode to set for all the files in the working copy.
+
+   Format: suitable for :strong:`chmod`\ (1)
+owner
+   User to :strong:`chown`\ (1) all the files in the working copy to.
+password
+   Password of ``--username``.
+
+   *Security note:* if possible it should be avoided to use the ``--username``
+   and ``--password`` parameters because the password will be copied to the
+   target host in plain text.
+   If possible it is advisable to use SSH "deploy keys" instead.
 state
    One of
 
@@ -29,23 +44,8 @@ state
       No directory exists at ``__object_id``.
 
    Defaults to: ``present``
-owner
-   User to :strong:`chown`\ (1) all the files in the working copy to.
-group
-   Group to :strong:`chgrp`\ (1) all the files in the working copy to.
-mode
-   Unix mode to set for all the files in the working copy.
-
-   Format: suitable for :strong:`chmod`\ (1)
 username
    Username to use to authenticate to SVN server.
-password
-   Password of ``--username``.
-
-   *Security note:* if possible it should be avoided to use the ``--username``
-   and ``--password`` parameters because the password will be copied to the
-   target host in plain text.
-   If possible it is advisable to use SSH "deploy keys" instead.
 
 
 EXAMPLES
@@ -59,12 +59,12 @@ EXAMPLES
 
 SEE ALSO
 --------
-:strong:`cdist-type__git`\ (7)
+* :strong:`cdist-type__git`\ (7)
 
 
 AUTHORS
 -------
-Dennis Camera <dennis.camera--@--ssrq-sds-fds.ch>
+* Dennis Camera <dennis.camera--@--ssrq-sds-fds.ch>
 
 
 COPYING

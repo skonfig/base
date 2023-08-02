@@ -84,13 +84,6 @@ then
     acl_should="$( echo "$acl_should" | grep -Ev '^default:' )"
 fi
 
-if echo "$acl_should" | awk -F: '{ print $NF }' | grep -Fq 'X'
-then
-    [ "$file_is" = 'directory' ] && rep=x || rep=-
-
-    acl_should="$( echo "$acl_should" | sed "s/\\(.*\\)X/\\1$rep/" )"
-fi
-
 setfacl_exec='setfacl'
 
 if [ -f "$__object/parameter/recursive" ]
@@ -107,12 +100,13 @@ if [ -f "$__object/parameter/remove" ]
 then
     echo "$acl_is" | while read -r acl
     do
-        # skip wanted ACL entries which already exist
-        # and skip mask and other entries, because we
-        # can't actually remove them, but only change.
-        if echo "$acl_should" | grep -Eq "^$acl" \
+        # do not remove wanted ACL entries.
+        # skip mask and other entries, because we can't actually remove them, but only change.
+        # handle special case of "X" in perms field, see man setfacl.
+        if echo "$acl_should" | sed 's/X$/x/' | grep -Eq "^$acl" \
             || echo "$acl" | grep -Eq '^(default:)?(mask|other)'
-        then continue
+        then
+            continue
         fi
 
         if echo "$os" | grep -Fq 'freebsd'
@@ -129,15 +123,19 @@ fi
 
 for acl in $acl_should
 do
-    if ! echo "$acl_is" | grep -Eq "^$acl"
+    # skip already existing ACL entries.
+    # handle special case of "X" in perms field, see man setfacl.
+    if echo "$acl_is" | grep -Eq "^$( echo "$acl" | sed 's/X$/x/' )"
     then
-        if echo "$os" | grep -Fq 'freebsd' \
-            && echo "$acl" | grep -Eq '^default:'
-        then
-            echo "setting default ACL in $os is currently not supported" >&2
-        else
-            echo "$setfacl_exec -m \"$acl\" \"$acl_path\""
-            echo "added '$acl'" >> "$__messages_out"
-        fi
+        continue
+    fi
+
+    if echo "$os" | grep -Fq 'freebsd' \
+        && echo "$acl" | grep -Eq '^default:'
+    then
+        echo "setting default ACL in $os is currently not supported" >&2
+    else
+        echo "$setfacl_exec -m \"$acl\" \"$acl_path\""
+        echo "added '$acl'" >> "$__messages_out"
     fi
 done

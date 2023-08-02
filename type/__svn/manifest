@@ -28,7 +28,7 @@ state_should=$(cat "${__object:?}/parameter/state")
 
 case ${os}
 in
-	(alpine|archlinux|gentoo|debian|devuan|ubuntu|centos|fedora|scientific|suse|freebsd|openbsd)
+	(alpine|archlinux|gentoo|debian|devuan|ubuntu|centos|almalinux|eurolinux|rocky|fedora|scientific|suse|freebsd|openbsd)
 		if test "${state_should}" != 'absent'
 		then
 			__package subversion

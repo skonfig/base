@@ -9,37 +9,45 @@ cdist-type__package_pip - Manage packages with pip
 DESCRIPTION
 -----------
 Pip is used in Python environments to install packages.
-It is also included in the python virtualenv environment.
+It is also included in the Python virtualenv environment.
 
+**NB:** This type requires that pip is already installed on the target host.
+Since pip is tightly coupled to a specific Python interpreter and it is common
+to have multiple interpreters (e.g. CPython 2.x, 3.x and/or PyPy) and
+venvs (virtual environments) installed at the same time, this type does not try
+to guess which pip to use.
+Most OSes provide a package to get a default pip installation, so it's usually
+sufficient to add ``__package python3-pip`` to your manifest.
 
-REQUIRED PARAMETERS
--------------------
-None
+On Debian-derived systems you may need to install setuptools
+(``__package python3-setuptools``) for pip to work correctly, as well.
 
 
 OPTIONAL PARAMETERS
 -------------------
-name
-    If supplied, use the name and not the object id as the package name.
-
-extra
-    Extra optional dependencies which should be installed along the selected
-    package. Can be specified multiple times. Multiple extras can be passed
-    in one `--extra` as a comma-separated list.
-
-    Extra optional dependencies will be installed even when the base package
-    is already installed. Notice that the type will not remove installed extras
-    that are not explicitly named for the type because pip does not offer a
-    management for orphaned packages and they may be used by other packages.
-
 pip
-    Instead of using pip from PATH, use the specific pip path.
+   Instead of using pip from ``PATH``, use the specified command to execute
+   pip.
+   The value to this parameter can be either
+   * an absolute path to a pip executable,
+   * a command name, or
+   * a string of the form ``pythonX.Y -m pip`` / ``/path/to/venv/bin/python -m pip``.
+requirement
+   Can be anything supported by ``pip install`` - package name, URL, package
+   with extras etc.
 
-state
-    Either "present" or "absent", defaults to "present" 
-
+   Defaults to: ``__object_id``
 runas
-    Run pip as specified user. By default it runs as root.
+   Run pip as specified user. By default it runs as root.
+state
+   One of:
+
+   ``present``
+      the package is installed
+   ``absent``
+      the package is uninstalled
+
+   Defaults to: ``present``
 
 
 EXAMPLES
@@ -47,38 +55,52 @@ EXAMPLES
 
 .. code-block:: sh
 
-    # Install a package
-    __package_pip pyro --state present
+   # Install a package
+   __package_pip supervisor
 
-    # Use pip in a virtualenv located at /root/shinken_virtualenv
-    __package_pip pyro --state present --pip /root/shinken_virtualenv/bin/pip
+   # Install a package using a specific version of pip
+   __package_pip Sphinx \
+      --pip pip3.11
 
-    # Use pip in a virtualenv located at /foo/shinken_virtualenv as user foo
-    __package_pip pyro --state present --pip /foo/shinken_virtualenv/bin/pip --runas foo
+   # Use pip in a virtualenv located at /root/shinken_virtualenv
+   __package_pip pyro \
+      --pip /root/shinken_virtualenv/bin/pip
 
-    # Install package with optional dependencies
-    __package_pip mautrix-telegram --extra speedups --extra webp_convert --extra hq_thumbnails
-    # the extras can also be specified comma-separated
-    __package_pip mautrix-telegram --extra speedups,webp_convert,hq_thumbnails --extra postgres
+   # Use pip in a virtualenv located at /foo/shinken_virtualenv as user foo
+   __package_pip pyro \
+      --pip /foo/shinken_virtualenv/bin/pip --runas foo
 
-    # or take all extras
-    __package_pip mautrix-telegram --extra all
+   # Install package with extras
+   __package_pip mautrix-telegram \
+      --requirement mautrix-telegram[speedups,webp_convert,hq_thumbnails]
+
+   # or take all extras
+   __package_pip mautrix-telegram \
+      --requirement mautrix-telegram[all]
+
+   # Install package from URL
+   __package_pip mkosi \
+      --requirement git+https://github.com/systemd/mkosi.git
+
+   # Uninstall a package :-)
+   __package_pip cdist --state absent
 
 
 SEE ALSO
 --------
-:strong:`cdist-type__package`\ (7)
+* :strong:`cdist-type__package`\ (7)
 
 
 AUTHORS
 -------
-| Nico Schottelius <nico-cdist--@--schottelius.org>
-| Matthias Stecher <matthiasstecher--@--gmx.de>
+* Nico Schottelius <nico-cdist--@--schottelius.org>
+* Matthias Stecher <matthiasstecher--@--gmx.de>
+* Dennis Camera <dennis.camera--@--riiengineering.ch>
 
 
 COPYING
 -------
-Copyright \(C) 2012 Nico Schottelius, 2021 Matthias Stecher. You can
-redistribute it and/or modify it under the terms of the GNU General
-Public License as published by the Free Software Foundation, either
-version 3 of the License, or (at your option) any later version.
+Copyright \(C) 2012 Nico Schottelius, 2021 Matthias Stecher, 2022-2023 Dennis Camera.
+You can redistribute it and/or modify it under the terms of the GNU General
+Public License as published by the Free Software Foundation, either version 3 of
+the License, or (at your option) any later version.

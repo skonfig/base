@@ -81,7 +81,7 @@ case "$state_should" in
 esac
 
 cat << DONE
-tmpfile=\$(mktemp ${file}.cdist.XXXXXXXXXX)
+tmpfile=\$(mktemp ${file}.skonfig.XXXXXX)
 # preserve ownership and permissions of existing file
 if [ -f "$file" ]; then
    cp -p "$file" "\$tmpfile"
