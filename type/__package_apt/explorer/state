@@ -28,6 +28,11 @@ breify() {
 	printf '%s' "$*" | sed -e 's/[].^$*\[]/\\&/g' -e 's:/:\\/:g'
 }
 
+dpkg_show() {
+	# Usage: dpkg_show FIELD PKG
+	dpkg-query --show --showformat "\${$1}\\n" "$2" 2>/dev/null
+}
+
 
 if test -f "${__object:?}/parameter/name"
 then
@@ -44,9 +49,9 @@ rprovides=$(apt-cache showpkg "${name}" | sed -e '1,/^Reverse Provides:/d' -e 's
 
 for pkg in ${name} ${rprovides}
 do
-	if dpkg -s "${pkg}" 2>/dev/null | grep -qxF 'Status: install ok installed'
+	if test "$(dpkg_show Status "${pkg}")" = 'install ok installed'
 	then
-		version=$(dpkg -s "${pkg}" 2>/dev/null | sed -n -e 's/^Version:  *//p')
+		version=$(dpkg_show Version "${pkg}")
 
 		if test -f "${extended_states_file}"
 		then
@@ -122,4 +127,9 @@ do
 	fi
 done
 
-echo absent
+if dpkg_show Status "${name}" | grep -q ' config-files$'
+then
+	echo absent config-files
+else
+	echo absent purged
+fi
