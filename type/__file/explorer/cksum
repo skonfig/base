@@ -1,34 +1,33 @@
-#!/bin/sh
+#!/bin/sh -e
 #
 # 2011-2012 Nico Schottelius (nico-cdist at schottelius.org)
+# 2023 Dennis Camera (dennis.camera at riiengineering.ch)
 #
-# This file is part of cdist.
+# This file is part of skonfig-base.
 #
-# cdist is free software: you can redistribute it and/or modify
+# skonfig-base is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# cdist is distributed in the hope that it will be useful,
+# skonfig-base is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+# along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
-#
-# Retrieve the md5sum of a file to be created, if it is already existing.
+# Print the cksum(1) of the file, if it already exists.
 #
 
-destination="/$__object_id"
+destination="/${__object_id:?}"
 
-if [ -e "$destination" ]; then
-    if [ -f  "$destination" ]; then
-        cksum < "$destination"
-    else
-        echo "NO REGULAR FILE"
-    fi
-else
-    echo "NO FILE FOUND, NO CHECKSUM CALCULATED."
+read -r state_should <"${__object:?}/parameter/state"
+
+if test -f "${destination}" -a "${state_should}" = 'present'
+then
+	# only calculate cksum if --state present, because it is ignored for other
+	# --states
+	cksum <"${destination}"
 fi

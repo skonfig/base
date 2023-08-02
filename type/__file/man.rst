@@ -8,7 +8,7 @@ cdist-type__file - Manage files.
 
 DESCRIPTION
 -----------
-This cdist type allows you to create files, remove files and set file
+This type allows you to create files, remove files and set file
 attributes on the target.
 
 If the file already exists on the target, then if it is a:
@@ -39,7 +39,7 @@ group
 mode
    Unix permissions, suitable for chmod.
 
-   Defaults to a very secure ``0600``.
+   Defaults to: ``0600``
 onchange
    The code to run if file is modified.
 owner
@@ -47,9 +47,9 @@ owner
 
    Defaults to: ``root``
 source
-   If supplied, copy this file from the host running cdist to the target.
+   If supplied, copy this file from the config host to the target.
    If not supplied, an empty file or directory will be created.
-   If source is '-' (dash), take what was written to stdin as the file content.
+   If source is ``-`` (dash), take what was written to stdin as the file content.
 state
    One of:
 
@@ -87,19 +87,10 @@ EXAMPLES
 
 .. code-block:: sh
 
-   # Create  /etc/cdist-configured as an empty file
-   __file /etc/cdist-configured
-
-   # The same thing
-   __file /etc/cdist-configured --state present
-
    # Use __file from another type
    __file /etc/issue \
       --source "${__type:?}/files/archlinux"
       --state present
-
-   # Delete existing file
-   __file /etc/cdist-configured --state absent
 
    # Supply some more settings
    __file /etc/shadow \
@@ -118,7 +109,7 @@ EXAMPLES
 
    # Take file content from stdin
    __file /tmp/whatever \
-      --owner root --group root --mode 644 \
+      --owner 0 --group 0 --mode 0644 \
       --source - <<'EOF'
    Here goes the content for /tmp/whatever
    EOF
@@ -127,6 +118,7 @@ EXAMPLES
 AUTHORS
 -------
 * Nico Schottelius <nico-cdist--@--schottelius.org>
+* Dennis Camera <dennis.camera--@--riiengineering.ch>
 
 
 COPYING
