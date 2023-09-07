@@ -27,6 +27,7 @@ if [ "${state}" = "absent" ]; then
         echo "systemctl --now disable ${name}"
         echo "rm -f /etc/systemd/system/${name}"
         echo "systemctl daemon-reload"
+        echo 'removed' >> "${__messages_out}"
     fi
 
     exit 0
@@ -62,14 +63,17 @@ case "${desired_enablement_state}" in
     ;;
     enabled)
         echo "systemctl enable ${name}"
+        echo 'enabled' >> "${__messages_out}"
     ;;
     disabled)
         echo "systemctl disable ${name}"
+        echo 'disabled' >> "${__messages_out}"
     ;;
     masked)
         # disable before masking to ensure symlinks in *.wants/ are cleaned up
         echo "systemctl disable ${name}"
         echo "systemctl mask ${name}"
+        echo 'masked' >> "${__messages_out}"
     ;;
     *)
         echo "Unsupported unit status: ${desired_enablement_state}" >&2

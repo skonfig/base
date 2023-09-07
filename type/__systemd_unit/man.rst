@@ -47,6 +47,18 @@ restart
    changed. Stop the unit if new ``enablement-state`` is ``masked``.
 
 
+MESSAGES
+--------
+enabled
+   Unit was enabled.
+disabled
+   Unit was disabled.
+masked
+   Unit was masked.
+removed
+   Unit was stopped, disabled and removed.
+
+
 EXAMPLES
 --------
 
@@ -64,10 +76,24 @@ EXAMPLES
    # Stops, disables and uninstalls foobar.service
    __systemd_unit foobar.service --state absent
 
+   # Use messaging to restart service if configuration is changed or service is enabled
+   __file /etc/nginx/nginx.conf \
+       --source "$__files/nginx.conf"
+
+   require='__file/etc/nginx/nginx.conf' \
+       __systemd_unit nginx.service \
+           --enablement-state enabled
+
+   require='__systemd_unit/nginx.service' \
+       __check_messages nginx \
+           --pattern '(nginx\.conf|nginx\.service:enabled)' \
+           --execute 'systemctl restart nginx.service'
+
 
 AUTHORS
 -------
 * Ľubomír Kučera <lubomir.kucera.jr at gmail.com>
+* Ander Punnar <ander-at-kvlt-dot-ee>
 
 
 COPYING
