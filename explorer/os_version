@@ -160,7 +160,7 @@ in
         cat /etc/SuSE-release
       fi
    ;;
-   ubuntu)
+   ubuntu|pop-os)
       if command -v lsb_release >/dev/null 2>&1
       then
          lsb_release -sr
