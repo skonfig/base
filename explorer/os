@@ -19,36 +19,28 @@
 # You should have received a copy of the GNU General Public License
 # along with cdist. If not, see <http://www.gnu.org/licenses/>.
 #
+# All os variables are lower case.
+# Operating systems are grouped into sections, with more popular ones
+# further up, except in cases where correct detection depends on a specific
+# order.
 #
-# All os variables are lower case.  Keep this file in alphabetical
-# order by os variable except in cases where order otherwise matters,
-# in which case keep the primary os and its derivatives together in
-# a block (see Debian and Redhat examples below).
-#
-
-if grep -q ^Amazon /etc/system-release 2>/dev/null; then
-   echo amazon
-   exit 0
-fi
-
-if [ -f /etc/arch-release ]; then
-   echo archlinux
-   exit 0
-fi
 
 if [ -f /etc/cdist-preos ]; then
    echo cdist-preos
    exit 0
 fi
 
-if [ -d /gnu/store ]; then
-   echo guixsd
+
+### Debian and derivatives
+
+if grep -q ^DISTRIB_ID=Ubuntu /etc/lsb-release 2>/dev/null; then
+   echo ubuntu
    exit 0
 fi
 
-### Debian and derivatives
-if grep -q ^DISTRIB_ID=Ubuntu /etc/lsb-release 2>/dev/null; then
-   echo ubuntu
+# check before Debian because Pop!_OS also has /etc/debian_version
+if [ -f /etc/pop-os/os-release ]; then
+   echo pop-os
    exit 0
 fi
 
@@ -63,24 +55,8 @@ if [ -f /etc/debian_version ]; then
    exit 0
 fi
 
-###
 
-if [ -f /etc/gentoo-release ]; then
-   echo gentoo
-   exit 0
-fi
-
-if [ -f /etc/openwrt_version ]; then
-    echo openwrt
-    exit 0
-fi
-
-if [ -f /etc/owl-release ]; then
-   echo owl
-   exit 0
-fi
-
-### Redhat and derivatives
+### RedHat and derivatives
 
 if [ -f /etc/fedora-release ]; then
     echo fedora
@@ -143,7 +119,9 @@ if [ -f /etc/redhat-release ]; then
    echo redhat
    exit 0
 fi
-###
+
+
+### Slackware and SuSE
 
 if [ -f /etc/SuSE-release ]; then
    echo suse
@@ -155,10 +133,36 @@ if [ -f /etc/slackware-version ]; then
    exit 0
 fi
 
-###
+
+### other Linux distributions
+
+if [ -f /etc/gentoo-release ]; then
+   echo gentoo
+   exit 0
+fi
+
+if [ -f /etc/openwrt_version ]; then
+    echo openwrt
+    exit 0
+fi
+
+if [ -f /etc/owl-release ]; then
+   echo owl
+   exit 0
+fi
 
 if [ -f /etc/chimera-release ]; then
    echo chimera
+   exit 0
+fi
+
+if grep -q ^Amazon /etc/system-release 2>/dev/null; then
+   echo amazon
+   exit 0
+fi
+
+if [ -f /etc/arch-release ]; then
+   echo archlinux
    exit 0
 fi
 
@@ -169,10 +173,12 @@ if grep -q '^Check Point Gaia' /etc/cp-release 2>/dev/null; then
     exit 0
 fi
 
-uname_s="$(uname -s)"
 
-# Assume there is no tr on the client -> do lower case ourselves
-case "$uname_s" in
+### Unices
+
+# assume there is no tr on the client -> do lower case ourselves
+case $(uname -s)
+in
    Darwin)
       echo macosx
       exit 0
@@ -195,6 +201,9 @@ case "$uname_s" in
    ;;
 esac
 
+
+### other Linux distributions (fall back to /etc/os-release)
+
 if [ -f /etc/os-release ]; then
    # after sles15, suse don't provide an /etc/SuSE-release anymore, but there is almost no difference between sles and opensuse leap, so call it suse
    # shellcheck disable=SC1091
@@ -203,6 +212,7 @@ if [ -f /etc/os-release ]; then
       echo suse
       exit 0
    fi
+
    # already lowercase, according to:
    # https://www.freedesktop.org/software/systemd/man/os-release.html
    awk -F= '/^ID=/ { if ($2 ~ /^'"'"'(.*)'"'"'$/ || $2 ~ /^"(.*)"$/) { print substr($2, 2, length($2) - 2) } else { print $2 } }' /etc/os-release
