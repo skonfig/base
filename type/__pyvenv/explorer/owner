@@ -2,6 +2,8 @@
 
 destination="/${__object_id:?}"
 
+test -d "${destination}" || exit 0
+
 # shellcheck disable=SC2012
 owner_uid=$(ls -ldn "${destination}" | awk '{ print $3 }')
 

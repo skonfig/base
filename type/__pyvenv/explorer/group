@@ -2,6 +2,8 @@
 
 destination="/${__object_id:?}"
 
+test -d "${destination}" || exit 0
+
 # shellcheck disable=SC2012
 group_gid=$(ls -ldn "${destination}" | awk '{ print $4 }')
 
