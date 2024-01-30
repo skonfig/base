@@ -1,0 +1,1 @@
+use --not-regex (also removes -maxdepth 1)
