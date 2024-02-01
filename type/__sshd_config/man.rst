@@ -33,11 +33,15 @@ state
    ``absent``
       ensure no matching config line is present.
 value
-   The option's value to be assigned to the option (if ``--state present``) or
-   removed (if ``--state absent``).
+   The value to be assigned to (if ``--state present``) or
+   removed from (if ``--state absent``) the option specified by ``--option``.
 
    This option is required if ``--state present``. If not specified and
    ``--state absent``, all values for the given option are removed.
+
+   **NB:** If the value starts with a ``-``, escape it by preceed the value
+   With a Backslash (``\``), e.g.
+   ``__sshd_config Ciphers --value '\-chacha20-poly1305*'``.
 
 
 EXAMPLES
@@ -66,10 +70,6 @@ BUGS
 * ``Include`` directives are ignored.
 * Config options are not added/removed to/from the config file if their value is
   the default value.
-* | The explorer will incorrectly report ``absent`` if OpenSSH internally
-    transforms one value to another (e.g. ``permitrootlogin prohibit-password``
-    is transformed to ``permitrootlogin without-password``).
-  | Workaround: Use the value that OpenSSH uses internally.
 
 
 SEE ALSO
@@ -79,12 +79,12 @@ SEE ALSO
 
 AUTHORS
 -------
-* Dennis Camera <dennis.camera--@--ssrq-sds-fds.ch>
+* Dennis Camera <dennis.camera--@--riiengineering.ch>
 
 
 COPYING
 -------
-Copyright \(C) 2020 Dennis Camera.
+Copyright \(C) 2020-2024 Dennis Camera.
 You can redistribute it and/or modify it under the terms of the GNU General
 Public License as published by the Free Software Foundation, either version 3 of
 the License, or (at your option) any later version.
