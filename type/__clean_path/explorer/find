@@ -1,6 +1,7 @@
 #!/bin/sh -e
 #
 # 2024 Ander Punnar (ander-at-kvlt-dot-ee)
+# 2024 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -46,59 +47,26 @@ then
 fi
 # /deprecated
 
-if [ -f "$__object/parameter/rm-name" ]
-then
-    while read -r rm_name
-    do
-        set -- '-name' "$rm_name" "$@"
-    done \
-        < "$__object/parameter/rm-name"
-fi
+for _p in "${__object:?}"/parameter/*
+do
+    test -s "${_p}" || continue
+    case ${_p##*/}
+    in
+        (rm-*)
+            while read -r _v
+            do
+                set -- "-${_p##*/rm-}" "${_v}" "$@"
+            done <"${_p}"
+            ;;
+        (not-*)
+            while read -r _v
+            do
+                set -- '!' "-${_p##*/not-}" "${_v}" "$@"
+            done <"${_p}"
+            ;;
+    esac
+done
 
-if [ -f "$__object/parameter/rm-path" ]
-then
-    while read -r rm_path
-    do
-        set -- '-path' "$rm_path" "$@"
-    done \
-        < "$__object/parameter/rm-path"
-fi
-
-if [ -f "$__object/parameter/rm-regex" ]
-then
-    while read -r rm_regex
-    do
-        set -- '-regex' "$rm_regex" "$@"
-    done \
-        < "$__object/parameter/rm-regex"
-fi
-
-if [ -f "$__object/parameter/not-name" ]
-then
-    while read -r not_name
-    do
-        set -- '!' '-name' "$not_name" "$@"
-    done \
-        < "$__object/parameter/not-name"
-fi
-
-if [ -f "$__object/parameter/not-path" ]
-then
-    while read -r not_path
-    do
-        set -- '!' '-path' "$not_path" "$@"
-    done \
-        < "$__object/parameter/not-path"
-fi
-
-if [ -f "$__object/parameter/not-regex" ]
-then
-    while read -r not_regex
-    do
-        set -- '!' '-regex' "$not_regex" "$@"
-    done \
-        < "$__object/parameter/not-regex"
-fi
 
 set -- 'find' "$path" '!' '-path' "$path" "$@"
 
