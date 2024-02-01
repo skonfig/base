@@ -1,21 +1,21 @@
 #!/bin/sh -e
 #
-# 2020,2022 Dennis Camera (skonfig at dtnr.ch)
+# 2020,2022,2024 Dennis Camera (dennis.camera at riiengineering.ch)
 #
-# This file is part of cdist.
+# This file is part of skonfig-base.
 #
-# cdist is free software: you can redistribute it and/or modify
+# skonfig-base is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# cdist is distributed in the hope that it will be useful,
+# skonfig-base is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+# along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 # Determines the current state of the config option.
 # Possible output:
@@ -29,11 +29,11 @@ trlower() { tr '[:upper:]' '[:lower:]'; }
 tolower() { printf '%s' "$*" | trlower; }
 
 default_value() {
-	sshd -T -f /dev/null -C "$(make_conn_spec)" \
+	sshd -T -f /dev/null -C "${sshd_conn_spec}" \
 	| sed -n -e 's/^'"$(tolower "${1:?}")"'[[:blank:]]\{1,\}//p'
 }
 
-make_conn_spec() {
+sshd_conn_spec=$(
 	if test -s "${__object:?}/parameter/match"
 	then
 		_match_file="${__object:?}/parameter/match"
@@ -64,11 +64,16 @@ make_conn_spec() {
 		#  'Match User' in configuration but 'user' not in connection test specification.
 		# except lport:
 		#  Invalid port '' in test mode specification lport=
-		test "${_specname}" = 'lport' || printf '%s=\n' "${_specname}"
+		case ${_specname}
+		in
+			(lport)
+				;;
+			(*)
+				printf '%s=\n' "${_specname}" ;;
+		esac
 	done \
 	| joinlines ','
-	unset _match_file
-}
+)
 
 sshd_config_file=$("${__type_explorer:?}/config_file")
 state_should=$(cat "${__object:?}/parameter/state")
@@ -80,7 +85,7 @@ else
 	option_name=${__object_id:?}
 fi
 
-value_should=$(cat "${__object:?}/parameter/value" 2>/dev/null) \
+{ read -r value_should <"${__object:?}/parameter/value"; } 2>/dev/null \
 || test "${state_should}" = absent || exit 0  # param optional if --state absent
 
 command -v sshd >/dev/null 2>&1 || {
@@ -93,18 +98,43 @@ test -e "${sshd_config_file}" || {
 	exit 0
 }
 
+test -d "${__object:?}/files" || mkdir "${__object:?}/files"
+{
+	if test -s "${__object:?}/parameter/match"
+	then
+		printf 'Match %s\n' "$(joinlines ' ' <"${__object:?}/parameter/match")"
+	fi
+	printf '%s %s\n' "${option_name}" "${value_should#\\}"
+} >"${__object:?}/files/optline.tmp"
+
 value_is=$(
-	sshd -T -f "${sshd_config_file}" -C "$(make_conn_spec)" \
+	sshd -T -f "${sshd_config_file}" -C "${sshd_conn_spec}" \
 	| sed -n -e 's/^'"$(tolower "${option_name}")"'[[:blank:]]\{1,\}//p')
+# convert given value to the value reported by sshd -T (this is required to
+# compare values with different names, e.g. prohibit-password or delta values
+# like "Ciphers -md5")
+value_should=$(
+	sshd -T -f "${__object:?}/files/optline.tmp" -C "${sshd_conn_spec}" \
+	| sed -n -e 's/^'"$(tolower "${option_name}")"'[[:blank:]]\{1,\}//p')
+rm "${__object:?}/files/optline.tmp"
 
 if printf '%s\n' "${value_is}" | {
-		if test -n "${value_should}"
-		then
-			grep -q -x -F "${value_should}"
-		else
-			# if no value provided, assume "any" value
-			grep -q -e .
-		fi
+		case ${value_should}
+		in
+			(?*)
+				# NOTE: -e is important to work around BusyBox option parser bug when value begins with -:
+				#       $ grep -F '-*md5*' /etc/ssh/sshd_config
+				#       grep: invalid option -- '*'
+				#       BusyBox v1.30.1 (2020-02-19 11:54:49 UTC) multi-call binary.
+				#       ...
+				#
+				#       $ grep -F -e '-*md5*' /etc/ssh/sshd_config
+				#       ...
+				grep -q -x -F -e "${value_should}" ;;
+			(*)
+				# if no --value is provided, assume "any" value
+				grep -q -e '.' ;;
+		esac
 	}
 then
 	if default_value "${option_name}" | grep -q -x -F "${value_is}"
