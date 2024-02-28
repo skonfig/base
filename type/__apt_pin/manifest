@@ -1,68 +1,127 @@
 #!/bin/sh -e
 #
-# 2021 Daniel Fancsali (fancsali@gmail.com)
+# 2021 Daniel Fancsali (fancsali at gmail.com)
+# 2024 Dennis Camera (dennis.camera at riiengineering.ch)
 #
-# This file is part of cdist.
+# This file is part of skonfig-base.
 #
-# cdist is free software: you can redistribute it and/or modify
+# skonfig-base is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# cdist is distributed in the hope that it will be useful,
+# skonfig-base is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+# along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
+join_lines() {
+	sed -e ':a' -e '$!N' -e 's/\n/ /' -e 'ta' "$@"
+}
 
-name="$__object_id"
+param_numexist() {
+	for __p
+	do
+		if test -f "${__object:?}/parameter/${__p}"
+		then
+			set -- "$@" "${__p}"
+		fi
+		shift
+	done
+	unset -v __p
+	echo $#
+}
 
-os=$(cat "$__global/explorer/os")
-state="$(cat "$__object/parameter/state")"
 
-if [ -f "$__object/parameter/package" ]; then
-    package="$(cat "$__object/parameter/package")"
+os=$(cat "${__global:?}/explorer/os")
+case ${os}
+in
+	(debian|ubuntu|devuan)
+		;;
+	(*)
+		printf 'This type is specific to Debian and its derivatives.' >&2
+		exit 1
+		;;
+esac
+
+
+read -r state <"${__object:?}/parameter/state"
+priority=$(( $(cat "${__object:?}/parameter/priority") ))
+
+if test -f "${__object:?}/parameter/package"
+then
+	package=$(join_lines "${__object:?}/parameter/package")
 else
-    package=$name
+	package=${__object_id:?}
 fi
 
-distribution="$(cat "$__object/parameter/distribution")"
-priority="$(cat "$__object/parameter/priority")"
+if test -f "${__object:?}/parameter/description"
+then
+	description=$(sed -e 's/^/# /' "${__object:?}/parameter/description")
+else
+	description="# ${__object_id:?}"
+fi
 
 
-case "$os" in
-   debian|ubuntu|devuan)
-   ;;
-   *)
-      printf "This type is specific to Debian and it's derivatives" >&2
-      exit 1
-   ;;
+
+case $(param_numexist origin release version)
+in
+	(0)
+		if test -f "${__object:?}/parameter/distribution"
+		then
+			distribution=$(cat "${__object:?}/parameter/distribution")
+
+			case ${distribution}
+			in
+				(oldoldstable|oldstable|stable|testing|unstable|experimental)
+					pin="release a=${distribution}"
+					;;
+				(oldoldstable-*|oldstable-*|stable-*|testing-*|unstable-*|experimental-*)
+					pin="release a=${distribution}"
+					;;
+				(*)
+					pin="release n=${distribution}"
+					;;
+			esac
+		else
+			printf 'No pin parameter used. Use one of --origin, --release, --version, or --distribution.\n' >&2
+			exit 1
+		fi
+		;;
+	(1)
+		if test -f "${__object:?}/parameter/origin"
+		then
+			read -r pin_origin <"${__object:?}/parameter/origin"
+			pin="origin \"${pin_origin}\""
+		elif test -f "${__object:?}/parameter/release"
+		then
+			read -r pin_release <"${__object:?}/parameter/release"
+			pin="release ${pin_release}"
+		elif test -f "${__object:?}/parameter/version"
+		then
+			read -r pin_version <"${__object:?}/parameter/version"
+			pin="version ${pin_version}"
+		fi
+		;;
+	(*)
+		printf 'The parameters --origin, --release, and --version are mutually exclusive. Use only one of them.\n' >&2
+		exit 1
+		;;
 esac
 
-case $distribution in
-    stable|testing|unstable|experimental)
-        pin="release a=$distribution"
-        ;;
-    *)
-        pin="release n=$distribution"
-        ;;
-esac
+__file "/etc/apt/preferences.d/${__object_id:?}" \
+	--owner 0 --group 0 --mode 0644 \
+	--state "${state}" \
+	--source - <<EOF
+# This file is managed by skonfig (${__type##*/})
+# Changes will be overwritten.
 
-
-__file "/etc/apt/preferences.d/$name" \
-    --owner root --group root --mode 0644 \
-    --state "$state" \
-    --source - << EOF
-# Created by cdist ${__type##*/}
-# Do not change. Changes will be overwritten.
-#
-
-# $name
-Package: $package
-Pin: $pin
-Pin-Priority: $priority
+# ${description#\# }
+Package: ${package}
+Pin: ${pin}
+Pin-Priority: ${priority}
 EOF
