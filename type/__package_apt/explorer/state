@@ -41,11 +41,16 @@ else
 	name=${__object_id:?}
 fi
 
+state=$(cat "${__object:?}/parameter/state")
+
+# if present state is requested and $name is e.g. editor, check if any editor is installed instead
+if [ "$state" = 'present' ]
+then
+	rprovides=$(apt-cache showpkg "${name}" | sed -e '1,/^Reverse Provides:/d' -e 's/ .*$//')
+fi
+
 state_dir=$(apt-config dump | sed -n -e 's/^Dir::State  *"\(.*\)";$/\/\1/p')
 extended_states_file=${state_dir%/}/extended_states
-
-# if $name is e.g. editor, check if any editor is installed instead
-rprovides=$(apt-cache showpkg "${name}" | sed -e '1,/^Reverse Provides:/d' -e 's/ .*$//')
 
 for pkg in ${name} ${rprovides}
 do
