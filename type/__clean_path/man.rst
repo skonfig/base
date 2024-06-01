@@ -70,6 +70,10 @@ EXAMPLES
 
 .. code-block:: sh
 
+   # delete everything inside a directory
+   __clean_path /tmp/very.temp
+
+
    # Debian: disable all apache2 conf's other than charset.conf and security.conf
 
    __clean_path /etc/apache2/conf-enabled \
