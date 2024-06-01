@@ -61,7 +61,7 @@ not-path
     Same as :strong:`find`\ (1)'s ``! -path``.
 not-regex
     Same as :strong:`find`\ (1)'s ``! -regex`` (not POSIX).
-rm-type
+not-type
     Same as :strong:`find`\ (1)'s ``! -type``.
 
 
