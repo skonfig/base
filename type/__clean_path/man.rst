@@ -61,7 +61,7 @@ not-path
     Same as :strong:`find`\ (1)'s ``! -path``.
 not-regex
     Same as :strong:`find`\ (1)'s ``! -regex`` (not POSIX).
-rm-type
+not-type
     Same as :strong:`find`\ (1)'s ``! -type``.
 
 
@@ -69,6 +69,10 @@ EXAMPLES
 --------
 
 .. code-block:: sh
+
+   # delete everything inside a directory
+   __clean_path /tmp/very.temp
+
 
    # Debian: disable all apache2 conf's other than charset.conf and security.conf
 
