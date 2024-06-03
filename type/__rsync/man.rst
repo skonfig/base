@@ -25,7 +25,7 @@ OPTIONAL MULTIPLE PARAMETERS
 ----------------------------
 option
    Pass additional options to ``rsync``.
-   See ``rsync(1)`` for all possible options.
+   See :strong:`rsync`\ (1) for all possible options.
 
    Due to a `bug in Python's argparse<https://bugs.python.org/issue9334>`_,
    the value must be prefixed with ``\``.
@@ -46,9 +46,12 @@ destination
 group
    Will be passed to ``rsync`` as ``--chown=:GROUP``.
    Read :strong:`rsync`\ (1) for more details.
+   Requires rsync >= 3.1.0.
 mode
    Will be passed to ``rsync`` as ``--chmod=MODE``.
    Read :strong:`rsync`\ (1) for more details.
+   Requires rsync >= 2.6.7; numeric modes (e.g. `--chmod=644,D755`) require
+   rsync >= 3.1.0.
 onchange
    Command to run in target after sync.
 options
@@ -60,6 +63,7 @@ options
 owner
    Will be passed to ``rsync`` as ``--chown=OWNER``.
    Read :strong:`rsync`\ (1) for more details.
+   Requires rsync >= 3.1.0.
 remote-user
    Defaults to: ``root``
 
@@ -98,7 +102,7 @@ AUTHORS
 
 COPYING
 -------
-Copyright \(C) 2021 Ander Punnar, 2023 Dennis Camera.
+Copyright \(C) 2021 Ander Punnar, 2023-2024 Dennis Camera.
 You can redistribute it and/or modify it under the terms of the GNU General
 Public License as published by the Free Software Foundation, either version 3 of
 the License, or (at your option) any later version.
