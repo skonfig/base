@@ -117,7 +117,7 @@ eval "set -- ${options}"
 
 # shellcheck disable=SC2086
 if ! rsync --dry-run --itemize-changes "$@" "${src}" "${remote_user}@${__target_host:?}:${dst}" \
-    | grep -e '^[<>ch.*][fdLDS][cstTpogunbax.+?]\{9\} ' >&2
+    | grep -e '^[<>ch.*][fdLDS][cstTpogunbax.+?]\{7,\} ' -e '^\*deleting ' >&2
 then
     exit 0
 fi
