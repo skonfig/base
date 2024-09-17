@@ -75,35 +75,36 @@ quote_ifneeded() {
 
 
 do_user() {
-	_util_name=user$1
+	_user_op=$1
 	_user_name=$2
 	shift 2
-
-	set -- "${_util_name}" "$@"
 
 	case ${os:?}
 	in
 		(freebsd)
-			# FreeBSD uses the pw wrapper utility
-			set -- pw "$@"
-
-			# user name is -n option
-			set -- "$@" -n
+			# FreeBSD uses the pw wrapper utility and -n for the name
+			set -- pw "user${_user_op}" "$@" -n "${_user_name}"
+			;;
+		(openbsd|netbsd)
+			# OpenBSD/NetBSD use the user wrapper utility
+			# NOTE: use the absolute path because NetBSD does not include
+			#       sbin in the default path
+			set -- /usr/sbin/user "${_user_op}" "$@" "${_user_name}"
 			;;
 		(openwrt)
 			# NOTE: older releases of OpenWrt do not include sbin in PATH, but
 			#       user* utilities are installed in /usr/sbin.
 			echo 'PATH=/bin:/sbin:/usr/bin:/usr/sbin'
+			set -- "user${_user_op}" "$@" "${_user_name}"
+			;;
+		(*)
+			set -- "user${_user_op}" "$@" "${_user_name}"
 			;;
 	esac
-
-	# append user name as last argument
-	set -- "$@" "${_user_name}"
+	unset -v _user_op _user_name
 
 	# quote arguments if needed
 	quote_ifneeded "$@"; echo
-
-	unset -v _util_name _user_name
 }
 
 case ${state_should}
