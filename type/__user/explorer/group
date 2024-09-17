@@ -21,6 +21,9 @@
 #
 # Get an existing group's group entry.
 #
+# Attention: depending on which code path is taken the output may or
+# may not include the group's members.
+#
 
 test -s "${__object:?}/parameter/gid" || exit 0
 
@@ -31,5 +34,30 @@ then
 	getent group "${gid}" || :
 elif test -s /etc/group
 then
-	awk -v gid="${gid}" -F: '$1==gid||$3==gid' /etc/group
+	# NOTE: the logic to differentiate between
+	#       group names and gids in getent(1) differs between libcs, e.g.
+	#       * glibc, musl, FreeBSD, NetBSD treat everything they can parse
+	#         as an integer as a (numeric) gid.
+	#       * OpenBSD looks up by group name first and if no match is found,
+	#         tries to parse as gid.
+	#
+	#       This behaviour does not necessarily match what e.g. chgrp(1)
+	#       does (hint, on the systems I checked: what OpenBSD getent does).
+	#       chgrp and OpenBSD's getent can be "forced" to interpret the
+	#       value as a numeric gid if it is prefixed with 0s. We allow for
+	#       this behaviour, too.
+	awk -F: -v g="${gid}" '
+	BEGIN {
+		if (g == (g + 0)) {
+			# convert g to integer gid if it is a number
+			gid = (g + 0)
+		}
+	}
+
+	g == $1          { group_by_name = $0 }
+	gid && gid == $3 { group_by_gid  = $0 }
+
+	END {
+		print (group_by_name ? group_by_name : group_by_gid)
+	}' /etc/group
 fi

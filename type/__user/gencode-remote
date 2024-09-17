@@ -130,20 +130,28 @@ in
 						field=3
 						;;
 					(gid)
-						if expr "${new_value}" : '[0-9][0-9]*$' >/dev/null 2>&1
+						field=4
+
+						# We always try to interpret the gid we are given as a
+						# group name, cf. also the comment in explorer/group.
+						# We thus try to resolve the gid from the user's
+						# passwd entry to the respective group name to compare.
+						gid_from_passwd=$(cut -d : -f 4 "${__object:?}/explorer/passwd")
+						gid_from_group=$(cut -d : -f 3 "${__object:?}/explorer/group")
+
+						# default: assume the group is different and thus we
+						# cannot resolve its name:
+						current_value=${gid_from_passwd}
+
+						if test "${gid_from_group}" -eq "${gid_from_passwd}"
 						then
-							field=4
-						else
-							# We were passed a group name.  Compare the gid in
-							# the user's /etc/passwd entry with the gid of the
-							# group returned by the group explorer.
-							gid_from_group=$(cut -d: -f3 "${__object:?}/explorer/group")
-							gid_from_passwd=$(cut -d: -f4 "${file}")
-							if test "${gid_from_group}" = "${gid_from_passwd}"
+							# The group explorer returned the user's primary
+							# group. Now we check if the group's name matches
+							# the should value, and if so, we resolve the name
+							# because no change is needed.
+							if test "$(cut -d : -f 1 "${__object:?}/explorer/group")" = "${new_value}"
 							then
 								current_value=${new_value}
-							else
-								current_value=${gid_from_passwd}
 							fi
 						fi
 						;;
