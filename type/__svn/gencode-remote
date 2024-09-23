@@ -1,6 +1,6 @@
 #!/bin/sh -e
 #
-# 2021-2022 Dennis Camera (dennis.camera at riiengineering.ch)
+# 2021-2022,2024 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -18,7 +18,11 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-quote() { printf '%s\n' "$*" | sed "s/'/'\\\\''/g;1s/^/'/;\$s/\$/'/"; }
+shquot() {
+	sed -e "s/'/'\\\\''/g" -e "1s/^/'/" -e "\$s/\$/'/" <<-EOF
+	$*
+	EOF
+}
 
 destination="/${__object_id:?}"
 
@@ -39,12 +43,12 @@ in
 				# NOTE: quote revision because SVN accepts non-numeric values
 				#       and a user could inject other options using this type's
 				#       --revision parameter.
-				svn_co_flags="${svn_co_flags-} --revision=$(quote "${_revision}")"
+				svn_co_flags="${svn_co_flags-} --revision=$(shquot "${_revision}")"
 			fi
 
 			if test -s "${__object:?}/parameter/username"
 			then
-				svn_co_flags="${svn_co_flags-} --username=$(quote "$(cat "${__object:?}/parameter/username")")"
+				svn_co_flags="${svn_co_flags-} --username=$(shquot "$(cat "${__object:?}/parameter/username")")"
 
 				if test -s "${__object:?}/parameter/password"
 				then
@@ -58,8 +62,8 @@ in
 
 			printf 'svn checkout %s %s %s\n' \
 				"${svn_co_flags}" \
-				"$(quote "${source}")" \
-				"$(quote "${destination}")"
+				"$(shquot "${source}")" \
+				"$(shquot "${destination}")"
 
 			if ${password_in_stdin:-false}
 			then
@@ -76,8 +80,8 @@ in
 			if test "${owner_should}" != "${owner_is}"
 			then
 				printf 'chown -R %s %s\n' \
-					"$(quote "${owner_should}")" \
-					"$(quote "${destination}")"
+					"$(shquot "${owner_should}")" \
+					"$(shquot "${destination}")"
 			fi
 		fi
 		if test -s "${__object:?}/parameter/group"
@@ -88,8 +92,8 @@ in
 			if test "${group_should}" != "${group_is}"
 			then
 				printf 'chgrp -R %s %s\n' \
-					"$(quote "${group_should}")" \
-					"$(quote "${destination}")"
+					"$(shquot "${group_should}")" \
+					"$(shquot "${destination}")"
 			fi
 		fi
 		if test -s "${__object:?}/parameter/mode"
@@ -100,8 +104,8 @@ in
 			if test "${mode_should}" != "${mode_is}"
 			then
 				printf 'chmod -R %s %s\n' \
-					"$(quote "${mode_should}")" \
-					"$(quote "${destination}")"
+					"$(shquot "${mode_should}")" \
+					"$(shquot "${destination}")"
 			fi
 		fi
 		;;
