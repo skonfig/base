@@ -17,7 +17,6 @@
 # You should have received a copy of the GNU General Public License
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
-#
 
 state_is=$(cat "$__object/explorer/state")
 owner_is=$(cat "$__object/explorer/owner")

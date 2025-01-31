@@ -18,8 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
-#
-# Check whether the given name will be started on boot or not
+# Check whether the given name will be started on boot or not.
 #
 
 os=$("$__explorer/os")

@@ -19,8 +19,6 @@
 # You should have received a copy of the GNU General Public License
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
-#
-# This type allows to configure the desired localtime timezone.
 
 timezone=$(cat "$__object/parameter/tz")
 os=$(cat "$__global/explorer/os")

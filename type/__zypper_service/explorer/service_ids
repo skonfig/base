@@ -17,9 +17,9 @@
 # You should have received a copy of the GNU General Public License
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
+# Manage services with Zypper (mostly SuSE)
 #
-# Manage services with Zypper (mostly suse)
-#
+
 # simpler command which works only on SLES11 SP3 or newer:
 # echo $(zypper ls -u -E | cut -d'|' -f 1 | grep -E '^[0-9]')
 #

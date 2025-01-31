@@ -18,8 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
-#
-# Get an existing groups group entry.
+# Get an existing group's group entry.
 #
 
 not_supported() {

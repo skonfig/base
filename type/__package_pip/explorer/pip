@@ -18,6 +18,7 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 # Prints a command that can be used to execute pip(1).
+#
 # If a pip binary exists, its path will be printed, a fallback to
 # {python} -m pip, otherwise.
 # In any case, the first word will be an absolute path.

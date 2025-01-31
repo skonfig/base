@@ -22,6 +22,7 @@
 #   "present" if the file exists (and the --sum matches)
 #   "mismatch" if the file exists (and the --sum does not match)
 #   "absent" if the file does not exist
+#
 
 if test -f "${__object:?}/parameter/destination"
 then

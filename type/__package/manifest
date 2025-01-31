@@ -18,11 +18,10 @@
 # You should have received a copy of the GNU General Public License
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
-#
+
 # __package is an abstract type which dispatches to the lower level
 # __package_$type types which do the actual interaction with the packaging
 # system.
-#
 
 type="$__object/parameter/type"
 if [ -f "$type" ]; then

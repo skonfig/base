@@ -18,9 +18,6 @@
 # You should have received a copy of the GNU General Public License
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
-#
-# Manage groups.
-#
 
 name="$__object_id"
 os="$(cat "$__global/explorer/os")"

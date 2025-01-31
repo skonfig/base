@@ -17,9 +17,6 @@
 # You should have received a copy of the GNU General Public License
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
-#
-# Manage packages with Portage (mostly gentoo)
-#
 
 if [ -f "$__object/parameter/name" ]; then
    name="$__object/parameter/name"

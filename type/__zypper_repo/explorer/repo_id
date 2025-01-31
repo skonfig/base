@@ -17,10 +17,9 @@
 # You should have received a copy of the GNU General Public License
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
+# Retrieve the id from the repo with the uri from parameter uri  - parsed zypper output.
 #
-# Retrieve the id from the repo with the uri from parameter uri  - parsed zypper output
-#
-#
+
 if [ -f "$__object/parameter/uri" ]; then
    uri="$(cat "$__object/parameter/uri")"
 else

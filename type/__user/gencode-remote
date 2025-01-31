@@ -21,22 +21,20 @@
 # You should have received a copy of the GNU General Public License
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
-#
-# Manage users.
-#
 
-name="$__object_id"
+name=${__object_id:?}
 
-os="$(cat "$__global/explorer/os")"
+os=$(cat "${__global:?}/explorer/os")
 
-state=$(cat "$__object/parameter/state")
+state=$(cat "${__object:?}/parameter/state")
 
 # We need to shorten options for both usermod and useradd since on some
 # systems (such as *BSD, Darwin) those commands do not handle GNU style long
 # options.
 shorten_property() {
-    unset ret
-    case "$1" in
+    unset -v ret
+    case $1
+    in
 	comment) ret="-c";;
 	home) ret="-d";;
 	gid) ret="-g";;

@@ -18,8 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
-#
-# Mostly a wrapper for ln
+# Print the current state of the destination file.
 #
 
 destination="/$__object_id"

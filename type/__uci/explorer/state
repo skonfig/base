@@ -30,6 +30,7 @@
 #   rearranged
 #     The configuration option is present (a list) and has the same values as
 #     the parameter --value, but in a different order.
+#
 
 # NOTE: older releases of OpenWrt do not include sbin in PATH but uci(1) is
 #       installed in /sbin.

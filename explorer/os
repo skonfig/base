@@ -20,10 +20,12 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 # All os variables are lower case.
+#
+
+
 # Operating systems are grouped into sections, with more popular ones
 # further up, except in cases where correct detection depends on a specific
 # order.
-#
 
 if [ -f /etc/cdist-preos ]; then
    echo cdist-preos

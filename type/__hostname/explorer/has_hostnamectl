@@ -17,8 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
-#
-# Check whether system has hostnamectl
+# Check whether system has systemd's hostnamectl(1) installed.
 #
 
 command -v hostnamectl 2>/dev/null || true

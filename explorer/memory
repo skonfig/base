@@ -23,6 +23,7 @@
 # Returns the amount of memory physically installed in the system, or if that
 # cannot be determined the amount available to the operating system kernel,
 # in kibibytes (kiB).
+#
 
 str2bytes() {
 	awk -F' ' '

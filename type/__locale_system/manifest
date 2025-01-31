@@ -20,8 +20,6 @@
 # You should have received a copy of the GNU General Public License
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
-# Configure system-wide locale by modifying i18n file.
-#
 
 version_ge() {
 	# usage: version_ge version_is min_version_expected

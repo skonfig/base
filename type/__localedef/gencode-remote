@@ -18,8 +18,6 @@
 # You should have received a copy of the GNU General Public License
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
-# Manage system locales using localedef(1).
-#
 
 # shellcheck source=cdist/conf/type/__localedef/files/lib/locale.sh
 . "${__type:?}/files/lib/locale.sh"
