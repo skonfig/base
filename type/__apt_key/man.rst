@@ -93,8 +93,8 @@ EXAMPLES
 AUTHORS
 -------
 * Steven Armstrong <steven-cdist--@--armstrong.cc>
-* Ander Punnar <ander-at-kvlt-dot-ee>
-* Evilham <contact~~@~~evilham.com>
+* Ander Punnar <ander--@--kvlt.ee>
+* Evilham <contact--@--evilham.com>
 
 
 COPYING

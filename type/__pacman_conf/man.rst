@@ -73,7 +73,7 @@ SEE ALSO
 
 AUTHORS
 -------
-* Dominique Roux <dominique.roux4@gmail.com>
+* Dominique Roux <dominique.roux4--@--gmail.com>
 
 
 COPYING

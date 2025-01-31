@@ -95,7 +95,7 @@ systemd or the service does not exist
 
 AUTHORS
 -------
-* Matthias Stecher <matthiasstecher at gmx.de>
+* Matthias Stecher <matthiasstecher--@--gmx.de>
 
 
 COPYING

@@ -78,7 +78,7 @@ EXAMPLES
 
 AUTHORS
 -------
-* Ander Punnar <ander-at-kvlt-dot-ee>
+* Ander Punnar <ander--@--kvlt.ee>
 
 
 COPYING

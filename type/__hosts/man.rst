@@ -51,7 +51,7 @@ SEE ALSO
 
 AUTHORS
 -------
-* Dmitry Bogatov <KAction@gnu.org>
+* Dmitry Bogatov <KAction--@--gnu.org>
 * Dennis Camera <dennis.camera--@--ssrq-sds-fds.ch>
 
 

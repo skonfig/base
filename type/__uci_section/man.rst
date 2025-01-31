@@ -99,7 +99,7 @@ SEE ALSO
 
 AUTHORS
 -------
-* Dennis Camera <cdist--@--dtnr.ch>
+* Dennis Camera <skonfig--@--dtnr.ch>
 
 
 COPYING

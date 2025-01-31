@@ -1,22 +1,22 @@
 #!/bin/sh -e
 #
-# 2020,2022 Dennis Camera (cdist at dtnr.ch)
+# 2020,2022 Dennis Camera (skonfig at dtnr.ch)
 #
-# This file is part of cdist.
+# This file is part of skonfig-base.
 # It was originally written for __package_opkg’s pkg_status explorer.
 #
-# cdist is free software: you can redistribute it and/or modify
+# skonfig-base is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# cdist is distributed in the hope that it will be useful,
+# skonfig-base is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+# along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
 : "${__object:?}" "${__object_id:?}"  # assert __object and __object_id is set
