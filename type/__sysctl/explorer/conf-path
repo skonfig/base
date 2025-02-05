@@ -17,6 +17,8 @@
 # You should have received a copy of the GNU General Public License
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
+# Prints the file path used by skonfig to store sysctl values.
+#
 
 if [ -d "/etc/sysctl.d" ]; then
     echo "/etc/sysctl.d/99-Z-sysctl-cdist.conf";

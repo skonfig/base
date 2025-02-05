@@ -19,9 +19,14 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 # Prints the current state of the destionation file on the target.
-#   "present" if the file exists (and the --sum matches)
-#   "mismatch" if the file exists (and the --sum does not match)
-#   "absent" if the file does not exist
+#
+# Output is one of:
+#   present
+#     the file exists (and the --sum matches)
+#   mismatch
+#     the file exists (and the --sum does not match)
+#   absent
+#     if the file does not exist
 #
 
 if test -f "${__object:?}/parameter/destination"

@@ -17,5 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
+# Prints "true" if usermod(8) supports the -A option, "false" otherwise.
+#
 
 usermod --help | grep -q -- '-A group' && echo true || echo false

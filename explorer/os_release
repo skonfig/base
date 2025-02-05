@@ -18,9 +18,10 @@
 # You should have received a copy of the GNU General Public License
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
+# Prints the contents of the os-release(5) file.
 #
-
-# See os-release(5) and http://0pointer.de/blog/projects/os-release
+# cf. os-release(5) and http://0pointer.de/blog/projects/os-release
+#
 
 if test -f /etc/os-release
 then

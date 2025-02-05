@@ -18,6 +18,14 @@
 # You should have received a copy of the GNU General Public License
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
+# Prints stat information on the destination directory.
+#
+# Output is in the following format:
+# type: {regular file/directory/symbolic link/block special file/character special file/socket/fifo/...}
+# owner: {uid} {user name}
+# group: {gid} {group name}
+# mode: {numeric mode 4 digits} {mode string}
+#
 
 destination="/$__object_id"
 

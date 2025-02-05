@@ -17,8 +17,9 @@
 # You should have received a copy of the GNU General Public License
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
-# This explorer determines the "prefix" of the --type section matching --match
-# if set, or __object_id otherwise.
+# Prints the "prefix" of the --type section matching --match if set,
+# or __object_id otherwise.
+#
 
 RS=$(printf '\036')
 NL=$(printf '\n '); NL=${NL% }

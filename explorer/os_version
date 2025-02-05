@@ -18,7 +18,10 @@
 # You should have received a copy of the GNU General Public License
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
-# All os variables are lower case
+# Prints the OS version installed on the target.
+#
+# NB: the output varies across different operating systems and is not normalized
+# in any way.
 #
 
 rc_getvar() {

@@ -17,6 +17,8 @@
 # You should have received a copy of the GNU General Public License
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
+# Prints "hold" if the package specified by --name is held, "unhold" otherwise.
+#
 
 if [ -f "$__object/parameter/name" ]; then
     name="$(cat "$__object/parameter/name")"

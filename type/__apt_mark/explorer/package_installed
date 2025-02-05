@@ -17,6 +17,9 @@
 # You should have received a copy of the GNU General Public License
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
+# Prints "0" if the package specified by --name is already installed,
+# "1" otherwise.
+#
 
 if [ -f "$__object/parameter/name" ]; then
     name="$(cat "$__object/parameter/name")"

@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
-# Manage services with Zypper (mostly SuSE)
+# Prints the --uri if a repository using it is configured.
 #
 
 if [ -f "$__object/parameter/uri" ]; then

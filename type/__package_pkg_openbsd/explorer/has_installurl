@@ -17,10 +17,10 @@
 # You should have received a copy of the GNU General Public License
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
+# Prints "yes" if the installurl(5) file, as introduced in OpenBSD 6.1, exists,
+# "no" otherwise.
+#
 
-#
-# Retrieve the installurl(5), as introduced in OpenBSD 6.1
-#
 # As of 6.1, the file is supposed to contained a single line
 # with the URL used to install from during install or upgrade.
 #

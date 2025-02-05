@@ -18,6 +18,18 @@
 # You should have received a copy of the GNU General Public License
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
+# Prints the current state of the line in the destination file.
+#
+# The output of this explorer is one of these values:
+#   present
+#     A line equal to --line is present in the file and located at an acceptable position.
+#   matching
+#     A line matching --regex is present, but it differs from --line.
+#   wrongposition
+#     A line matching --regex or --line is found in the file, but at the wrong position.
+#   absent
+#     No line matching --regex or --line was found in the file.
+#
 
 if [ -f "$__object/parameter/file" ]; then
    file=$(cat "$__object/parameter/file")

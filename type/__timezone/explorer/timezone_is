@@ -17,6 +17,8 @@
 # You should have received a copy of the GNU General Public License
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
+# Prints the contents of /etc/timezone.
+#
 
 [ -f /etc/timezone ] && cat /etc/timezone
 

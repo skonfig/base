@@ -18,6 +18,8 @@
 # You should have received a copy of the GNU General Public License
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
+# Prints the file path which is changed by this alternative.
+#
 
 # fedora's (update-)alternatives --display output doesn't have
 # "link <name> is <path>" line, but debian does. so, let's find

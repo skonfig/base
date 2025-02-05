@@ -17,6 +17,8 @@
 # You should have received a copy of the GNU General Public License
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
+# Prints all users and groups currently known to the system.
+#
 
 getent passwd | awk -F: '{print "user:"$1}'
 getent group | awk -F: '{print "group:"$1}'

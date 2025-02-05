@@ -18,6 +18,18 @@
 # You should have received a copy of the GNU General Public License
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
+# Prints the current state of the destination file.
+#
+# One of:
+#   present
+#     the destination exists and links to the correct source.
+#   sourcemissing
+#     the specified source does not exist (only for hard links).
+#   wrongsource
+#     the destination exists, but it links to a source different from the one specified.
+#   absent
+#     the destination does not exist.
+#
 
 destination="/${__object_id:?}"
 type=$(cat "${__object:?}/parameter/type")

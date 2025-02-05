@@ -17,7 +17,8 @@
 # You should have received a copy of the GNU General Public License
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
-# This explorer retrieves the current section type.
+# Prints the current section type.
+#
 
 section=$("${__type_explorer:?}/match")
 test -n "${section}" || exit 0

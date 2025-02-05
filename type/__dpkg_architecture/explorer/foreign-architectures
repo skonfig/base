@@ -17,6 +17,9 @@
 # You should have received a copy of the GNU General Public License
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
+# Prints a newline-separated list of extra architectures dpkg is configured to
+# allow packages to be installed for.
+#
 
 # Print all additional architectures
 

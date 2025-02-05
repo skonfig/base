@@ -18,7 +18,9 @@
 # You should have received a copy of the GNU General Public License
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
-
+# Prints the current contents of the block.
+# Nothing, if it does not exist (or is empty, obviously).
+#
 
 file="$(cat "$__object/parameter/file" 2>/dev/null || echo "/$__object_id")"
 

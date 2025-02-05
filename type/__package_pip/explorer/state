@@ -17,6 +17,14 @@
 # You should have received a copy of the GNU General Public License
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
+# Prints the current state of the pip package.
+#
+# One of:
+#   present
+#     the package is currently installed.
+#   absent
+#     the package is not installed.
+#
 
 shebang_of() { sed -n -e '1s/^#! *//p' "$1"; }
 

@@ -17,6 +17,8 @@
 # You should have received a copy of the GNU General Public License
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
+# Prints the name of all groups --user is a member of.
+#
 
 user="$(cat "$__object/parameter/user" 2>/dev/null || echo "$__object_id")"
 

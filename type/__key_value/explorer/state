@@ -18,6 +18,20 @@
 # You should have received a copy of the GNU General Public License
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
+# Prints the current state of the key-value.
+#
+# Possible output values:
+#   present
+#     the key exists and is assigned the correct value.
+#   absent
+#     the key was not found in the file.
+#   wrongvalue
+#     the key exists but the value is different.
+#   nosuchfile
+#     the --file does not exist.
+#   wrongformat
+#     there is white-space around --delimiter but --exact_delimiter was used.
+#
 
 key="$(cat "$__object/parameter/key" 2>/dev/null \
    || echo "$__object_id")"

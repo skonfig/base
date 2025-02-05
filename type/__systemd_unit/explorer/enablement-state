@@ -17,5 +17,9 @@
 # You should have received a copy of the GNU General Public License
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
+# Prints the current enablemene state of the unit named after __object_id.
+#
+# For possible output values cf. man systemctl(1).
+#
 
 systemctl is-enabled "${__object_id}" 2>/dev/null || true

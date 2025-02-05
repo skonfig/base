@@ -18,6 +18,8 @@
 # You should have received a copy of the GNU General Public License
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
+# Prints the path of the destination file chosen to be managed.
+#
 
 if [ -f "$__object/parameter/file" ]; then
 	cat "$__object/parameter/file"

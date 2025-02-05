@@ -17,6 +17,10 @@
 # You should have received a copy of the GNU General Public License
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
+# Lists all network interfaces available on the target.
+# One interface name per line.
+# Output is sorted lexicographically.
+#
 
 if command -v ip >/dev/null
 then

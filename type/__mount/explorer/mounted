@@ -17,6 +17,9 @@
 # You should have received a copy of the GNU General Public License
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
+# Prints "yes" if the mount point specified by --path is currently mounted,
+# "no" otherwise.
+#
 
 path="$(cat "$__object/parameter/path" 2>/dev/null || echo "/$__object_id")"
 

@@ -17,7 +17,8 @@
 # You should have received a copy of the GNU General Public License
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
-# This explorer retrieves the current options of the configuration section.
+# Prints the current options of the configuration section.
+#
 
 RS=$(printf '\036')
 
