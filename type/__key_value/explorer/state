@@ -95,7 +95,7 @@ BEGIN {
         }
         found=1
         if(state == "absent") {
-            # on state absent, only the ocurance is relevant, so exit here
+            # on state absent, only the occurrence is relevant, so exit here
             print "present"
             exit
         }
