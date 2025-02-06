@@ -31,7 +31,7 @@ fi
 # f.i. pass@testing => pass
 name=$(echo "${name}" | sed 's/@.*//')
 
-if [ "$(apk list -I "${name}")" ]
+if [ -n "$(apk list -I "${name}")" ]
 then
     echo present
 else

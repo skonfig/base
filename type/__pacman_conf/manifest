@@ -55,7 +55,7 @@ contains_element() {
     MATCH=0
 }
 
-if [ "${file}" ]
+if [ -n "${file}" ]
 then
     __file "${sec_path}/plain_file_${file}"\
         --state exists --mode 666

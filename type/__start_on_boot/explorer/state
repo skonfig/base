@@ -65,7 +65,7 @@ else
 
         amazon|scientific|centos|almalinux|eurolinux|rocky|fedora|owl|redhat)
             state=$(chkconfig --level "${runlevel}" "${name}" || echo absent)
-            [ "${state}" ] || state='present'
+            test -n "${state}" || state='present'
         ;;
         suse)
             # check for target if set, usable for boot. services in runlevel B
@@ -75,7 +75,7 @@ else
             fi
             # suses chkconfig has the same name, but works different ...
             state=$(chkconfig --check "${name}" "${runlevel}" || echo absent)
-            [ "${state}" ] || state='present'
+            test -n "${state}" || state='present'
         ;;
         gentoo|alpine)
             state='absent'

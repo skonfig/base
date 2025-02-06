@@ -48,7 +48,7 @@ else
 		esac
 	fi
 
-	if [ "${owner_line}" ]
+	if [ -n "${owner_line}" ]
 	then
 		home=$(echo "${owner_line}" | cut -d':' -f6)
 	fi
