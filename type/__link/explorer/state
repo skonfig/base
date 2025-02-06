@@ -41,6 +41,7 @@ _readlink() {
 		readlink "$1"
 	else
 		# resort to parsing the output of ls(1)
+		# shellcheck disable=SC2010
 		if ls -Ldl "$1" | grep -q '^d'
 		then
 			# resolve destination of symlinks pointing to a directory
