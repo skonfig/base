@@ -25,7 +25,7 @@ state_should=$(cat "${__object:?}/parameter/state")
 
 case ${state_is}
 in
-	(${state_should}|default)
+	("${state_should}"|default)
 		# nothing to do (if the value is the default, ignore its state)
 		exit 0
 		;;
