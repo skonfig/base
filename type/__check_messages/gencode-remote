@@ -19,7 +19,7 @@
 #
 
 if grep -Eq \
-    "$( cat "${__object:?}/parameter/pattern" )" \
+    "$(cat "${__object:?}/parameter/pattern")" \
     "${__messages_in:?}"
 then
     tee "${__messages_out:?}" < "${__object:?}/parameter/execute"

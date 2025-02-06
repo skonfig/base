@@ -57,7 +57,7 @@ in
          # because we need to clean up and kill dirmngr.
          cat << EOF
 
-gpgtmphome="\$( mktemp -d )"
+gpgtmphome="\$(mktemp -d)"
 
 if timeout 30s \\
     gpg --homedir "\${gpgtmphome}" \\

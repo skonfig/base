@@ -67,7 +67,7 @@ then
     conf=$(printf '%s\n%s\n}\n' "${conf}" "${b}")
 fi
 
-if [ "$( echo "${conf}" | wc -l )" -gt 1 ]
+if [ "$(echo "${conf}" | wc -l)" -gt 1 ]
 then
     echo "${conf}" \
         | __file "${conf_file}" \

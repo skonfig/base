@@ -96,7 +96,7 @@ then
             continue
         fi
 
-        __ssh_authorized_key "remove-$( _cksum "${file}${key}" )" \
+        __ssh_authorized_key "remove-$(_cksum "${file}${key}")" \
             --file "${file}" \
             --key "${key}" \
             --state absent \

@@ -125,7 +125,7 @@ for acl in ${acl_should}
 do
     # skip already existing ACL entries.
     # handle special case of "X" in perms field, see man setfacl.
-    if echo "${acl_is}" | grep -Eq "^$( echo "${acl}" | sed 's/X$/x/' )"
+    if echo "${acl_is}" | grep -Eq "^$(echo "${acl}" | sed 's/X$/x/')"
     then
         continue
     fi

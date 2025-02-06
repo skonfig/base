@@ -32,7 +32,7 @@
 apt_opts='-o Acquire::AllowReleaseInfoChange::Suite=true -o Acquire::AllowReleaseInfoChange::Version=true'
 
 if [ -f "${__object:?}/parameter/always" ] \
-    || [ "$( cat "${__object:?}/explorer/state" )" = 'outdated' ]
+    || [ "$(cat "${__object:?}/explorer/state")" = 'outdated' ]
 then
     cat << EOF
 apt-get ${apt_opts} update || apt-get ${apt_opts} update

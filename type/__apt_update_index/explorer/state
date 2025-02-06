@@ -25,9 +25,9 @@ maxage=$(cat "${__object:?}/parameter/maxage")
 # Some of following code is duplicated in __package_apt/gencode-remote.
 # If you change anything here, please make changes there too.
 if [ ! -d /var/lib/apt/lists ] \
-    || [ -n "$( find /etc/apt -newer /var/lib/apt/lists )" ] \
+    || [ -n "$(find /etc/apt -newer /var/lib/apt/lists)" ] \
     || [ ! -f /var/cache/apt/pkgcache.bin ] \
-    || [ "$( stat --format %Y /var/cache/apt/pkgcache.bin )" -lt "$( date +%s -d "-${maxage} seconds" )" ]
+    || [ "$(stat --format %Y /var/cache/apt/pkgcache.bin)" -lt "$(date +%s -d "-${maxage} seconds")" ]
 then
     echo 'outdated'
 else

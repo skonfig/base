@@ -27,7 +27,7 @@ then
     exit 0
 fi
 
-if [ "$( cat "${__object:?}/explorer/path_should_state" )" = 'absent' ] \
+if [ "$(cat "${__object:?}/explorer/path_should_state")" = 'absent' ] \
     && [ -z "${__cdist_dry_run+dry run}" ]
 then
     echo "${path_should} does not exist in target" >&2
