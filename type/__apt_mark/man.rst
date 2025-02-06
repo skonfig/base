@@ -36,7 +36,7 @@ EXAMPLES
 
 AUTHORS
 -------
-* Ander Punnar <cdist--@--kvlt.ee>
+* Ander Punnar <ander--@--kvlt.ee>
 
 
 COPYING

@@ -64,7 +64,7 @@ SEE ALSO
 
 AUTHORS
 -------
-* Dennis Camera <skonfig--@--dtnr.ch>
+* Dennis Camera <dennis.camera--@--riiengineering.ch>
 
 
 COPYING

@@ -35,7 +35,7 @@ AUTHORS
 * Steven Armstrong <steven-cdist--@--armstrong.cc>
 * Nico Schottelius <nico-cdist--@--schottelius.org>
 * Ramon Salvadó <rsalvado--@--gnuine.com>
-* Dennis Camera <dennis.camera--@--ssrq-sds-fds.ch>
+* Dennis Camera <dennis.camera--@--riiengineering.ch>
 
 
 COPYING

@@ -1,6 +1,6 @@
 # NOTE: this file needs to be sourced and the $user variable needs to be defined
 #
-# 2022 Dennis Camera (skonfig at dtnr.ch)
+# 2022 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #

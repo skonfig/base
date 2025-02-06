@@ -1,6 +1,6 @@
 # NOTE: this file needs to be sourced.
 #
-# 2022 Dennis Camera (skonfig at dtnr.ch)
+# 2022 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #

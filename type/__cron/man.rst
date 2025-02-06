@@ -98,7 +98,7 @@ SEE ALSO
 AUTHORS
 -------
 * Steven Armstrong <steven-cdist--@--armstrong.cc>
-* Dennis Camera <skonfig--@--dtnr.ch>
+* Dennis Camera <dennis.camera--@--riiengineering.ch>
 
 
 COPYING

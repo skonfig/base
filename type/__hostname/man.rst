@@ -42,7 +42,7 @@ EXAMPLES
 AUTHORS
 -------
 * Steven Armstrong <steven-cdist--@--armstrong.cc>
-* Dennis Camera <dennis.camera--@--ssrq-sds-fds.ch>
+* Dennis Camera <dennis.camera--@--riiengineering.ch>
 
 
 COPYING

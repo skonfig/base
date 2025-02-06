@@ -1,6 +1,6 @@
 # -*- mode: sh; indent-tabs-mode:t -*-
 #
-# 2020 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
+# 2020 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
