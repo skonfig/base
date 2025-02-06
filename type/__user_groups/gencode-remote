@@ -43,7 +43,8 @@ then
    exit 0
 fi
 
-for group in ${changed_groups}; do
+for group in ${changed_groups}
+do
    if [ "${os}" = 'netbsd' ] || [ "${os}" = 'openbsd' ]
    then
       case ${state_should}

@@ -99,7 +99,8 @@ in
 
       # Note: Mode - needs to happen last as a chown/chgrp can alter mode by
       # clearing S_ISUID and S_ISGID bits (see chown(2))
-      for attribute in group owner mode; do
+      for attribute in group owner mode
+      do
          if [ -f "${__object:?}/parameter/${attribute}" ]
          then
             value_should=$(cat "${__object:?}/parameter/${attribute}")

@@ -79,7 +79,8 @@ else
         ;;
         gentoo|alpine)
             state='absent'
-            for d in /etc/runlevels/*; do
+            for d in /etc/runlevels/*
+            do
                 if [ -e "${d}/${name}" ]
                 then
                     state='present'

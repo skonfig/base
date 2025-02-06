@@ -44,7 +44,8 @@ contains_element() {
     target=$1
     shift
 
-    for key in "$@"; do
+    for key
+    do
         if [ "${key}" = "${target}" ]
         then
             MATCH=1

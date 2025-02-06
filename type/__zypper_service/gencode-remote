@@ -58,7 +58,8 @@ fi
 if [ -f "${__object:?}/parameter/remove-all-other-services" ]
 then
    # file exists -> True
-   for i in ${exp_ids}; do
+   for i in ${exp_ids}
+   do
      if [ "${i}" != "${exp_id}" ]
      then
        echo "zypper ${zypper_def_opts}  removeservice ${i} &>/dev/null"

@@ -49,7 +49,8 @@ then
    if grep -q "^${name}:" "${__object:?}/explorer/group"
    then
       # change existing
-      for property in ${supported_change_properties}; do
+      for property in ${supported_change_properties}
+      do
          if [ -f "${__object:?}/parameter/${property}" ]
          then
             new_value=$(cat "${__object:?}/parameter/${property}")
@@ -82,7 +83,8 @@ then
       fi
    else
       # create new
-      for property in ${supported_change_properties}; do
+      for property in ${supported_change_properties}
+      do
          if [ -f "${__object:?}/parameter/${property}" ]
          then
             new_value=$(cat "${__object:?}/parameter/${property}")

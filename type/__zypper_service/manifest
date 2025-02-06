@@ -52,7 +52,8 @@ exp_repos=$(rev "${__object:?}/explorer/repo_ids")
 if [ -f "${__object:?}/parameter/remove-all-repos" ]
 then
    # file exists -> True
-   for i in ${exp_repos}; do
+   for i in ${exp_repos}
+   do
      __zypper_repo "droprepo${i}" --state absent --repo_id "${i}"
    done
 fi

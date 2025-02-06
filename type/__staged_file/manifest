@@ -23,7 +23,8 @@ stage_dir=$(cat "${__object:?}/parameter/stage-dir")
 stage_file="${stage_dir}/${destination}"
 
 set -- "/${destination}"
-for param in owner group mode state; do
+for param in owner group mode state
+do
    if [ -f "${__object:?}/parameter/${param}" ]
    then
       set -- "$@" "--${param}" "$(cat "${__object:?}/parameter/${param}")"
