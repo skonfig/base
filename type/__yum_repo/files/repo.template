@@ -1,10 +1,11 @@
 #!/bin/sh
 set -u
+: "${__type:?}"  # make shellcheck happy
 cat << DONE
-# Created by cdist ${__type##*/}
+# Created by skonfig ${__type##*/}
 # Do not change. Changes will be overwritten.
 #
-[${repo_name}]
+[${repo_name:?}]
 DONE
 # single value properties
 single_value='name

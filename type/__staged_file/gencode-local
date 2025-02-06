@@ -66,6 +66,7 @@ fetch_file() {
 }
 
 fetch_and_prepare_file() {
+   : "${__type:?}"  # make shellcheck happy
    # shellcheck disable=SC2016
    printf 'tmpdir="$(mktemp -d -p "/tmp" "%s")"\n' "${__type##*/}.XXXXXXXXXX"
    # shellcheck disable=SC2016

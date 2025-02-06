@@ -26,13 +26,13 @@ shquot() {
 }
 
 get_current_value() {
-	test -s "${stat_file}" || return 0
+	test -s "$1" || return 0
 
-	awk -v name="$1" -v value="$2" '{
+	awk -v name="$2" -v value="$3" '{
 		if (1 == index($0, name ":")) {
 			print ((value ~ /^[0-9]+$/) ? $2 : $3)
 		}
-	}' "${stat_file}"
+	}' "$1"
 }
 
 set_remote_path() {

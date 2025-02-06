@@ -82,6 +82,7 @@ in
       else
          echo add >> "${__messages_out:?}"
       fi
+      : "${__type:?}"  # make shellcheck happy
       cat << DONE
 cat >> ${quoted_file} << '${__type##*/}_DONE'
 $(cat "${block}")
