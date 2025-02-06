@@ -32,9 +32,9 @@ state_should=$(cat "${__object:?}/parameter/state")
 
 pkg_version=$(cat "${__object:?}/explorer/pkg_version")
 if [ -z "${pkg_version}" ]; then
-    state_is="absent"
+    state_is='absent'
 else
-    state_is="present"
+    state_is='present'
 fi
 
 # Exit if nothing is needed to be done
@@ -43,11 +43,11 @@ fi
 case ${state_should} in
    present)
          echo "pacman --needed --noconfirm --noprogressbar -S '${name}'"
-         echo "installed" >> "${__messages_out:?}"
+         echo 'installed' >> "${__messages_out:?}"
    ;;
    absent)
          echo "pacman --noconfirm --noprogressbar -R '${name}'"
-         echo "removed" >> "${__messages_out:?}"
+         echo 'removed' >> "${__messages_out:?}"
    ;;
    *)
       echo "Unknown state: ${state_should}" >&2

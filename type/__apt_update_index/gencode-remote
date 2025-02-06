@@ -29,7 +29,7 @@
 #
 # See more: ticket #861
 # https://code.ungleich.ch/ungleich-public/cdist/-/issues/861
-apt_opts="-o Acquire::AllowReleaseInfoChange::Suite=true -o Acquire::AllowReleaseInfoChange::Version=true"
+apt_opts='-o Acquire::AllowReleaseInfoChange::Suite=true -o Acquire::AllowReleaseInfoChange::Version=true'
 
 if [ -f "${__object:?}/parameter/always" ] \
     || [ "$( cat "${__object:?}/explorer/state" )" = 'outdated' ]

@@ -39,7 +39,7 @@ case ${state_should} in
                 # nothing to do
             ;;
             wrongformat|wrongvalue|present)
-                echo "remove" >> "${__messages_out:?}"
+                echo 'remove' >> "${__messages_out:?}"
                 fire_onchange=1
             ;;
             *)
@@ -51,15 +51,15 @@ case ${state_should} in
     present)
         case ${state_is} in
             nosuchfile)
-                echo "create" >> "${__messages_out:?}"
+                echo 'create' >> "${__messages_out:?}"
                 fire_onchange=1
             ;;
             absent)
-                echo "insert" >> "${__messages_out:?}"
+                echo 'insert' >> "${__messages_out:?}"
                 fire_onchange=1
             ;;
             wrongformated|wrongvalue)
-                echo "change" >> "${__messages_out:?}"
+                echo 'change' >> "${__messages_out:?}"
                 fire_onchange=1
             ;;
             present)

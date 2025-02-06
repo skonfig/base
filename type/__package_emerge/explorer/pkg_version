@@ -21,7 +21,7 @@
 #
 
 if [ ! -x /usr/bin/equery ]; then
-    echo "gentoolkit not installed!" 1>&2
+    echo 'gentoolkit not installed!' 1>&2
     exit 1
 fi
 

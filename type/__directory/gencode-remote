@@ -29,12 +29,12 @@ stat_file="${__object:?}/explorer/stat"
 # variable to keep track if we have to set directory attributes
 set_attributes=
 
-mkdiropt=""
-[ -f "${__object:?}/parameter/parents" ] && mkdiropt="-p"
+mkdiropt=''
+[ -f "${__object:?}/parameter/parents" ] && mkdiropt='-p'
 
-recursive=""
+recursive=''
 if [ -f "${__object:?}/parameter/recursive" ]; then
-   recursive="-R"
+   recursive='-R'
    # need to allways set attributes when recursive is given
    # as we don't want to check all subfolders/files
    set_attributes=1
@@ -74,16 +74,16 @@ set_mode() {
 
 case ${state_should} in
    present|exists)
-      if [ "${type}" != "directory" ]; then
+      if [ "${type}" != 'directory' ]; then
          set_attributes=1
-         if [ "${type}" != "none" ]; then
+         if [ "${type}" != 'none' ]; then
             # our destination is not a directory, remove whatever is there
             # and then create our directory and set all attributes
             echo "rm -f '${destination}'"
-            echo "remove non directory" >> "${__messages_out:?}"
+            echo 'remove non directory' >> "${__messages_out:?}"
          fi
          echo "mkdir ${mkdiropt} '${destination}'"
-         echo "create" >> "${__messages_out:?}"
+         echo 'create' >> "${__messages_out:?}"
       elif [ "${state_should}" = 'exists' ]; then
          # The type is directory and --state exists. We are done and do not
          # check or set the attributes.
@@ -131,7 +131,7 @@ case ${state_should} in
       esac
    ;;
    absent)
-        if [ "${type}" = "directory" ]; then
+        if [ "${type}" = 'directory' ]; then
             echo "rm -rf '${destination}'"
             echo remove >> "${__messages_out:?}"
         fi

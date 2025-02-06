@@ -26,15 +26,15 @@
 
 os=$("${__explorer:?}/os")
 case ${os} in
-    "macosx")
+    macosx)
         sysctl -n hw.physicalcpu
     ;;
 
-    "openbsd")
+    openbsd)
         sysctl -n hw.ncpuonline
     ;;
 
-    "freebsd"|"netbsd")
+    freebsd|netbsd)
         PATH=$(getconf PATH)
         sysctl -n hw.ncpu
     ;;

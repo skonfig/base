@@ -32,9 +32,9 @@ incompatible_args()
 }
 
 if [ -f "${__object:?}/parameter/source" ]; then
-	method="source"
+	method='source'
 	src=$(cat "${__object:?}/parameter/source")
-	if [ "${src}" = "-" ]; then
+	if [ "${src}" = '-' ]; then
 		src="${__object:?}/stdin"
 	fi
 fi
@@ -42,18 +42,18 @@ if [ -f "${__object:?}/parameter/uri" ]; then
 	if [ -n "${method}" ]; then
 		incompatible_args uri
 	fi
-	method="uri"
+	method='uri'
 	src=$(cat "${__object:?}/parameter/uri")
 fi
 if [ -f "${__object:?}/parameter/keyid" ]; then
 	if [ -n "${method}" ]; then
 		incompatible_args keyid
 	fi
-	method="keyid"
+	method='keyid'
 fi
 # Keep old default
 if [ -z "${method}" ]; then
-	method="keyid"
+	method='keyid'
 fi
 # Save this for later in gencode-remote
 echo "${method}" > "${__object:?}/key_method"
@@ -62,15 +62,15 @@ echo "${method}" > "${__object:?}/key_method"
 __package dirmngr
 # We need this in case a key has to be dearmor'd
 __package gnupg
-export require="__package/gnupg"
+export require='__package/gnupg'
 
 if [ -f "${__object:?}/parameter/use-deprecated-apt-key" ]; then
 	# This is required if apt-key(8) is to be used
-	if [ "${method}" = "source" ] || [ "${method}" = "uri" ]; then
+	if [ "${method}" = 'source' ] || [ "${method}" = 'uri' ]; then
 		incompatible_args use-deprecated-apt-key
 	fi
 else
-	if [ "${state_should}" = "absent" ] && \
+	if [ "${state_should}" = 'absent' ] && \
 			[ -f "${__object:?}/parameter/keyid" ]; then
 		cat >> /dev/stderr <<EOF
 You can't reliably remove by keyid without --use-deprecated-apt-key.
@@ -83,15 +83,16 @@ fi
 keydir=$(cat "${__object:?}/parameter/keydir")
 keyfile="${keydir}/${__object_id:?}.gpg"
 keyfilecdist="${keyfile}.cdist"
-if [ "${state_should}" != "absent" ]; then
+if [ "${state_should}" != 'absent' ]; then
 	# Ensure keydir exists
 	__directory "${keydir}" --state exists --mode 0755
 fi
 
-if [ "${state_should}" = "absent" ]; then
-	__file "${keyfile}" --state "absent"
-	__file "${keyfilecdist}" --state "absent"
-elif [ "${method}" = "source" ] || [ "${method}" = "uri" ]; then
+
+if [ "${state_should}" = 'absent' ]; then
+	__file "${keyfile}" --state absent
+	__file "${keyfilecdist}" --state absent
+elif [ "${method}" = 'source' ] || [ "${method}" = 'uri' ]; then
 	dearmor=$(cat <<-EOF
 	if [ '${state_should}' = 'present' ]; then
 		# Dearmor if necessary
@@ -107,7 +108,7 @@ elif [ "${method}" = "source" ] || [ "${method}" = "uri" ]; then
 	EOF
 	)
 
-	if [ "${method}" = "uri" ]; then
+	if [ "${method}" = 'uri' ]; then
 		__download "${keyfilecdist}" \
 			--url "${src}" \
 			--onchange "${dearmor}"

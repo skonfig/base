@@ -211,8 +211,8 @@ in
 	(*)
 		if ! ${has_systemd_timedatectl}
 		then
-			printf "Your operating system (%s) is currently not supported by this type (%s)\n" "${os}" "${__type##*/}" >&2
-			printf "Please contribute an implementation for it if you can.\n" >&2
+			printf 'Your operating system (%s) is currently not supported by this type (%s)\n' "${os}" "${__type##*/}" >&2
+			printf 'Please contribute an implementation for it if you can.\n' >&2
 			exit 1
 		fi
 		;;

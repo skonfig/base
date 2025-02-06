@@ -26,10 +26,10 @@ source=$(cat "${__object:?}/parameter/source")
 
 case ${type} in
     symbolic)
-        lnopt="-s"
+        lnopt='-s'
     ;;
     hard)
-        lnopt=""
+        lnopt=''
     ;;
     *)
         echo "Unknown link type: ${type}" >&2
@@ -45,12 +45,12 @@ state_should=$(cat "${__object:?}/parameter/state")
 file_type=$(cat "${__object:?}/explorer/type")
 case ${state_should} in
     present)
-        if [ "${file_type}" = "directory" ]; then
+        if [ "${file_type}" = 'directory' ]; then
             # our destination is currently a directory, delete it
             printf 'rm -rf "%s" &&\n' "${destination}"
             echo "removed '${destination}' (directory)" >> "${__messages_out:?}"
         else
-           if [ "${state_is}" = "wrongsource" ]; then
+           if [ "${state_is}" = 'wrongsource' ]; then
                # our destination is a symlink but points to the wrong source,
                # delete it
                printf 'rm -f "%s" &&\n' "${destination}"

@@ -40,18 +40,18 @@ fi
 [ -f "${file}" ] || exit 0
 
 if [ -f "${__object:?}/parameter/before" ]; then
-   position="before"
+   position='before'
 elif [ -f "${__object:?}/parameter/after" ]; then
-   position="after"
+   position='after'
 else
    # By default we append to the end of the file.
-   position="end"
+   position='end'
 fi
 
 if [ -f "${__object:?}/parameter/regex" ]; then
-   needle="regex"
+   needle='regex'
 else
-   needle="line"
+   needle='line'
 fi
 
 awk -v position="${position}" -v needle="${needle}" '

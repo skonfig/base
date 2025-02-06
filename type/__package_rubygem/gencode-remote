@@ -27,9 +27,9 @@ fi
 state_should=$(cat "${__object:?}/parameter/state")
 
 if grep -q true "${__object:?}/explorer/pkg_status"; then
-    state_is="present"
+    state_is='present'
 else
-    state_is="absent"
+    state_is='absent'
 fi
 
 [ "${state_is}" = "${state_should}" ] && exit 0
@@ -37,11 +37,11 @@ fi
 case ${state_should} in
     present)
         echo "gem install '${name}' --no-ri --no-rdoc"
-        echo "installed" >> "${__messages_out:?}"
+        echo 'installed' >> "${__messages_out:?}"
     ;;
     absent)
         echo "gem uninstall '${name}'"
-        echo "removed" >> "${__messages_out:?}"
+        echo 'removed' >> "${__messages_out:?}"
     ;;
     *)
         echo "Unknown state: ${state_should}" >&2

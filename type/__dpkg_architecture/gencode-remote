@@ -27,7 +27,7 @@ main_arch=$(cat "${__object:?}/explorer/architecture")
 
 # Exit here if dpkg do not work (empty explorer)
 if [ -z "${main_arch}" ]; then
-    echo "dpkg is not available or unable to detect a architecture!" >&2
+    echo 'dpkg is not available or unable to detect a architecture!' >&2
     exit 1
 fi
 
@@ -35,16 +35,16 @@ fi
 # Check if requested architecture is the main one
 if [ "${arch_wanted}" = "${main_arch}" ]; then
     # higher than present; we can not remove it
-    state_is="present"
-    caution="yes"
+    state_is='present'
+    caution='yes'
 
 # Check if the architecture not already used
 elif grep -qFx "${arch_wanted}" "${__object:?}/explorer/foreign-architectures"; then
-    state_is="present"
+    state_is='present'
 
 # arch does not exist
 else
-    state_is="absent"
+    state_is='absent'
 fi
 
 
@@ -55,7 +55,7 @@ if [ "${state_is}" != "${state_should}" ]; then
             # print add code
             printf "dpkg --add-architecture '%s'\n" "${arch_wanted}"
             # updating the index to make the new architecture available
-            echo "apt update"
+            echo 'apt update'
 
             echo added >> "${__messages_out:?}"
             ;;

@@ -26,12 +26,12 @@ file=$(cat "${__object:?}/parameter/file" 2>/dev/null)
 state=$(cat "${__object:?}/parameter/state" 2>/dev/null)
 
 #path variable default /etc/pacman.d
-sec_path="/etc/pacman.d"
+sec_path='/etc/pacman.d'
 
 #allowed keys (from man pacman.conf)
-allowed_option_keys="RootDir DBPath CacheDir GPGDir LogFile HoldPkg IgnorePkg IgnoreGroup Include Architecture XferCommand NoUpgrade NoExtract CleanMethod SigLevel LocalFileSigLevel RemoteFileSigLevel"
-boolean_option_keys="UseSyslog Color UseDelta TotalDownload CheckSpace VerbosePkgLists"
-allowed_repo_keys="Include Server SigLevel Usage"
+allowed_option_keys='RootDir DBPath CacheDir GPGDir LogFile HoldPkg IgnorePkg IgnoreGroup Include Architecture XferCommand NoUpgrade NoExtract CleanMethod SigLevel LocalFileSigLevel RemoteFileSigLevel'
+boolean_option_keys='UseSyslog Color UseDelta TotalDownload CheckSpace VerbosePkgLists'
+allowed_repo_keys='Include Server SigLevel Usage'
 
 #set global variables
 MATCH=0
@@ -57,14 +57,14 @@ if [ "${file}" ]; then
     __file "${sec_path}/plain_file_${file}"\
         --state exists --mode 666
 
-    if [ "${state}" = "present" ]; then
+    if [ "${state}" = 'present' ]; then
 
         require="__file/${sec_path}/plain_file_${file}" __key_value "${file}_${key}" \
             --file "${sec_path}/plain_file_${file}" --key "${key}" --value "${value}" --delimiter ' = '
 
         exit 0
 
-    elif [ "${state}" = "absent" ]; then
+    elif [ "${state}" = 'absent' ]; then
         require="__file/${sec_path}/plain_file_${file}" __key_value "${file}_${key}" \
                 --state absent
         exit 0
@@ -75,7 +75,7 @@ if [ "${file}" ]; then
     fi
 fi  
 
-if [ "${section}" = "options" ]; then
+if [ "${section}" = 'options' ]; then
 
     __file "${sec_path}/${section}"\
             --state exists --mode 666 --source - << eof
@@ -86,10 +86,10 @@ eof
     contains_element "${key}" "${boolean_option_keys}"
 
     if [ "${MATCH}" -eq 1 ]; then
-        if [ "${value}" = "on" ]; then
+        if [ "${value}" = 'on' ]; then
             require="__file/${sec_path}/${section}" __line "${key}_${value}" \
                 --file "${sec_path}/${section}" --line "${key}"
-        elif [ "${value}" = "off" ]; then
+        elif [ "${value}" = 'off' ]; then
             require="__file/${sec_path}/${section}" __line "${key}_${value}" \
                 --file "${sec_path}/${section}" --line "${key}" --state absent
         fi
@@ -110,7 +110,7 @@ else
             --state exists --mode 666 --source - << eof
 [${section}]
 eof
-    if [ "${state}" = "present" ]; then
+    if [ "${state}" = 'present' ]; then
 
         #check if key is valid
         contains_element "${key}" "${allowed_repo_keys}"
@@ -121,7 +121,7 @@ eof
         require="__file/${sec_path}/repo_${section}" __key_value "${section}_${key}" \
                 --file "${sec_path}/repo_${section}" --key "${key}" --value "${value}" --delimiter ' = '
 
-    elif [ "${state}" = "absent" ]; then
+    elif [ "${state}" = 'absent' ]; then
 
         require="__file/${sec_path}/repo_${section}" __key_value "${section}_${key}" \
             --state absent

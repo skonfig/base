@@ -24,17 +24,17 @@ state=$(cat "${__object:?}/parameter/state")
 if [ ! -f "${__object:?}/parameter/nofstab" ]; then
    # Generate an entry for /etc/fstab
    (
-printf "%s" "$(cat "${__object:?}/parameter/device")"
-printf " %s" "${path}"
+printf '%s' "$(cat "${__object:?}/parameter/device")"
+printf ' %s' "${path}"
 type=$(cat "${__object:?}/parameter/type")
-printf " %s" "${type}"
+printf ' %s' "${type}"
 options=$(cat "${__object:?}/parameter/options")
-printf " %s" "${options}"
-printf " %s" "$(cat "${__object:?}/parameter/dump")"
+printf ' %s' "${options}"
+printf ' %s' "$(cat "${__object:?}/parameter/dump")"
 printf ' %s\n' "$(cat "${__object:?}/parameter/pass")"
 ) | \
 __block "${__object_name:?}" \
-   --file "/etc/fstab" \
+   --file '/etc/fstab' \
    --prefix "#cdist:${__object_name:?}" \
    --suffix "#/cdist:${__object_name:?}" \
    --state "${state}" \

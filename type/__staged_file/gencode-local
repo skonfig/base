@@ -30,7 +30,7 @@ stage_file="${stage_dir}/${destination}"
 stage_file_dir="${stage_file%/*}"
 source_file_name="${source##*/}"
 
-if [ "${state}" = "absent" ]; then
+if [ "${state}" = 'absent' ]; then
    # nothing to do
    exit 0
 fi

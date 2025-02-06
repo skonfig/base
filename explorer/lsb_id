@@ -23,7 +23,7 @@
 set +e
 case $("${__explorer:?}/os") in
    checkpoint)
-       echo "CheckPoint"
+       echo 'CheckPoint'
    ;;
    openwrt)
       # shellcheck disable=SC1091

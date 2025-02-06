@@ -28,7 +28,7 @@ file=$(cat "${__object:?}/parameter/file")
 
 delimiter=$(cat "${__object:?}/parameter/delimiter")
 value=$(cat "${__object:?}/parameter/value" 2>/dev/null \
-   || echo "__CDIST_NOTSET__")
+   || echo '__CDIST_NOTSET__')
 export key state delimiter value
 if [ -f "${__object:?}/parameter/exact_delimiter" ]; then
     exact_delimiter=1
@@ -47,7 +47,7 @@ fi
 
 awk_bin=$(PATH=$(getconf PATH 2>/dev/null) && command -v awk || echo awk)
 
-"${awk_bin}" -f - "${file}" >"${tmpfile}" <<"AWK_EOF"
+"${awk_bin}" -f - "${file}" >"${tmpfile}" <<'AWK_EOF'
 BEGIN {
     # import variables in a secure way ..
     state=ENVIRON["state"]

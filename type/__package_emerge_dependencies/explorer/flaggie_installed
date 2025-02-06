@@ -21,7 +21,7 @@
 #
 
 if [ -x /usr/bin/flaggie ]; then
-    echo "true"
+    echo 'true'
 else
-    echo "false"
+    echo 'false'
 fi

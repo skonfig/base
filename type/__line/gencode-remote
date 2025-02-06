@@ -20,7 +20,7 @@
 #
 
 if [ -f "${__object:?}/parameter/before" ] && [ -f "${__object:?}/parameter/after" ]; then
-   echo "Use either --before OR --after but not both." >&2
+   echo 'Use either --before OR --after but not both.' >&2
    exit 1
 fi
 
@@ -39,8 +39,8 @@ if [ -z "${state_is}" ]; then
 fi
 
 if [ "${state_should}" = "${state_is}" ] || \
-	{ [ "${state_should}" = "present" ] && [ "${state_is}" = "matching" ] ;} || \
-	{ [ "${state_should}" = "replace" ] && [ "${state_is}" = "present" ] ;} ; then
+	{ [ "${state_should}" = 'present' ] && [ "${state_is}" = 'matching' ] ;} || \
+	{ [ "${state_should}" = 'replace' ] && [ "${state_is}" = 'present' ] ;} ; then
    # If state matches already, or 'present' is used and regex matches
    # or 'replace' is used and the exact line is present, then there is
    # nothing to do
@@ -48,25 +48,25 @@ if [ "${state_should}" = "${state_is}" ] || \
 fi
 
 if [ -f "${__object:?}/parameter/before" ]; then
-   position="before"
+   position='before'
 elif [ -f "${__object:?}/parameter/after" ]; then
-   position="after"
+   position='after'
 else
    # By default we append to the end of the file.
-   position="end"
+   position='end'
 fi
 
 if [ -f "${__object:?}/parameter/regex" ]; then
-   needle="regex"
+   needle='regex'
 else
-   needle="line"
+   needle='line'
 fi
 
 add=0
 remove=0
 case ${state_should} in
    present|replace)
-      if [ "${state_is}" = "wrongposition" ] || [ "${state_is}" = "matching" ]; then
+      if [ "${state_is}" = 'wrongposition' ] || [ "${state_is}" = 'matching' ]; then
          echo updated >> "${__messages_out:?}"
          remove=1
       else

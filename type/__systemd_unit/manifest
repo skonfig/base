@@ -21,7 +21,7 @@
 systemctl_present=$(cat "${__object:?}/explorer/systemctl-present")
 
 if [ "${systemctl_present}" -ne 0 ]; then
-    echo "systemctl does not seem to be present on this system" >&2
+    echo 'systemctl does not seem to be present on this system' >&2
 
     exit 1
 fi
@@ -33,25 +33,25 @@ enablement_state=$(cat "${__object:?}/parameter/enablement-state")
 
 # The unit must be disabled before removing its unit file. The unit file is
 # therefore removed by gencode-remote of this type, not here.
-if [ -z "${source}" ] || [ "${state}" = "absent" ]; then
+if [ -z "${source}" ] || [ "${state}" = 'absent' ]; then
     exit 0
 fi
 
 # stdin is not propagated automatically to sub-objects
-if [ "${source}" = "-" ]; then
+if [ "${source}" = '-' ]; then
     source="${__object:?}/stdin"
 fi
 
 unitfile_state=${state}
-if [ "${enablement_state}" = "masked" ]; then
+if [ "${enablement_state}" = 'masked' ]; then
     # Masking creates a symlink from /etc/systemd/system/<unit> to /dev/null.
     # This process fails with "Failed to execute operation: Invalid argument"
     # if file /etc/systemd/system/<unit> already exists. We must therefore
     # remove it.
-    unitfile_state="absent"
+    unitfile_state='absent'
 fi
 
-unitfile_dir="/etc/systemd/system"
+unitfile_dir='/etc/systemd/system'
 
 if [ -f "${__object:?}/parameter/drop-in" ]; then
     unitfile_dir="${unitfile_dir}/${name}.d"
@@ -70,6 +70,6 @@ fi
 
 __file "${unitfile}" \
     --mode 644 \
-    --onchange "systemctl daemon-reload" \
+    --onchange 'systemctl daemon-reload' \
     --source "${source}" \
     --state "${unitfile_state}"

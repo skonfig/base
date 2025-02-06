@@ -222,5 +222,5 @@ if [ -f /etc/os-release ]; then
    exit 0
 fi
 
-echo "Unknown OS" >&2
+echo 'Unknown OS' >&2
 exit 1

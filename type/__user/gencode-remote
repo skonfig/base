@@ -35,15 +35,15 @@ shorten_property() {
     unset -v ret
     case $1
     in
-	comment) ret="-c";;
-	home) ret="-d";;
-	gid) ret="-g";;
-	groups) ret="-G";;
-	password) ret="-p";;
-	shell) ret="-s";;
-	uid) ret="-u";;
-    create-home) ret="-m";;
-    system) ret="-r";;
+	comment) ret='-c';;
+	home) ret='-d';;
+	gid) ret='-g';;
+	groups) ret='-G';;
+	password) ret='-p';;
+	shell) ret='-s';;
+	uid) ret='-u';;
+    create-home) ret='-m';;
+    system) ret='-r';;
     esac
     echo "${ret}"
 }
@@ -99,7 +99,7 @@ do_user() {
 	unset _util_name _user_name
 }
 
-if [ "${state}" = "present" ]; then
+if [ "${state}" = 'present' ]; then
     cd "${__object:?}/parameter"
     if grep -q "^${name}:" "${__object:?}/explorer/passwd"; then
        for property in *; do
@@ -161,8 +161,8 @@ if [ "${state}" = "present" ]; then
     else
         echo add >> "${__messages_out:?}"
         for property in *; do
-            [ "${property}" = "state" ] && continue
-            [ "${property}" = "remove-home" ] && continue
+            [ "${property}" = 'state' ] && continue
+            [ "${property}" = 'remove-home' ] && continue
             new_value=$(cat "${property}")
             if [ -z "${new_value}" ];then       # Boolean values have no value
               set -- "$@" "$(shorten_property "${property}")"
@@ -173,7 +173,7 @@ if [ "${state}" = "present" ]; then
 
        do_user add "${name}" "$@"
     fi
-elif [ "${state}" = "absent" ]; then
+elif [ "${state}" = 'absent' ]; then
     if grep -q "^${name}:" "${__object:?}/explorer/passwd"; then
         #user exists, but state != present, so delete it
         set --

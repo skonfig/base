@@ -22,7 +22,7 @@
 #exec >&2
 #set -x
 
-zypper_def_opts=" -q --non-interactive --gpg-auto-import-keys "
+zypper_def_opts=' -q --non-interactive --gpg-auto-import-keys '
 
 if [ -f "${__object:?}/parameter/repo_desc" ]; then
    desc=$(cat "${__object:?}/parameter/repo_desc")
@@ -46,16 +46,16 @@ state=$(cat "${__object:?}/parameter/state")
 
 repo_id=$(cat "${__object:?}/explorer/repo_id")
 
-act_id=""
+act_id=''
 if grep -q "${id}" "${__object:?}/explorer/all_repo_ids"; then
     act_id=${id}
 elif grep -q "${repo_id}" "${__object:?}/explorer/all_repo_ids"; then
     act_id=${repo_id}
 fi
 
-repostate="disabled"
+repostate='disabled'
 if grep -q "${act_id}" "${__object:?}/explorer/enabled_repo_ids"; then
-    repostate="enabled"
+    repostate='enabled'
 fi
 
 
@@ -77,13 +77,13 @@ case ${state} in
          fi
    ;;
    enabled)
-         if [ -n "${act_id}" ] && [ "${repostate}" = "disabled" ]; then
+         if [ -n "${act_id}" ] && [ "${repostate}" = 'disabled' ]; then
              # Repo present (act_id not "") and repostate not enabled, so a enable call is needed
              echo "zypper ${zypper_def_opts} modifyrepo -e ${act_id}"
          fi
    ;;
    disabled)
-         if [ -n "${act_id}" ] && [ "${repostate}" = "enabled" ]; then
+         if [ -n "${act_id}" ] && [ "${repostate}" = 'enabled' ]; then
              # Repo present (act_id not "") and repostate enabled, so a disable call is needed
              echo "zypper ${zypper_def_opts} modifyrepo -d ${act_id}"
          fi

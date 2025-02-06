@@ -34,15 +34,15 @@ fi
 
 if [ -f "${__object:?}/parameter/install-recommends" ]; then
     # required if __apt_norecommends is used
-    recommendsparam="-o APT::Install-Recommends=1"
+    recommendsparam='-o APT::Install-Recommends=1'
 else
-    recommendsparam="-o APT::Install-Recommends=0"
+    recommendsparam='-o APT::Install-Recommends=0'
 fi
 
 if [ -f "${__object:?}/parameter/purge-if-absent" ]; then
-	purgeparam="--purge"
+	purgeparam='--purge'
 else
-	purgeparam=""
+	purgeparam=''
 fi
 
 
@@ -64,7 +64,7 @@ esac
 
 # Hint if we need to avoid questions at some point:
 # DEBIAN_PRIORITY=critical can reduce the number of questions
-aptget="DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes -o Dpkg::Options::=\"--force-confdef\" -o Dpkg::Options::=\"--force-confold\""
+aptget='DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confold'
 
 case ${state_should}
 in
@@ -115,7 +115,7 @@ in
         #
         # See more: ticket #861
         # https://code.ungleich.ch/ungleich-public/cdist/-/issues/861
-        apt_opts="-o Acquire::AllowReleaseInfoChange::Suite=true -o Acquire::AllowReleaseInfoChange::Version=true"
+        apt_opts='-o Acquire::AllowReleaseInfoChange::Suite=true -o Acquire::AllowReleaseInfoChange::Version=true'
 
         # Try to update index cache before installing a package. cdist runs all
         # type explorers first (except when CDIST_ORDER_DEPENDENCY is used) and

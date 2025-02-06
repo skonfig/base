@@ -44,25 +44,25 @@ fi
 
 
 # save the action required
-required_action=""
+required_action=''
 
 # check the state of the service that should be
 if [ "${state}" != "${should}" ]; then
     # select what to do to get the $should state
     case ${should} in
         running)
-            if [ "${state}" = "stopped" ]; then required_action="start"; fi
+            if [ "${state}" = 'stopped' ]; then required_action='start'; fi
             ;;
 
         stopped)
-            if [ "${state}" = "running" ]; then required_action="stop"; fi
+            if [ "${state}" = 'running' ]; then required_action='stop'; fi
             ;;
     esac
 fi
 
 # check if the action can be achieved if given
 if [ -f "${__object:?}/parameter/action" ] \
-    && [ -z "${required_action}" ] && [ "${state}" = "running" ]; then
+    && [ -z "${required_action}" ] && [ "${state}" = 'running' ]; then
 
     # there must be an action
     action=$(cat "${__object:?}/parameter/action")
@@ -70,11 +70,11 @@ if [ -f "${__object:?}/parameter/action" ] \
     # select the action to the required element
     case ${action} in
         restart)
-            required_action="restart"
+            required_action='restart'
             ;;
 
         reload)
-            required_action="reload"
+            required_action='reload'
             ;;
 
         *)

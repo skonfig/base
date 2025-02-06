@@ -31,7 +31,7 @@ destination="/etc/apt/sources.list.d/${name}.list"
 #
 # See more: ticket #861
 # https://code.ungleich.ch/ungleich-public/cdist/-/issues/861
-apt_opts="-o Acquire::AllowReleaseInfoChange::Suite=true -o Acquire::AllowReleaseInfoChange::Version=true"
+apt_opts='-o Acquire::AllowReleaseInfoChange::Suite=true -o Acquire::AllowReleaseInfoChange::Version=true'
 
 # run 'apt-get update' only if something changed with our sources.list file
 #   it will be run a second time on error as a redundancy messure to success

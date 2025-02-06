@@ -25,14 +25,14 @@ file=$(cat "${__object:?}/explorer/file")
 
 if [ ! -f "${__object:?}/parameter/nofile" ] && [ -z "${file}" ]
 then
-	echo "Cannot determine path of authorized_keys file" >&2
+	echo 'Cannot determine path of authorized_keys file' >&2
 	exit 1
 fi
 
 if [ ! -f "${__object:?}/parameter/noparent" ] || [ ! -f "${__object:?}/parameter/nofile" ]; then
    group=$(cut -d':' -f 1 "${__object:?}/explorer/group")
    if [ -z "${group}" ]; then
-      echo "Failed to get owners group from explorer." >&2
+      echo 'Failed to get owners group from explorer.' >&2
       exit 1
    fi
 

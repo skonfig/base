@@ -22,7 +22,7 @@
 #exec >&2
 #set -x
 
-zypper_def_opts=" -q --non-interactive --gpg-auto-import-keys "
+zypper_def_opts=' -q --non-interactive --gpg-auto-import-keys '
 
 if [ -f "${__object:?}/parameter/service_desc" ]; then
    desc=$(cat "${__object:?}/parameter/service_desc")
@@ -46,9 +46,9 @@ exp_id=$(cat "${__object:?}/explorer/service_id")
 exp_ids=$(rev "${__object:?}/explorer/service_ids")
 
 if [ "${uri}" = "${exp_uri}" ] ; then
-    state_is="present"
+    state_is='present'
 else
-    state_is="absent"
+    state_is='absent'
 fi
 
 # remove all other services if needed ...

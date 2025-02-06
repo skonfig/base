@@ -27,20 +27,20 @@ state=$(cat "${__object:?}/parameter/state")
 # Use short option names for portability
 shorten_property() {
    case $1 in
-      gid) echo " -g";;
-      password) echo " -p";;
-      system) echo " -r";;
+      gid) echo ' -g';;
+      password) echo ' -p';;
+      system) echo ' -r';;
    esac
 }
 
 
-if [ "${state}" = "present" ]; then
+if [ "${state}" = 'present' ]; then
    case ${os} in
       freebsd)
-         supported_change_properties="gid"
+         supported_change_properties='gid'
       ;;
       *)
-         supported_change_properties="gid password"
+         supported_change_properties='gid password'
       ;;
    esac
    if grep -q "^${name}:" "${__object:?}/explorer/group"; then
@@ -64,7 +64,7 @@ if [ "${state}" = "present" ]; then
          fi
       done
       if [ $# -gt 0 ]; then
-         if [ "${os}" = "freebsd" ]; then
+         if [ "${os}" = 'freebsd' ]; then
             echo pw groupmod "$@" "${name}"
          else
             echo groupmod "$@" "${name}"
@@ -84,7 +84,7 @@ if [ "${state}" = "present" ]; then
             fi
          fi
       done
-      if [ "${os}" = "freebsd" ]; then
+      if [ "${os}" = 'freebsd' ]; then
          echo pw groupadd "${name}" "$@"
       else
          echo groupadd "$@" "${name}"
@@ -93,7 +93,7 @@ if [ "${state}" = "present" ]; then
 else
    # delete existing
    if grep -q "^${name}:" "${__object:?}/explorer/group"; then
-      if [ "${os}" = "freebsd" ]; then
+      if [ "${os}" = 'freebsd' ]; then
          echo pw groupdel "${name}"
       else
          echo groupdel "${name}"

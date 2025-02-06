@@ -34,9 +34,9 @@ state_should=$(cat "${__object:?}/parameter/state")
 exp_uri=$(cat "${__object:?}/explorer/service_uri")
 
 if [ "${uri}" = "${exp_uri}" ] ; then
-    state_is="present"
+    state_is='present'
 else
-    state_is="absent"
+    state_is='absent'
 fi
 
 

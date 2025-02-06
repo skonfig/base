@@ -55,9 +55,9 @@ version=$(cat "${__object:?}/parameter/version")
 pkgsite=$(cat "${__object:?}/parameter/pkgsite")
 state=$(cat "${__object:?}/parameter/state")
 curr_version=$(cat "${__object:?}/explorer/pkg_version")
-add_cmd="pkg_add"
-rm_cmd="pkg_delete"
-cmd=""
+add_cmd='pkg_add'
+rm_cmd='pkg_delete'
+cmd=''
 
 # Print the command to be executed
 #	Parms:	$1 -- mode, "remove" or "add"
@@ -65,7 +65,7 @@ cmd=""
 # FIXME: This is ugly.
 execcmd(){
 	# Set the PACKAGESITE if we're ADDing a new package
-	if [ "$1" = "add" ] && [ -n "${pkgsite}" ]; then
+	if [ "$1" = 'add' ] && [ -n "${pkgsite}" ]; then
 		# Use http.../All/ if we know the exact version we want, use .../Latest/ otherwise
 		pkgsite="export PACKAGESITE=${pkgsite}"
 		[ -n "${version}" ] && pkgsite="${pkgsite}/All/" || pkgsite="${pkgsite}/Latest/"
@@ -80,14 +80,14 @@ execcmd(){
 }
 
 if [ -n "${curr_version}" ]; then	# PKG *is* installed
-	if [ "${state}" = "absent" ]; then	# Shouldn't be installed
+	if [ "${state}" = 'absent' ]; then	# Shouldn't be installed
 		if [ -n "${flavor}" ]; then
 			cmd="${rm_cmd} ${name}-${flavor}-${curr_version}"
 		else
 			cmd="${rm_cmd} ${name}-${curr_version}"
 		fi
-		execcmd "remove" "${cmd}"
-		echo "removed" >> "${__messages_out:?}"
+		execcmd 'remove' "${cmd}"
+		echo 'removed' >> "${__messages_out:?}"
 		exit 0
 	else	# Should be installed
 		if [ -n "${version}" ]; then	# Want a specific version
@@ -98,19 +98,19 @@ if [ -n "${curr_version}" ]; then	# PKG *is* installed
 				# shellcheck disable=SC2039
 				assert "! ${version} = ${curr_version}" ${LINENO}
 				cmd="${rm_cmd} ${name}-${curr_version}"
-				execcmd "remove" "${cmd}"
+				execcmd 'remove' "${cmd}"
 				cmd="${add_cmd} -r ${name}-${version}"
-				execcmd "add" "${cmd}"
-				echo "installed" >> "${__messages_out:?}"
+				execcmd 'add' "${cmd}"
+				echo 'installed' >> "${__messages_out:?}"
 			fi
 		else	# Don't care what version to use
 			exit 0
 		fi
 	fi
 else	# PKG *isn't* installed
-	if [ "${state}" = "absent" ]; then	# Shouldn't be installed
+	if [ "${state}" = 'absent' ]; then	# Shouldn't be installed
 		exit 0
-	elif [ "${state}" = "present" ]; then	# Is not currently installed, should be
+	elif [ "${state}" = 'present' ]; then	# Is not currently installed, should be
 		if [ -n "${flavor}" ]; then
 			cmd="${add_cmd} -r ${name}-${flavor}"
 		else
@@ -119,8 +119,8 @@ else	# PKG *isn't* installed
 		if [ -n "${version}" ]; then
 			cmd="${cmd}-${version}"
 		fi
-		execcmd "add" "${cmd}"
-		echo "installed" >> "${__messages_out:?}"
+		execcmd 'add' "${cmd}"
+		echo 'installed' >> "${__messages_out:?}"
 		exit 0
 	fi
 fi

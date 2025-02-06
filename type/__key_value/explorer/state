@@ -40,7 +40,7 @@ state=$(cat "${__object:?}/parameter/state")
 file=$(cat "${__object:?}/parameter/file")
 
 if [ ! -f "${file}" ]; then
-    echo "nosuchfile"
+    echo 'nosuchfile'
     exit
 fi
 

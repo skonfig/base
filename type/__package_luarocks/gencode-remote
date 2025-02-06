@@ -27,10 +27,10 @@ fi
 
 state_should=$(cat "${__object:?}/parameter/state")
 
-if grep -q "(installed)" "${__object:?}/explorer/pkg_status"; then
-    state_is="present"
+if grep -q '(installed)' "${__object:?}/explorer/pkg_status"; then
+    state_is='present'
 else
-    state_is="absent"
+    state_is='absent'
 fi
 
 # Leave if nothing is to be done
@@ -39,11 +39,11 @@ fi
 case ${state_should} in
     present)
         echo "luarocks install '${name}'"
-        echo "installed" >> "${__messages_out:?}"
+        echo 'installed' >> "${__messages_out:?}"
     ;;
     absent)
         echo "luarocks remove '${name}'"
-        echo "removed" >> "${__messages_out:?}"
+        echo 'removed' >> "${__messages_out:?}"
     ;;
     *)
         echo "Unknown state: ${state_should}" >&2

@@ -71,7 +71,7 @@ DONE
 quoted_file=$(quote "${file}")
 case ${state_should} in
    present)
-      if [ "${state_is}" = "changed" ]; then
+      if [ "${state_is}" = 'changed' ]; then
          echo update >> "${__messages_out:?}"
          remove_block
       else

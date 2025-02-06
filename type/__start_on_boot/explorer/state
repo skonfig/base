@@ -37,33 +37,33 @@ if [ "${init}" = 'systemd' ]; then
 else
     case ${os} in
         debian|openwrt|devuan)
-            state="absent"
+            state='absent'
             for file in "/etc/rc${runlevel}.d/S"??"${name}"
             do
                 if [ -f "${file}" ]
                 then
-                    state="present"
+                    state='present'
                     break
                 fi
             done
         ;;
         ubuntu)
-            state="absent"
+            state='absent'
             for file in "/etc/rc${runlevel}.d/S"??"${name}"
             do
                 if [ -f "${file}" ]
                 then
-                    state="present"
+                    state='present'
                     break
                 fi
             done
 
-            [ -f "/etc/init/${name}.conf" ] && state="present"
+            [ -f "/etc/init/${name}.conf" ] && state='present'
         ;;
 
         amazon|scientific|centos|almalinux|eurolinux|rocky|fedora|owl|redhat)
             state=$(chkconfig --level "${runlevel}" "${name}" || echo absent)
-            [ "${state}" ] || state="present"
+            [ "${state}" ] || state='present'
         ;;
         suse)
             # check for target if set, usable for boot. services in runlevel B
@@ -72,20 +72,20 @@ else
             fi
             # suses chkconfig has the same name, but works different ...
             state=$(chkconfig --check "${name}" "${runlevel}" || echo absent)
-            [ "${state}" ] || state="present"
+            [ "${state}" ] || state='present'
         ;;
         gentoo|alpine)
-            state="absent"
+            state='absent'
             for d in /etc/runlevels/*; do
                 if [ -e "${d}/${name}" ]; then
-                    state="present"
+                    state='present'
                     break
                 fi
             done
         ;;
         freebsd)
-            state="absent"
-            service -e | grep "/${name}$" && state="present"
+            state='absent'
+            service -e | grep "/${name}$" && state='present'
         ;;
         openbsd)
             state='absent'

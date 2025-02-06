@@ -50,7 +50,7 @@ fi
 
 if test -n "${max_len}" && test "$(printf '%s' "${name_should}" | wc -c)" -gt "${max_len}"
 then
-    printf "Host name too long. Up to %u characters allowed.\n" "${max_len}" >&2
+    printf 'Host name too long. Up to %u characters allowed.\n' "${max_len}" >&2
     exit 1
 fi
 
@@ -188,7 +188,7 @@ in
             set_hostname_systemd "${name_should}"
         else
             echo "Your operating system (${os}) is currently not supported by this type (${__type##*/})." >&2
-            echo "Please contribute an implementation for it if you can." >&2
+            echo 'Please contribute an implementation for it if you can.' >&2
             exit 1
         fi
         ;;
