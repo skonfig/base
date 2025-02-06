@@ -18,7 +18,7 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-name="${__object_id:?}"
+name=${__object_id:?}
 destination="/etc/apt/sources.list.d/${name}.list"
 
 # There are special arguments to apt(8) to prevent aborts if apt woudn't been

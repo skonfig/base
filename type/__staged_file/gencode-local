@@ -21,7 +21,7 @@
 
 #set -x
 
-destination="${__object_id:?}"
+destination=${__object_id:?}
 source=$(cat "${__object:?}/parameter/source")
 stage_dir=$(cat "${__object:?}/parameter/stage-dir")
 state=$(cat "${__object:?}/parameter/state")

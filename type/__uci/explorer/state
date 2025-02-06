@@ -49,7 +49,7 @@ if test -f "${__object:?}/parameter/value"
 then
 	should_file="${__object:?}/parameter/value"
 else
-	should_file='/dev/null'
+	should_file=/dev/null
 fi
 
 

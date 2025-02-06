@@ -21,7 +21,7 @@
 if [ -f "${__object:?}/parameter/keyid" ]; then
    keyid=$(cat "${__object:?}/parameter/keyid")
 else
-   keyid="${__object_id:?}"
+   keyid=${__object_id:?}
 fi
 state_should=$(cat "${__object:?}/parameter/state")
 state_is=$(cat "${__object:?}/explorer/state")

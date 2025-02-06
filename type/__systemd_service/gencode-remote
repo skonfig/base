@@ -28,7 +28,7 @@ name="${__object:?}/parameter/name"
 if [ -f "$name" ]; then
     name=$(cat "$name")
 else
-    name="${__object_id:?}"
+    name=${__object_id:?}
 fi
 
 

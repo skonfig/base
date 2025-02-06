@@ -21,7 +21,7 @@
 
 state_should=$(cat "${__object:?}/parameter/state")
 state_is=$(cat "${__object:?}/explorer/state")
-name="${__object_id:?}"
+name=${__object_id:?}
 
 # Short circuit if nothing is to be done
 [ "$state_should" = "$state_is" ] && exit 0

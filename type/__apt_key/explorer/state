@@ -23,7 +23,7 @@
 if [ -f "${__object:?}/parameter/keyid" ]; then
    keyid=$(cat "${__object:?}/parameter/keyid")
 else
-   keyid="${__object_id:?}"
+   keyid=${__object_id:?}
 fi
 
 # From apt-key(8):

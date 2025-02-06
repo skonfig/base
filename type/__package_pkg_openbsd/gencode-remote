@@ -34,7 +34,7 @@ fi
 # Do not show progress bar
 pkgopts='-x'
 
-name="${__object_id:?}"
+name=${__object_id:?}
 if [ -f "${__object:?}/parameter/name" ]; then
 	name=$(cat "${__object:?}/parameter/name")
 fi
@@ -46,7 +46,7 @@ elif [ -n "${version}" ]; then
 elif [ -f "${__object:?}/parameter/flavor" ]; then
 	pkgid="${name}--${flavor}"
 else
-	pkgid="${name}"
+	pkgid=${name}
 fi
 
 state_should=$(cat "${__object:?}/parameter/state")

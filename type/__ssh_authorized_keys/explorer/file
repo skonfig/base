@@ -28,7 +28,7 @@ else
 	then
 		owner=$(cat "${__object:?}/parameter/owner")
 	else
-		owner="${__object_id:?}"
+		owner=${__object_id:?}
 	fi
 
 	if command -v getent >/dev/null

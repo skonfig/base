@@ -119,9 +119,9 @@ if [ "$state" = "present" ]; then
                    gid_from_group=$(awk -F: '{ print $3 }' "${__object:?}/explorer/group")
                    gid_from_passwd=$(awk -F: '{ print $4 }' "$file")
                    if [ "$gid_from_group" != "$gid_from_passwd" ]; then
-                      current_value="$gid_from_passwd"
+                      current_value=$gid_from_passwd
                    else
-                      current_value="$new_value"
+                      current_value=$new_value
                    fi
                 fi
              ;;

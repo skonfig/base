@@ -18,7 +18,7 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-name="${__object_id:?}"
+name=${__object_id:?}
 state=$(cat "${__object:?}/parameter/state")
 current_enablement_state=$(cat "${__object:?}/explorer/enablement-state")
 

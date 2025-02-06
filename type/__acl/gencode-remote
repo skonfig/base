@@ -111,7 +111,7 @@ then
 
         if echo "$os" | grep -Fq 'freebsd'
         then
-            remove="$acl"
+            remove=$acl
         else
             remove=$(echo "$acl" | sed 's/:...$//')
         fi

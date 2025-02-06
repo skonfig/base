@@ -42,7 +42,7 @@ sshd_conn_spec=$(
 	then
 		_match_file="${__object:?}/parameter/match"
 	else
-		_match_file='/dev/null'
+		_match_file=/dev/null
 	fi
 
 	for _kw in \

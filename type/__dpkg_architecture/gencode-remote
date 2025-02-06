@@ -22,7 +22,7 @@
 
 # Get parameter and explorer
 state_should=$(cat "${__object:?}/parameter/state")
-arch_wanted="${__object_id:?}"
+arch_wanted=${__object_id:?}
 main_arch=$(cat "${__object:?}/explorer/architecture")
 
 # Exit here if dpkg do not work (empty explorer)

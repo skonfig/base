@@ -24,7 +24,7 @@ if [ -f "${__object:?}/parameter/name" ]
 then
 	pkgid=$(cat "${__object:?}/parameter/name")
 else
-	pkgid="${__object_id:?}"
+	pkgid=${__object_id:?}
 fi
 
 if [ -f "${__object:?}/parameter/version" ]

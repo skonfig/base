@@ -19,7 +19,7 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-owner="${__object_id:?}"
+owner=${__object_id:?}
 state=$(cat "${__object:?}/parameter/state")
 
 group=$(cut -d':' -f 1 "${__object:?}/explorer/group")

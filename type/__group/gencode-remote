@@ -19,7 +19,7 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-name="${__object_id:?}"
+name=${__object_id:?}
 os=$(cat "${__global:?}/explorer/os")
 state=$(cat "${__object:?}/parameter/state")
 

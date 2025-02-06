@@ -47,7 +47,7 @@ assert ()                 #  If condition false,
 if [ -f "${__object:?}/parameter/name" ]; then
 	name=$(cat "${__object:?}/parameter/name")
 else
-	name="${__object_id:?}"
+	name=${__object_id:?}
 fi
 
 flavor=$(cat "${__object:?}/parameter/flavor")

@@ -18,7 +18,7 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-destination="${__object_id:?}"
+destination=${__object_id:?}
 stage_dir=$(cat "${__object:?}/parameter/stage-dir")
 stage_file="${stage_dir}/${destination}"
 

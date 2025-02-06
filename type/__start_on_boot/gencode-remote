@@ -29,7 +29,7 @@ target_runlevel=$(cat "${__object:?}/parameter/target_runlevel")
 
 os=$(cat "${__global:?}/explorer/os")
 os_version=$(cat "${__global:?}/explorer/os_version")
-name="${__object_id:?}"
+name=${__object_id:?}
 
 case "$state_should" in
     present)

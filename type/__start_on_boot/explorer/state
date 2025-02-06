@@ -25,7 +25,7 @@ os=$("${__explorer:?}/os")
 runlevel=$("${__explorer:?}/runlevel")
 init=$("${__explorer:?}/init")
 target_runlevel=$(cat "${__object:?}/parameter/target_runlevel")
-name="${__object_id:?}"
+name=${__object_id:?}
 
 if [ "$init" = 'systemd' ]; then
     # this handles ALL linux distros with systemd
@@ -68,7 +68,7 @@ else
         suse)
             # check for target if set, usable for boot. services in runlevel B
             if [ "$target_runlevel" != 'default' ]; then
-                runlevel="$target_runlevel"
+                runlevel=$target_runlevel
             fi
             # suses chkconfig has the same name, but works different ...
             state=$(chkconfig --check "$name" "$runlevel" || echo absent)
