@@ -22,7 +22,7 @@
 
 name=${__object_id:?}
 
-# shellcheck disable=SC1091
+# shellcheck source=/dev/null
 . /etc/lsb-release
 
 repo_name=${name#ppa:}
