@@ -105,4 +105,4 @@ else
     esac
 fi
 
-echo ${state}
+echo "${state}"

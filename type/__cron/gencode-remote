@@ -100,7 +100,7 @@ in
 esac
 
 # assert that $entry only has one line to avoid fucking up the crontab
-test $(count_lines "${entry-}") -le 1 || {
+test "$(count_lines "${entry-}")" -le 1 || {
 	echo 'crontab entries must contain exactly one line.' >&2
 	exit 1
 }

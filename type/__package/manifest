@@ -67,4 +67,4 @@ do
    fi
 done
 
-__package_${type} "$@"
+"__package_${type}" "$@"

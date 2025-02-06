@@ -21,7 +21,7 @@
 #
 
 cron_ok() { echo true; exit 0; }
-cron_fail() { printf '%s\n' "$1" >&2; exit $2; }
+cron_fail() { printf '%s\n' "$1" >&2; exit "$2"; }
 
 user=$(cat "${__object:?}/parameter/user")
 
