@@ -40,7 +40,7 @@ fi
 # Exit if nothing is needed to be done
 [ "$state_is" = "$state_should" ] && exit 0
 
-case "$state_should" in
+case $state_should in
    present)
          echo "pacman --needed --noconfirm --noprogressbar -S '$name'"
          echo "installed" >> "${__messages_out:?}"

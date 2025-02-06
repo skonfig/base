@@ -34,7 +34,7 @@ fi
 
 [ "$state_is" = "$state_should" ] && exit 0
 
-case "$state_should" in
+case $state_should in
     present)
         echo "gem install '$name' --no-ri --no-rdoc"
         echo "installed" >> "${__messages_out:?}"

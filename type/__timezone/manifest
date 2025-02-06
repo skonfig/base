@@ -23,7 +23,7 @@
 timezone=$(cat "${__object:?}/parameter/tz")
 os=$(cat "${__global:?}/explorer/os")
 
-case "$os" in
+case $os in
     archlinux|debian|ubuntu|devuan|alpine)
         __package tzdata
         export require="__package/tzdata"

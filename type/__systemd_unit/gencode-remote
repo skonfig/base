@@ -56,7 +56,7 @@ if [ "${current_enablement_state}" = "${desired_enablement_state}" ]; then
     exit 0
 fi
 
-case "${desired_enablement_state}" in
+case ${desired_enablement_state} in
     "")
         # Do nothing
         :

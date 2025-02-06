@@ -59,7 +59,7 @@ if grep -q "$act_id" "${__object:?}/explorer/enabled_repo_ids"; then
 fi
 
 
-case "$state" in
+case $state in
    present)
          if [ -z "$desc" ] || [ -z "$uri" ]; then
              echo "parameter repo_desc and uri for $state needed" >&2

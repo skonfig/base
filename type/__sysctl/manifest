@@ -23,7 +23,7 @@
 
 os=$(cat "${__global:?}/explorer/os")
 
-case "$os" in
+case $os in
    # Linux
    alpine|redhat|centos|almalinux|eurolinux|rocky|ubuntu|debian|devuan|archlinux|coreos)
       :

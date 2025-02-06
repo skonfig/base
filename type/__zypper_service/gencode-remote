@@ -66,7 +66,7 @@ fi
 # Exit if nothing is needed to be done
 [ "$state_is" = "$state_should" ] && exit 0
 
-case "$state_should" in
+case $state_should in
    present)
          echo "zypper $zypper_def_opts addservice -t $stype $uri '$desc'"
          echo "zypper $zypper_def_opts refs"

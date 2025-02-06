@@ -35,7 +35,7 @@ state_should=""
 [ "$state" = "absent" ] || state_should="$package"
 [ "$state_is" = "$state_should" ] && exit 0
 
-case "$state" in
+case $state in
     present)
         echo "dpkg --install /var/cache/apt/archives/${__object_id:?}"
         echo "installed" >> "${__messages_out:?}"
