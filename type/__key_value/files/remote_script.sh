@@ -30,7 +30,8 @@ delimiter=$(cat "${__object:?}/parameter/delimiter")
 value=$(cat "${__object:?}/parameter/value" 2>/dev/null \
    || echo '__CDIST_NOTSET__')
 export key state delimiter value
-if [ -f "${__object:?}/parameter/exact_delimiter" ]; then
+if [ -f "${__object:?}/parameter/exact_delimiter" ]
+then
     exact_delimiter=1
 else
     exact_delimiter=0
@@ -39,7 +40,8 @@ export exact_delimiter
 
 tmpfile=$(mktemp "${file}.skonfig.XXXXXX")
 # preserve ownership and permissions by copying existing file over tmpfile
-if [ -f "${file}" ]; then
+if [ -f "${file}" ]
+then
     cp -p "${file}" "${tmpfile}"
 else
     touch "${file}"

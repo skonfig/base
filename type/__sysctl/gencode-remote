@@ -22,7 +22,8 @@
 value_should=$(cat "${__object:?}/parameter/value")
 value_is=$(cat "${__object:?}/explorer/value")
 
-if [ "${value_should}" = "${value_is}" ]; then
+if [ "${value_should}" = "${value_is}" ]
+then
    # Nothing to do
    exit 0
 fi

@@ -20,7 +20,8 @@
 # Get the current state of the APT key.
 #
 
-if [ -f "${__object:?}/parameter/keyid" ]; then
+if [ -f "${__object:?}/parameter/keyid" ]
+then
    keyid=$(cat "${__object:?}/parameter/keyid")
 else
    keyid=${__object_id:?}
@@ -31,7 +32,8 @@ fi
 #   maintainer scripts to remove existing keys from the main keyring.
 #   If such usage of apt-key is desired the additional installation of
 #   the GNU Privacy Guard suite (packaged in gnupg) is required.
-if [ -f "${__object:?}/parameter/use-deprecated-apt-key" ]; then
+if [ -f "${__object:?}/parameter/use-deprecated-apt-key" ]
+then
    if apt-key export "${keyid}" | head -n 1 | grep -Fqe 'BEGIN PGP PUBLIC KEY BLOCK'
       then echo present
       else echo absent

@@ -18,7 +18,8 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-if [ -f "${__object:?}/parameter/name" ]; then
+if [ -f "${__object:?}/parameter/name" ]
+then
    name=$(cat "${__object:?}/parameter/name")
 else
    name=${__object_id:?}

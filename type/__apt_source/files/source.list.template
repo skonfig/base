@@ -12,6 +12,7 @@ cat << DONE
 # ${name}
 deb ${options:+[${options}] }${entry}
 DONE
-if [ -f "${__object:?}/parameter/include-src" ]; then
+if [ -f "${__object:?}/parameter/include-src" ]
+then
    echo "deb-src ${signed_by:+[${signed_by}] }${entry}"
 fi

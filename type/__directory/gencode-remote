@@ -33,7 +33,8 @@ mkdiropt=''
 [ -f "${__object:?}/parameter/parents" ] && mkdiropt='-p'
 
 recursive=''
-if [ -f "${__object:?}/parameter/recursive" ]; then
+if [ -f "${__object:?}/parameter/recursive" ]
+then
    recursive='-R'
    # need to allways set attributes when recursive is given
    # as we don't want to check all subfolders/files
@@ -41,7 +42,8 @@ if [ -f "${__object:?}/parameter/recursive" ]; then
 fi
 
 get_current_value() {
-   if [ -s "${stat_file}" ]; then
+   if [ -s "${stat_file}" ]
+   then
       _name="$1"
       _value="$2"
       case ${_value}
@@ -76,9 +78,11 @@ set_mode() {
 case ${state_should}
 in
    present|exists)
-      if [ "${type}" != 'directory' ]; then
+      if [ "${type}" != 'directory' ]
+      then
          set_attributes=1
-         if [ "${type}" != 'none' ]; then
+         if [ "${type}" != 'none' ]
+         then
             # our destination is not a directory, remove whatever is there
             # and then create our directory and set all attributes
             echo "rm -f '${destination}'"
@@ -86,7 +90,8 @@ in
          fi
          echo "mkdir ${mkdiropt} '${destination}'"
          echo 'create' >> "${__messages_out:?}"
-      elif [ "${state_should}" = 'exists' ]; then
+      elif [ "${state_should}" = 'exists' ]
+      then
          # The type is directory and --state exists. We are done and do not
          # check or set the attributes.
          exit 0
@@ -95,18 +100,21 @@ in
       # Note: Mode - needs to happen last as a chown/chgrp can alter mode by
       # clearing S_ISUID and S_ISGID bits (see chown(2))
       for attribute in group owner mode; do
-         if [ -f "${__object:?}/parameter/${attribute}" ]; then
+         if [ -f "${__object:?}/parameter/${attribute}" ]
+         then
             value_should=$(cat "${__object:?}/parameter/${attribute}")
             value_is=$(get_current_value "${attribute}" "${value_should}")
 
             # format mode in four digits => same as stat returns
-            if [ "${attribute}" = mode ]; then
+            if [ "${attribute}" = mode ]
+            then
                 # Convert to four-digit octal number (printf interprets
                 # strings with leading 0s as octal!)
                 value_should=$(printf '%04o' "0${value_should}")
             fi
 
-            if [ "${set_attributes}" = 1 ] || [ "${value_should}" != "${value_is}" ]; then
+            if [ "${set_attributes}" = 1 ] || [ "${value_should}" != "${value_is}" ]
+            then
                "set_${attribute}" "${value_should}"
             fi
          fi
@@ -134,7 +142,8 @@ in
       esac
    ;;
    absent)
-        if [ "${type}" = 'directory' ]; then
+        if [ "${type}" = 'directory' ]
+        then
             echo "rm -rf '${destination}'"
             echo remove >> "${__messages_out:?}"
         fi

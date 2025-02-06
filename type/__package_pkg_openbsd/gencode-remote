@@ -23,11 +23,13 @@
 os_version=$(cat "${__global:?}/explorer/os_version")
 machine=$(cat "${__global:?}/explorer/machine")
 
-if [ -f "${__object:?}/parameter/version" ]; then
+if [ -f "${__object:?}/parameter/version" ]
+then
 	version=$(cat "${__object:?}/parameter/version")
 fi
 
-if [ -f "${__object:?}/parameter/flavor" ]; then
+if [ -f "${__object:?}/parameter/flavor" ]
+then
 	flavor=$(cat "${__object:?}/parameter/flavor")
 fi
 
@@ -35,15 +37,19 @@ fi
 pkgopts='-x'
 
 name=${__object_id:?}
-if [ -f "${__object:?}/parameter/name" ]; then
+if [ -f "${__object:?}/parameter/name" ]
+then
 	name=$(cat "${__object:?}/parameter/name")
 fi
 
-if [ -n "${version}" ] && [ -n "${flavor}" ]; then
+if [ -n "${version}" ] && [ -n "${flavor}" ]
+then
 	pkgid="${name}-${version}-${flavor}"
-elif [ -n "${version}" ]; then
+elif [ -n "${version}" ]
+then
 	pkgid="${name}-${version}"
-elif [ -f "${__object:?}/parameter/flavor" ]; then
+elif [ -f "${__object:?}/parameter/flavor" ]
+then
 	pkgid="${name}--${flavor}"
 else
 	pkgid=${name}
@@ -51,11 +57,13 @@ fi
 
 state_should=$(cat "${__object:?}/parameter/state")
 
-if [ -f "${__object:?}/parameter/pkg_path" ]; then
+if [ -f "${__object:?}/parameter/pkg_path" ]
+then
 	pkg_path=$(cat "${__object:?}/parameter/pkg_path")
 else
 	has_installurl=$(cat "${__object:?}/explorer/has_installurl")
-	if [ 'yes' != "${has_installurl}" ]; then
+	if [ 'yes' != "${has_installurl}" ]
+	then
 		# There is no default PKG_PATH, try to provide one
 		pkg_path="ftp://ftp.openbsd.org/pub/OpenBSD/${os_version}/packages/${machine}/"
 	fi
@@ -67,7 +75,8 @@ state_is=$(cat "${__object:?}/explorer/pkg_state")
 case ${state_should}
 in
 	present)
-		if [ -n "${pkg_path}" ]; then
+		if [ -n "${pkg_path}" ]
+		then
 			echo "export PKG_PATH='${pkg_path}'"
 		fi
 
@@ -80,7 +89,8 @@ then
 	# We didn't find the package in the list of 'installed packages', so it failed.
 	# This is necessary because pkg_add doesn't return properly
 
-	if [ -z "\${status}" ]; then
+	if [ -z "\${status}" ]
+	then
 		status='Failed to add package, uncaught exception.'
 	fi
 	echo "Error: \${status}" >&2
@@ -100,7 +110,8 @@ then
 	# We found the package in the list of 'installed packages'.
 	# This would indicate that pkg_delete failed, send the output of pkg_delete
 
-	if [ -z "\${status}" ]; then
+	if [ -z "\${status}" ]
+	then
 		status='Failed to remove package, uncaught exception.'
 	fi
 	echo "Error: \${status}" >&2

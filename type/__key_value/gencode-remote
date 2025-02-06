@@ -25,7 +25,8 @@ state_should=$(cat "${__object:?}/parameter/state")
 state_is=$(cat "${__object:?}/explorer/state")
 fire_onchange=''
 
-if [ "${state_is}" = "${state_should}" ]; then
+if [ "${state_is}" = "${state_should}" ]
+then
     exit 0
 fi
 
@@ -82,6 +83,7 @@ esac
 
 cat "${__type:?}/files/remote_script.sh"
 
-if [ -n "${fire_onchange}" ]; then
+if [ -n "${fire_onchange}" ]
+then
     cat "${__object:?}/parameter/onchange"
 fi

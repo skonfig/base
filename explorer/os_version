@@ -157,7 +157,8 @@ in
       cat /etc/slackware-version
    ;;
    suse)
-      if [ -f /etc/os-release ]; then
+      if [ -f /etc/os-release ]
+      then
         cat /etc/os-release
       else
         cat /etc/SuSE-release

@@ -18,7 +18,8 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-if [ -f "${__object:?}/parameter/name" ]; then
+if [ -f "${__object:?}/parameter/name" ]
+then
    name=$(cat "${__object:?}/parameter/name")
 else
    name=${__object_id:?}
@@ -26,7 +27,8 @@ fi
 state_should=$(cat "${__object:?}/parameter/state")
 state_is=$(cat "${__object:?}/explorer/state")
 
-if [ "${state_should}" = "${state_is}" ]; then
+if [ "${state_should}" = "${state_is}" ]
+then
    # nothing to do
    exit 0
 fi

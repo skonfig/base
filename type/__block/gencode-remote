@@ -29,7 +29,8 @@ prefix=$(cat "${__object:?}/parameter/prefix" 2>/dev/null || echo "#cdist:__bloc
 suffix=$(cat "${__object:?}/parameter/suffix" 2>/dev/null || echo "#/cdist:__block/${__object_id:?}")
 
 block="${__object:?}/files/block"
-if [ ! -s "${__object:?}/explorer/block" ]; then
+if [ ! -s "${__object:?}/explorer/block" ]
+then
    state_is='absent'
 else
    state_is=$(diff -q "${block}" "${__object:?}/explorer/block" >/dev/null \
@@ -39,7 +40,8 @@ else
 fi
 
 state_should=$(cat "${__object:?}/parameter/state")
-if [ "${state_should}" = "${state_is}" ]; then
+if [ "${state_should}" = "${state_is}" ]
+then
    # Nothing to do, move along
    exit 0
 fi
@@ -48,7 +50,8 @@ remove_block() {
    cat << DONE
 tmpfile=\$(mktemp ${quoted_file}.skonfig.XXXXXX)
 # preserve ownership and permissions of existing file
-if [ -f ${quoted_file} ]; then
+if [ -f ${quoted_file} ]
+then
    cp -p ${quoted_file} "\${tmpfile}"
 fi
 awk -v prefix=$(quote "${prefix}") -v suffix=$(quote "${suffix}") '
@@ -72,7 +75,8 @@ quoted_file=$(quote "${file}")
 case ${state_should}
 in
    present)
-      if [ "${state_is}" = 'changed' ]; then
+      if [ "${state_is}" = 'changed' ]
+      then
          echo update >> "${__messages_out:?}"
          remove_block
       else

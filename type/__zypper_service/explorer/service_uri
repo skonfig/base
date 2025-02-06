@@ -20,7 +20,8 @@
 # Prints the --uri if a repository using it is configured.
 #
 
-if [ -f "${__object:?}/parameter/uri" ]; then
+if [ -f "${__object:?}/parameter/uri" ]
+then
    uri=$(cat "${__object:?}/parameter/uri")
 else
    uri="/${__object_id:?}"

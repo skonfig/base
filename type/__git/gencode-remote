@@ -25,7 +25,8 @@ group_is=$(cat "${__object:?}/explorer/group")
 state_should=$(cat "${__object:?}/parameter/state")
 
 branch=''
-if [ -f "${__object:?}/parameter/branch" ]; then
+if [ -f "${__object:?}/parameter/branch" ]
+then
     branch="--branch $(cat "${__object:?}/parameter/branch")"
 fi
 
@@ -48,14 +49,17 @@ mode=$(cat "${__object:?}/parameter/mode")
 case ${state_should}
 in
     present)
-        if [ "${state_should}" != "${state_is}" ]; then
+        if [ "${state_should}" != "${state_is}" ]
+        then
             echo git clone --quiet "${recursive}" "${shallow}" "${branch}" "${source}" "${destination}"
         fi
         if { [ -n "${owner}" ] && [ "${owner_is}" != "${owner}" ]; } || \
-           { [ -n "${group}" ] && [ "${group_is}" != "${group}" ]; }; then
+           { [ -n "${group}" ] && [ "${group_is}" != "${group}" ]; }
+        then
             echo chown -R "${owner}:${group}" "${destination}"
         fi
-        if [ -n "${mode}" ]; then
+        if [ -n "${mode}" ]
+        then
             echo chmod -R "${mode}" "${destination}"
         fi
     ;;

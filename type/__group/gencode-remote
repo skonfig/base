@@ -35,7 +35,8 @@ shorten_property() {
 }
 
 
-if [ "${state}" = 'present' ]; then
+if [ "${state}" = 'present' ]
+then
    case ${os}
    in
       freebsd)
@@ -45,10 +46,12 @@ if [ "${state}" = 'present' ]; then
          supported_change_properties='gid password'
       ;;
    esac
-   if grep -q "^${name}:" "${__object:?}/explorer/group"; then
+   if grep -q "^${name}:" "${__object:?}/explorer/group"
+   then
       # change existing
       for property in ${supported_change_properties}; do
-         if [ -f "${__object:?}/parameter/${property}" ]; then
+         if [ -f "${__object:?}/parameter/${property}" ]
+         then
             new_value=$(cat "${__object:?}/parameter/${property}")
             unset current_value
             case ${property}
@@ -60,14 +63,17 @@ if [ "${state}" = 'present' ]; then
                   current_value=$(awk -F: '{ print $3 }' "${__object:?}/explorer/group")
                ;;
             esac
-            if [ "${new_value}" != "${current_value}" ]; then
+            if [ "${new_value}" != "${current_value}" ]
+            then
                set -- "$@" "$(shorten_property "${property}")" \'"${new_value}"\'
                echo "change ${property} ${new_value} ${current_value}" >> "${__messages_out:?}"
             fi
          fi
       done
-      if [ $# -gt 0 ]; then
-         if [ "${os}" = 'freebsd' ]; then
+      if [ $# -gt 0 ]
+      then
+         if [ "${os}" = 'freebsd' ]
+         then
             echo pw groupmod "$@" "${name}"
          else
             echo groupmod "$@" "${name}"
@@ -77,9 +83,11 @@ if [ "${state}" = 'present' ]; then
    else
       # create new
       for property in ${supported_change_properties}; do
-         if [ -f "${__object:?}/parameter/${property}" ]; then
+         if [ -f "${__object:?}/parameter/${property}" ]
+         then
             new_value=$(cat "${__object:?}/parameter/${property}")
-            if [ -z "${new_value}" ]; then
+            if [ -z "${new_value}" ]
+            then
                # Boolean parameters have no value
                set -- "$@" "$(shorten_property "${property}")"
             else
@@ -87,7 +95,8 @@ if [ "${state}" = 'present' ]; then
             fi
          fi
       done
-      if [ "${os}" = 'freebsd' ]; then
+      if [ "${os}" = 'freebsd' ]
+      then
          echo pw groupadd "${name}" "$@"
       else
          echo groupadd "$@" "${name}"
@@ -95,8 +104,10 @@ if [ "${state}" = 'present' ]; then
    fi
 else
    # delete existing
-   if grep -q "^${name}:" "${__object:?}/explorer/group"; then
-      if [ "${os}" = 'freebsd' ]; then
+   if grep -q "^${name}:" "${__object:?}/explorer/group"
+   then
+      if [ "${os}" = 'freebsd' ]
+      then
          echo pw groupdel "${name}"
       else
          echo groupdel "${name}"

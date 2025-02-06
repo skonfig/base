@@ -24,7 +24,8 @@
 # system.
 
 type="${__object:?}/parameter/type"
-if [ -f "${type}" ]; then
+if [ -f "${type}" ]
+then
    type=$(cat "${type}")
 else
    # By default determine package manager based on operating system
@@ -35,7 +36,8 @@ else
          archlinux) type='pacman' ;;
          debian|ubuntu|devuan) type='apt' ;;
          freebsd)
-            if [ -n "$(cat "${__object:?}/explorer/pkgng_exists")" ]; then
+            if [ -n "$(cat "${__object:?}/explorer/pkgng_exists")" ]
+            then
                type='pkgng_freebsd'
             else
                type='pkg_freebsd'
@@ -58,7 +60,8 @@ state=$(cat "${__object:?}/parameter/state")
 set -- "$@" "${__object_id:?}" --state "${state}"
 cd "${__object:?}/parameter"
 for property in *; do
-   if [ "${property}" != 'type' ] && [ "${property}" != 'state' ]; then
+   if [ "${property}" != 'type' ] && [ "${property}" != 'state' ]
+   then
       set -- "$@" "--${property}" "$(cat "${property}")"
    fi
 done

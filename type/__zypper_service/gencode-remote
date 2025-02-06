@@ -24,13 +24,15 @@
 
 zypper_def_opts=' -q --non-interactive --gpg-auto-import-keys '
 
-if [ -f "${__object:?}/parameter/service_desc" ]; then
+if [ -f "${__object:?}/parameter/service_desc" ]
+then
    desc=$(cat "${__object:?}/parameter/service_desc")
 else
    desc=${__object_id:?}
 fi
 
-if [ -f "${__object:?}/parameter/uri" ]; then
+if [ -f "${__object:?}/parameter/uri" ]
+then
    uri=$(cat "${__object:?}/parameter/uri")
 else
    uri=${__object_id:?}
@@ -45,17 +47,20 @@ exp_id=$(cat "${__object:?}/explorer/service_id")
 # we need this list to remove ids, but we must do this in reverse order
 exp_ids=$(rev "${__object:?}/explorer/service_ids")
 
-if [ "${uri}" = "${exp_uri}" ] ; then
+if [ "${uri}" = "${exp_uri}" ]
+then
     state_is='present'
 else
     state_is='absent'
 fi
 
 # remove all other services if needed ...
-if [ -f "${__object:?}/parameter/remove-all-other-services" ]; then
+if [ -f "${__object:?}/parameter/remove-all-other-services" ]
+then
    # file exists -> True
    for i in ${exp_ids}; do
-     if [ "${i}" != "${exp_id}" ] ; then
+     if [ "${i}" != "${exp_id}" ]
+     then
        echo "zypper ${zypper_def_opts}  removeservice ${i} &>/dev/null"
      fi
    done

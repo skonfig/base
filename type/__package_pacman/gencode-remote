@@ -22,7 +22,8 @@
 # exec >&2
 # set -x
 
-if [ -f "${__object:?}/parameter/name" ]; then
+if [ -f "${__object:?}/parameter/name" ]
+then
    name="${__object:?}/parameter/name"
 else
    name=${__object_id:?}
@@ -31,7 +32,8 @@ fi
 state_should=$(cat "${__object:?}/parameter/state")
 
 pkg_version=$(cat "${__object:?}/explorer/pkg_version")
-if [ -z "${pkg_version}" ]; then
+if [ -z "${pkg_version}" ]
+then
     state_is='absent'
 else
     state_is='present'

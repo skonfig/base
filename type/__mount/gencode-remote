@@ -22,7 +22,8 @@ path=$(cat "${__object:?}/parameter/path" 2>/dev/null || echo "/${__object_id:?}
 state_should=$(cat "${__object:?}/parameter/state")
 state_is=$(grep -q -x yes "${__object:?}/explorer/mounted" && echo present || echo absent)
 
-if [ "${state_should}" = "${state_is}" ]; then
+if [ "${state_should}" = "${state_is}" ]
+then
    # nothing to do
    exit 0
 fi
@@ -30,13 +31,16 @@ fi
 case ${state_should}
 in
    present)
-      if [ -f "${__object:?}/parameter/nofstab" ]; then
+      if [ -f "${__object:?}/parameter/nofstab" ]
+      then
          # mount manually
          printf 'mount'
-         if [ -f "${__object:?}/parameter/type" ]; then
+         if [ -f "${__object:?}/parameter/type" ]
+         then
             printf ' -t %s' "$(cat "${__object:?}/parameter/type")"
          fi
-         if [ -f "${__object:?}/parameter/options" ]; then
+         if [ -f "${__object:?}/parameter/options" ]
+         then
             printf ' -o %s' "$(cat "${__object:?}/parameter/options")"
          fi
          printf ' %s' "$(cat "${__object:?}/parameter/device")"

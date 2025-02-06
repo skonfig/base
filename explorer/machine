@@ -20,6 +20,7 @@
 # Prints the processor architecture of the target.
 #
 
-if command -v uname >/dev/null 2>&1 ; then
+if command -v uname >/dev/null 2>&1
+then
    uname -m
 fi

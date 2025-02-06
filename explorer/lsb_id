@@ -32,7 +32,8 @@ in
    ;;
    *)
       lsb_release=$(command -v lsb_release)
-      if [ -x "${lsb_release}" ]; then
+      if [ -x "${lsb_release}" ]
+      then
          ${lsb_release} --short --id
       fi
    ;;

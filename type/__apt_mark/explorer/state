@@ -20,7 +20,8 @@
 # Prints "hold" if the package specified by --name is held, "unhold" otherwise.
 #
 
-if [ -f "${__object:?}/parameter/name" ]; then
+if [ -f "${__object:?}/parameter/name" ]
+then
     name=$(cat "${__object:?}/parameter/name")
 else
     name=${__object_id:?}

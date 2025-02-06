@@ -30,25 +30,29 @@ stage_file="${stage_dir}/${destination}"
 stage_file_dir="${stage_file%/*}"
 source_file_name="${source##*/}"
 
-if [ "${state}" = 'absent' ]; then
+if [ "${state}" = 'absent' ]
+then
    # nothing to do
    exit 0
 fi
 
 #printf 'set -x\n'
 
-if [ ! -d "${stage_dir}" ]; then
+if [ ! -d "${stage_dir}" ]
+then
    printf 'mkdir -p "%s"\n' "${stage_dir}"
    printf 'chmod 700 "%s"\n' "${stage_dir}"
 fi
 
-if [ ! -d "${stage_file_dir}" ]; then
+if [ ! -d "${stage_file_dir}" ]
+then
    printf 'mkdir -p "%s"\n' "${stage_file_dir}"
 fi
 
 
 get_file() {
-   if [ -f "${__object:?}/parameter/prepare-command" ]; then
+   if [ -f "${__object:?}/parameter/prepare-command" ]
+   then
       fetch_and_prepare_file
    else
       fetch_file
@@ -80,7 +84,8 @@ cat << DONE
 verify_cksum() {
    cksum_is="\$(cksum "${stage_file}" | cut -d' ' -f1,2)"
    cksum_should=$(cut -d' ' -f1,2 "${__object:?}/parameter/cksum")
-   if [ "\${cksum_is}" = "\${cksum_should}" ]; then
+   if [ "\${cksum_is}" = "\${cksum_should}" ]
+   then
       return 0
    else
       return 1
@@ -88,7 +93,8 @@ verify_cksum() {
 }
 DONE
 
-if [ ! -f "${stage_file}" ]; then
+if [ ! -f "${stage_file}" ]
+then
    get_file
 else
    printf 'verify_cksum || {\n'

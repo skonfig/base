@@ -25,7 +25,8 @@
 
 globalopts='--quiet --non-interactive'
 
-if [ -f "${__object:?}/parameter/name" ]; then
+if [ -f "${__object:?}/parameter/name" ]
+then
     name="${__object:?}/parameter/name"
 else
     name=${__object_id:?}
@@ -34,9 +35,11 @@ fi
 state_should=$(cat "${__object:?}/parameter/state")
 ptype=$(cat "${__object:?}/parameter/ptype")
 
-if [ -f "${__object:?}/parameter/version" ]; then
+if [ -f "${__object:?}/parameter/version" ]
+then
     version_should=$(cat "${__object:?}/parameter/version")
-    if [ "${ptype}" != 'package' ]; then
+    if [ "${ptype}" != 'package' ]
+    then
         echo 'version support only for type package implemented' >&2
         exit 2
     fi
@@ -45,7 +48,8 @@ else
 fi
 
 pkg_version=$(cat "${__object:?}/explorer/pkg_version")
-if [ -z "${pkg_version}" ]; then
+if [ -z "${pkg_version}" ]
+then
     state_is='absent'
     version_is=''
 else
@@ -57,7 +61,8 @@ fi
 case ${state_should}
 in
     present)
-        if [ -z "${version_should}" ]; then
+        if [ -z "${version_should}" ]
+        then
             [ "${state_is}" = 'present' ] && exit 0 # if state is present, we dont need to do anything
             echo "zypper ${globalopts} install --type '${ptype}' --auto-agree-with-licenses '${name}' >/dev/null"
             echo 'removed' >> "${__messages_out:?}"

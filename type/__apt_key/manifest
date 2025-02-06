@@ -31,28 +31,35 @@ incompatible_args()
 	exit 1
 }
 
-if [ -f "${__object:?}/parameter/source" ]; then
+if [ -f "${__object:?}/parameter/source" ]
+then
 	method='source'
 	src=$(cat "${__object:?}/parameter/source")
-	if [ "${src}" = '-' ]; then
+	if [ "${src}" = '-' ]
+	then
 		src="${__object:?}/stdin"
 	fi
 fi
-if [ -f "${__object:?}/parameter/uri" ]; then
-	if [ -n "${method}" ]; then
+if [ -f "${__object:?}/parameter/uri" ]
+then
+	if [ -n "${method}" ]
+	then
 		incompatible_args uri
 	fi
 	method='uri'
 	src=$(cat "${__object:?}/parameter/uri")
 fi
-if [ -f "${__object:?}/parameter/keyid" ]; then
-	if [ -n "${method}" ]; then
+if [ -f "${__object:?}/parameter/keyid" ]
+then
+	if [ -n "${method}" ]
+	then
 		incompatible_args keyid
 	fi
 	method='keyid'
 fi
 # Keep old default
-if [ -z "${method}" ]; then
+if [ -z "${method}" ]
+then
 	method='keyid'
 fi
 # Save this for later in gencode-remote
@@ -64,14 +71,17 @@ __package dirmngr
 __package gnupg
 export require='__package/gnupg'
 
-if [ -f "${__object:?}/parameter/use-deprecated-apt-key" ]; then
+if [ -f "${__object:?}/parameter/use-deprecated-apt-key" ]
+then
 	# This is required if apt-key(8) is to be used
-	if [ "${method}" = 'source' ] || [ "${method}" = 'uri' ]; then
+	if [ "${method}" = 'source' ] || [ "${method}" = 'uri' ]
+	then
 		incompatible_args use-deprecated-apt-key
 	fi
 else
 	if [ "${state_should}" = 'absent' ] && \
-			[ -f "${__object:?}/parameter/keyid" ]; then
+		[ -f "${__object:?}/parameter/keyid" ]
+	then
 		cat >> /dev/stderr <<EOF
 You can't reliably remove by keyid without --use-deprecated-apt-key.
 This would very likely do something you do not intend.
@@ -83,20 +93,25 @@ fi
 keydir=$(cat "${__object:?}/parameter/keydir")
 keyfile="${keydir}/${__object_id:?}.gpg"
 keyfilecdist="${keyfile}.cdist"
-if [ "${state_should}" != 'absent' ]; then
+if [ "${state_should}" != 'absent' ]
+then
 	# Ensure keydir exists
 	__directory "${keydir}" --state exists --mode 0755
 fi
 
 
-if [ "${state_should}" = 'absent' ]; then
+if [ "${state_should}" = 'absent' ]
+then
 	__file "${keyfile}" --state absent
 	__file "${keyfilecdist}" --state absent
-elif [ "${method}" = 'source' ] || [ "${method}" = 'uri' ]; then
+elif [ "${method}" = 'source' ] || [ "${method}" = 'uri' ]
+then
 	dearmor=$(cat <<-EOF
-	if [ '${state_should}' = 'present' ]; then
+	if [ '${state_should}' = 'present' ]
+	then
 		# Dearmor if necessary
-		if grep -Fq 'BEGIN PGP PUBLIC KEY BLOCK' '${keyfilecdist}'; then
+		if grep -Fq 'BEGIN PGP PUBLIC KEY BLOCK' '${keyfilecdist}'
+		then
 			gpg --dearmor < '${keyfilecdist}' > '${keyfile}'
 		else
 			cp '${keyfilecdist}' '${keyfile}'
@@ -108,7 +123,8 @@ elif [ "${method}" = 'source' ] || [ "${method}" = 'uri' ]; then
 	EOF
 	)
 
-	if [ "${method}" = 'uri' ]; then
+	if [ "${method}" = 'uri' ]
+	then
 		__download "${keyfilecdist}" \
 			--url "${src}" \
 			--onchange "${dearmor}"

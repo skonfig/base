@@ -18,7 +18,8 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-if [ -f "${__object:?}/parameter/name" ]; then
+if [ -f "${__object:?}/parameter/name" ]
+then
     name=$(cat "${__object:?}/parameter/name")
 else
     name=${__object_id:?}
@@ -26,7 +27,8 @@ fi
 
 state_should=$(cat "${__object:?}/parameter/state")
 
-if grep -q true "${__object:?}/explorer/pkg_status"; then
+if grep -q true "${__object:?}/explorer/pkg_status"
+then
     state_is='present'
 else
     state_is='absent'

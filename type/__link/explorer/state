@@ -57,10 +57,12 @@ _readlink() {
 case ${type}
 in
    symbolic)
-      if [ -h "${destination}" ]; then
+      if [ -h "${destination}" ]
+      then
          source_is=$(_readlink "${destination}")
          # ignore trailing slashes for comparison
-         if [ "${source_is%/}" = "${source%/}" ]; then
+         if [ "${source_is%/}" = "${source%/}" ]
+         then
             echo present
          else
             echo wrongsource
@@ -72,11 +74,13 @@ in
    hard)
       cd "${destination%/*}" || exit 1
       # check source relative to destination dir
-      if [ ! -e "${source}" ]; then
+      if [ ! -e "${source}" ]
+      then
          echo sourcemissing
          exit 0
       fi
-      if [ ! -e "${destination}" ]; then
+      if [ ! -e "${destination}" ]
+      then
          echo absent
          exit 0
       fi
@@ -88,7 +92,8 @@ in
       # and different OSes has different implementations for it.
       # shellcheck disable=SC2012
       source_inode=$(ls -i "${source}" | awk '{print $1}')
-      if [ "${destination_inode}" -eq "${source_inode}" ]; then
+      if [ "${destination_inode}" -eq "${source_inode}" ]
+      then
          echo present
       else
          echo absent

@@ -19,9 +19,11 @@
 #
 
 # Select motd source
-if [ -f "${__object:?}/parameter/source" ]; then
+if [ -f "${__object:?}/parameter/source" ]
+then
    source=$(cat "${__object:?}/parameter/source")
-    if [ "${source}" = '-' ]; then
+    if [ "${source}" = '-' ]
+    then
         source="${__object:?}/stdin"
     fi
 else

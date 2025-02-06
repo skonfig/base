@@ -20,7 +20,8 @@
 # Prints the file path used by skonfig to store sysctl values.
 #
 
-if [ -d '/etc/sysctl.d' ]; then
+if [ -d '/etc/sysctl.d' ]
+then
     echo '/etc/sysctl.d/99-Z-sysctl-cdist.conf';
 else
     echo '/etc/sysctl.conf';

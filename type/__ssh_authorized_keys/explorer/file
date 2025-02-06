@@ -21,7 +21,8 @@
 # Prints the path of the destination file chosen to be managed.
 #
 
-if [ -f "${__object:?}/parameter/file" ]; then
+if [ -f "${__object:?}/parameter/file" ]
+then
 	cat "${__object:?}/parameter/file"
 else
 	if [ -s "${__object:?}/parameter/owner" ]

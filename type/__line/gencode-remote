@@ -19,12 +19,14 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-if [ -f "${__object:?}/parameter/before" ] && [ -f "${__object:?}/parameter/after" ]; then
+if [ -f "${__object:?}/parameter/before" ] && [ -f "${__object:?}/parameter/after" ]
+then
    echo 'Use either --before OR --after but not both.' >&2
    exit 1
 fi
 
-if [ -f "${__object:?}/parameter/file" ]; then
+if [ -f "${__object:?}/parameter/file" ]
+then
    file=$(cat "${__object:?}/parameter/file")
 else
    file="/${__object_id:?}"
@@ -33,30 +35,35 @@ fi
 state_should=$(cat "${__object:?}/parameter/state")
 state_is=$(cat "${__object:?}/explorer/state")
 
-if [ -z "${state_is}" ]; then
+if [ -z "${state_is}" ]
+then
    printf 'The file "%s" is missing. Please create it before using %s on it.\n' "${file}" "${__type##*/}" >&2
    exit 1
 fi
 
 if [ "${state_should}" = "${state_is}" ] || \
 	{ [ "${state_should}" = 'present' ] && [ "${state_is}" = 'matching' ] ;} || \
-	{ [ "${state_should}" = 'replace' ] && [ "${state_is}" = 'present' ] ;} ; then
+	{ [ "${state_should}" = 'replace' ] && [ "${state_is}" = 'present' ] ;}
+then
    # If state matches already, or 'present' is used and regex matches
    # or 'replace' is used and the exact line is present, then there is
    # nothing to do
    exit 0
 fi
 
-if [ -f "${__object:?}/parameter/before" ]; then
+if [ -f "${__object:?}/parameter/before" ]
+then
    position='before'
-elif [ -f "${__object:?}/parameter/after" ]; then
+elif [ -f "${__object:?}/parameter/after" ]
+then
    position='after'
 else
    # By default we append to the end of the file.
    position='end'
 fi
 
-if [ -f "${__object:?}/parameter/regex" ]; then
+if [ -f "${__object:?}/parameter/regex" ]
+then
    needle='regex'
 else
    needle='line'
@@ -67,7 +74,8 @@ remove=0
 case ${state_should}
 in
    present|replace)
-      if [ "${state_is}" = 'wrongposition' ] || [ "${state_is}" = 'matching' ]; then
+      if [ "${state_is}" = 'wrongposition' ] || [ "${state_is}" = 'matching' ]
+      then
          echo updated >> "${__messages_out:?}"
          remove=1
       else
@@ -84,7 +92,8 @@ esac
 cat << DONE
 tmpfile=\$(mktemp ${file}.skonfig.XXXXXX)
 # preserve ownership and permissions of existing file
-if [ -f "${file}" ]; then
+if [ -f "${file}" ]
+then
    cp -p "${file}" "\${tmpfile}"
 fi
 
@@ -136,6 +145,7 @@ END {
 mv -f "\${tmpfile}" "${file}"
 DONE
 
-if [ -f "${__object:?}/parameter/onchange" ]; then
+if [ -f "${__object:?}/parameter/onchange" ]
+then
    cat "${__object:?}/parameter/onchange"
 fi

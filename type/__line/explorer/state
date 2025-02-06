@@ -31,7 +31,8 @@
 #     No line matching --regex or --line was found in the file.
 #
 
-if [ -f "${__object:?}/parameter/file" ]; then
+if [ -f "${__object:?}/parameter/file" ]
+then
    file=$(cat "${__object:?}/parameter/file")
 else
    file="/${__object_id:?}"
@@ -39,16 +40,19 @@ fi
 
 [ -f "${file}" ] || exit 0
 
-if [ -f "${__object:?}/parameter/before" ]; then
+if [ -f "${__object:?}/parameter/before" ]
+then
    position='before'
-elif [ -f "${__object:?}/parameter/after" ]; then
+elif [ -f "${__object:?}/parameter/after" ]
+then
    position='after'
 else
    # By default we append to the end of the file.
    position='end'
 fi
 
-if [ -f "${__object:?}/parameter/regex" ]; then
+if [ -f "${__object:?}/parameter/regex" ]
+then
    needle='regex'
 else
    needle='line'

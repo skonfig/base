@@ -20,7 +20,8 @@
 # Retrieve the id from the repo with the uri from parameter uri  - parsed zypper output.
 #
 
-if [ -f "${__object:?}/parameter/uri" ]; then
+if [ -f "${__object:?}/parameter/uri" ]
+then
    uri=$(cat "${__object:?}/parameter/uri")
 else
    uri=${__object_id:?}

@@ -20,7 +20,8 @@
 # Prints "true" if flaggie is installed, "false" otherwise.
 #
 
-if [ -x /usr/bin/flaggie ]; then
+if [ -x /usr/bin/flaggie ]
+then
     echo 'true'
 else
     echo 'false'

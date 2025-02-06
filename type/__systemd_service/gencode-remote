@@ -25,7 +25,8 @@
 
 # get name of the service
 name="${__object:?}/parameter/name"
-if [ -f "${name}" ]; then
+if [ -f "${name}" ]
+then
     name=$(cat "${name}")
 else
     name=${__object_id:?}
@@ -37,7 +38,8 @@ state=$(cat "${__object:?}/explorer/state")
 should=$(cat "${__object:?}/parameter/state")
 
 # if systemd/service does not exist
-if [ -z "${state}" ]; then
+if [ -z "${state}" ]
+then
     printf "systemd or service '%s' does not exist!\n" "${name}" >&2
     exit 1
 fi
@@ -47,7 +49,8 @@ fi
 required_action=''
 
 # check the state of the service that should be
-if [ "${state}" != "${should}" ]; then
+if [ "${state}" != "${should}" ]
+then
     # select what to do to get the $should state
     case ${should}
     in
@@ -63,7 +66,8 @@ fi
 
 # check if the action can be achieved if given
 if [ -f "${__object:?}/parameter/action" ] \
-    && [ -z "${required_action}" ] && [ "${state}" = 'running' ]; then
+    && [ -z "${required_action}" ] && [ "${state}" = 'running' ]
+then
 
     # there must be an action
     action=$(cat "${__object:?}/parameter/action")
@@ -86,14 +90,16 @@ if [ -f "${__object:?}/parameter/action" ] \
 
     # Make a special check: only do this action if a dependency did something
     # it is required that the dependencies write there action to $__messages_in
-    if [ -f "${__object:?}/parameter/if-required" ]; then
+    if [ -f "${__object:?}/parameter/if-required" ]
+    then
         # exit here if there are no changes from the dependencies affected (nothing to do)
         if ! grep -q -f "${__object:?}/require" "${__messages_in:?}"; then exit 0; fi
     fi
 fi
 
 # print the execution command if a action given
-if [ -n "${required_action}" ]; then
+if [ -n "${required_action}" ]
+then
     # also print it as message
     echo "${required_action}" >> "${__messages_out:?}"
     echo "systemctl ${required_action} '${name}'"

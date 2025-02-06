@@ -18,7 +18,8 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-if [ -f "${__object:?}/parameter/name" ]; then
+if [ -f "${__object:?}/parameter/name" ]
+then
    name="${__object:?}/parameter/name"
 else
    name=${__object_id:?}
@@ -28,24 +29,29 @@ state_should=$(cat "${__object:?}/parameter/state")
 
 version=$(cat "${__object:?}/parameter/version")
 
-if [ -n "${version}" ]; then
+if [ -n "${version}" ]
+then
     name="=${name}-${version}"
 fi
 
 pkg_version=$(cat "${__object:?}/explorer/pkg_version")
-if [ -z "${pkg_version}" ]; then
+if [ -z "${pkg_version}" ]
+then
     state_is='absent'
-elif [ -z "${version}" ] && [ "$(echo "${pkg_version}" | wc -l)" -gt 1 ]; then
+elif [ -z "${version}" ] && [ "$(echo "${pkg_version}" | wc -l)" -gt 1 ]
+then
     echo 'Package name is not unique! The following packages are installed:' >&2
     echo "${pkg_version}" >&2
     exit 1
-elif [ -n "${version}" ] && [ "$(echo "${pkg_version}" | cut -d ' ' -f 1 | sort | uniq | wc -l)" -gt 1 ]; then
+elif [ -n "${version}" ] && [ "$(echo "${pkg_version}" | cut -d ' ' -f 1 | sort | uniq | wc -l)" -gt 1 ]
+then
     echo 'Package name is not unique! The following packages are installed:' >&2
     echo "${pkg_version}" >&2
     exit 1
 else
     state_is='present'
-    if [ -n "${version}" ] && echo "${pkg_version}" | cut -d ' ' -f 2 | grep -q -x "${version}"; then
+    if [ -n "${version}" ] && echo "${pkg_version}" | cut -d ' ' -f 2 | grep -q -x "${version}"
+    then
         installed_version=$(echo "${pkg_version}" | cut -d ' ' -f 2 | grep -x "${version}")
     else
         installed_version=$(echo "${pkg_version}" | cut -d ' ' -f 2 | tail -n 1)

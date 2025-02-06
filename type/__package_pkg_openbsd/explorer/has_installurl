@@ -27,7 +27,8 @@
 # Allow for expansion and take the first non-commented (#) line.
 #
 
-if [ -f /etc/installurl ]; then
+if [ -f /etc/installurl ]
+then
 	printf 'yes'
 else
 	printf 'no'

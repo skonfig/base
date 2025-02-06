@@ -23,7 +23,8 @@
 #set -x
 
 
-if [ -f "${__object:?}/parameter/uri" ]; then
+if [ -f "${__object:?}/parameter/uri" ]
+then
    uri=$(cat "${__object:?}/parameter/uri")
 else
    uri=${__object_id:?}
@@ -33,7 +34,8 @@ state_should=$(cat "${__object:?}/parameter/state")
 
 exp_uri=$(cat "${__object:?}/explorer/service_uri")
 
-if [ "${uri}" = "${exp_uri}" ] ; then
+if [ "${uri}" = "${exp_uri}" ]
+then
     state_is='present'
 else
     state_is='absent'
@@ -47,7 +49,8 @@ fi
 exp_repos=$(rev "${__object:?}/explorer/repo_ids")
 
 # boolean parameter
-if [ -f "${__object:?}/parameter/remove-all-repos" ]; then
+if [ -f "${__object:?}/parameter/remove-all-repos" ]
+then
    # file exists -> True
    for i in ${exp_repos}; do
      __zypper_repo "droprepo${i}" --state absent --repo_id "${i}"

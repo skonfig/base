@@ -20,7 +20,8 @@
 # Retrieve the status of a package - parsed apk output
 #
 
-if [ -f "${__object:?}/parameter/name" ]; then
+if [ -f "${__object:?}/parameter/name" ]
+then
    name=$(cat "${__object:?}/parameter/name")
 else
    name=${__object_id:?}
@@ -30,7 +31,8 @@ fi
 # f.i. pass@testing => pass
 name=$(echo "${name}" | sed 's/@.*//')
 
-if [ "$(apk list -I "${name}")" ]; then
+if [ "$(apk list -I "${name}")" ]
+then
     echo present
 else
     echo absent
