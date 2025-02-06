@@ -21,11 +21,11 @@
 # Prints all files found which should be removed.
 #
 
-if [ -f "$__object/parameter/path" ]
+if [ -f "${__object:?}/parameter/path" ]
 then
-    path="$( cat "$__object/parameter/path" )"
+    path="$( cat "${__object:?}/parameter/path" )"
 else
-    path="/$__object_id"
+    path="/${__object_id:?}"
 fi
 
 if [ ! -d "$path" ]
@@ -34,18 +34,18 @@ then
 fi
 
 # deprecated
-if [ -f "$__object/parameter/pattern" ] || [ -f "$__object/parameter/exclude" ]
+if [ -f "${__object:?}/parameter/pattern" ] || [ -f "${__object:?}/parameter/exclude" ]
 then
     set -- '-maxdepth' 1 "$@"
 
-    if [ -f "$__object/parameter/pattern" ]
+    if [ -f "${__object:?}/parameter/pattern" ]
     then
-        cp "$__object/parameter/pattern" "$__object/parameter/rm-regex"
+        cp "${__object:?}/parameter/pattern" "${__object:?}/parameter/rm-regex"
     fi
 
-    if [ -f "$__object/parameter/exclude" ]
+    if [ -f "${__object:?}/parameter/exclude" ]
     then
-        cp "$__object/parameter/exclude" "$__object/parameter/not-regex"
+        cp "${__object:?}/parameter/exclude" "${__object:?}/parameter/not-regex"
     fi
 fi
 # /deprecated
@@ -74,6 +74,6 @@ done
 set -- 'find' "$path" '!' '-path' "$path" "$@"
 
 # for debugging purposes
-#echo "__clean_path/$__object_id: $*" >&2
+#echo "__clean_path/${__object_id:?}: $*" >&2
 
 "$@"

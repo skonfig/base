@@ -18,28 +18,28 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-if [ -f "$__object/parameter/name" ]; then
-    name="$(cat "$__object/parameter/name")"
+if [ -f "${__object:?}/parameter/name" ]; then
+    name="$(cat "${__object:?}/parameter/name")"
 else
-    name="$__object_id"
+    name="${__object_id:?}"
 fi
 
-apt_version="$(cat "$__object/explorer/apt_version")"
+apt_version="$(cat "${__object:?}/explorer/apt_version")"
 
 if [ "$apt_version" != '0' ]; then
     echo 'APT version not supported' >&2
     exit 1
 fi
 
-package_installed="$(cat "$__object/explorer/package_installed")"
+package_installed="$(cat "${__object:?}/explorer/package_installed")"
 
 if [ "$package_installed" != '0' ]; then
     exit 0
 fi
 
-state_should="$(cat "$__object/parameter/state")"
+state_should="$(cat "${__object:?}/parameter/state")"
 
-state_is="$(cat "$__object/explorer/state")"
+state_is="$(cat "${__object:?}/explorer/state")"
 
 if [ "$state_should" = "$state_is" ]; then
     exit 0

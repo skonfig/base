@@ -19,16 +19,16 @@
 #
 
 # Select motd source
-if [ -f "$__object/parameter/source" ]; then
-   source="$(cat "$__object/parameter/source")"
+if [ -f "${__object:?}/parameter/source" ]; then
+   source="$(cat "${__object:?}/parameter/source")"
     if [ "$source" = "-" ]; then
-        source="${__object}/stdin"
+        source="${__object:?}/stdin"
     fi
 else
-   source="$__type/files/motd"
+   source="${__type:?}/files/motd"
 fi
 
-os=$(cat "$__global/explorer/os")
+os=$(cat "${__global:?}/explorer/os")
 
 
 case "$os" in

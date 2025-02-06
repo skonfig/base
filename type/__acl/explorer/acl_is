@@ -22,7 +22,7 @@
 # Raises an error if the getfacl(1) command is not available.
 #
 
-[ ! -e "/$__object_id" ] && exit 0
+[ ! -e "/${__object_id:?}" ] && exit 0
 
 if ! command -v getfacl > /dev/null
 then
@@ -30,6 +30,6 @@ then
     exit 1
 fi
 
-getfacl "/$__object_id" 2>/dev/null \
+getfacl "/${__object_id:?}" 2>/dev/null \
     | grep -Eo '^(default:)?(user|group|(mask|other):):[^:][[:graph:]]+' \
     || true

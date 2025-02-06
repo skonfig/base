@@ -19,9 +19,9 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-name="$__object_id"
-os="$(cat "$__global/explorer/os")"
-state="$(cat "$__object/parameter/state")"
+name="${__object_id:?}"
+os="$(cat "${__global:?}/explorer/os")"
+state="$(cat "${__object:?}/parameter/state")"
 
 
 # Use short option names for portability
@@ -43,23 +43,23 @@ if [ "$state" = "present" ]; then
          supported_change_properties="gid password"
       ;;
    esac
-   if grep -q "^${name}:" "$__object/explorer/group"; then
+   if grep -q "^${name}:" "${__object:?}/explorer/group"; then
       # change existing
       for property in $supported_change_properties; do
-         if [ -f "$__object/parameter/$property" ]; then
-            new_value="$(cat "$__object/parameter/$property")"
+         if [ -f "${__object:?}/parameter/$property" ]; then
+            new_value="$(cat "${__object:?}/parameter/$property")"
             unset current_value
             case "$property" in
                password)
-                  current_value="$(awk -F: '{ print $2 }' "$__object/explorer/gshadow")"
+                  current_value="$(awk -F: '{ print $2 }' "${__object:?}/explorer/gshadow")"
                ;;
                gid)
-                  current_value="$(awk -F: '{ print $3 }' "$__object/explorer/group")"
+                  current_value="$(awk -F: '{ print $3 }' "${__object:?}/explorer/group")"
                ;;
             esac
             if [ "$new_value" != "$current_value" ]; then
                set -- "$@" "$(shorten_property "$property")" \'"$new_value"\'
-               echo "change $property $new_value $current_value" >> "$__messages_out"
+               echo "change $property $new_value $current_value" >> "${__messages_out:?}"
             fi
          fi
       done
@@ -69,13 +69,13 @@ if [ "$state" = "present" ]; then
          else
             echo groupmod "$@" "$name"
          fi
-         echo mod >> "$__messages_out"
+         echo mod >> "${__messages_out:?}"
       fi
    else
       # create new
       for property in $supported_change_properties; do
-         if [ -f "$__object/parameter/$property" ]; then
-            new_value="$(cat "$__object/parameter/$property")"
+         if [ -f "${__object:?}/parameter/$property" ]; then
+            new_value="$(cat "${__object:?}/parameter/$property")"
             if [ -z "$new_value" ]; then
                # Boolean parameters have no value
                set -- "$@" "$(shorten_property "$property")"
@@ -92,12 +92,12 @@ if [ "$state" = "present" ]; then
    fi
 else
    # delete existing
-   if grep -q "^${name}:" "$__object/explorer/group"; then
+   if grep -q "^${name}:" "${__object:?}/explorer/group"; then
       if [ "$os" = "freebsd" ]; then
          echo pw groupdel "$name"
       else
          echo groupdel "$name"
       fi
-      echo remove >> "$__messages_out"
+      echo remove >> "${__messages_out:?}"
    fi
 fi

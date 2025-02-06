@@ -21,10 +21,10 @@
 # "1" otherwise.
 #
 
-if [ -f "$__object/parameter/name" ]; then
-    name="$(cat "$__object/parameter/name")"
+if [ -f "${__object:?}/parameter/name" ]; then
+    name="$(cat "${__object:?}/parameter/name")"
 else
-    name="$__object_id"
+    name="${__object_id:?}"
 fi
 
 dpkg-query --show --showformat '${Status}' "$name" 2>/dev/null \

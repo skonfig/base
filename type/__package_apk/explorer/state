@@ -20,10 +20,10 @@
 # Retrieve the status of a package - parsed apk output
 #
 
-if [ -f "$__object/parameter/name" ]; then
-   name="$(cat "$__object/parameter/name")"
+if [ -f "${__object:?}/parameter/name" ]; then
+   name="$(cat "${__object:?}/parameter/name")"
 else
-   name="$__object_id"
+   name="${__object_id:?}"
 fi
 
 # Remove the @.. repo tag for finding out whether it is installed

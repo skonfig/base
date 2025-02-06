@@ -21,19 +21,19 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-destination="/$__object_id"
-state_should=$(cat "$__object/parameter/state")
-type=$(cat "$__object/explorer/type")
-stat_file="$__object/explorer/stat"
+destination="/${__object_id:?}"
+state_should=$(cat "${__object:?}/parameter/state")
+type=$(cat "${__object:?}/explorer/type")
+stat_file="${__object:?}/explorer/stat"
 
 # variable to keep track if we have to set directory attributes
 set_attributes=
 
 mkdiropt=""
-[ -f "$__object/parameter/parents" ] && mkdiropt="-p"
+[ -f "${__object:?}/parameter/parents" ] && mkdiropt="-p"
 
 recursive=""
-if [ -f "$__object/parameter/recursive" ]; then
+if [ -f "${__object:?}/parameter/recursive" ]; then
    recursive="-R"
    # need to allways set attributes when recursive is given
    # as we don't want to check all subfolders/files
@@ -59,17 +59,17 @@ get_current_value() {
 
 set_group() {
     echo "chgrp $recursive '$1' '$destination'"
-    echo "chgrp $recursive '$1'" >> "$__messages_out"
+    echo "chgrp $recursive '$1'" >> "${__messages_out:?}"
 }
 
 set_owner() {
     echo "chown $recursive '$1' '$destination'"
-    echo "chown $recursive '$1'" >> "$__messages_out"
+    echo "chown $recursive '$1'" >> "${__messages_out:?}"
 }
 
 set_mode() {
     echo "chmod $recursive '$1' '$destination'"
-    echo "chmod $recursive '$1'" >> "$__messages_out"
+    echo "chmod $recursive '$1'" >> "${__messages_out:?}"
 }
 
 case "$state_should" in
@@ -80,10 +80,10 @@ case "$state_should" in
             # our destination is not a directory, remove whatever is there
             # and then create our directory and set all attributes
             echo "rm -f '$destination'"
-            echo "remove non directory" >> "$__messages_out"
+            echo "remove non directory" >> "${__messages_out:?}"
          fi
          echo "mkdir $mkdiropt '$destination'"
-         echo "create" >> "$__messages_out"
+         echo "create" >> "${__messages_out:?}"
       elif [ "$state_should" = 'exists' ]; then
          # The type is directory and --state exists. We are done and do not
          # check or set the attributes.
@@ -93,8 +93,8 @@ case "$state_should" in
       # Note: Mode - needs to happen last as a chown/chgrp can alter mode by
       # clearing S_ISUID and S_ISGID bits (see chown(2))
       for attribute in group owner mode; do
-         if [ -f "$__object/parameter/$attribute" ]; then
-            value_should="$(cat "$__object/parameter/$attribute")"
+         if [ -f "${__object:?}/parameter/$attribute" ]; then
+            value_should="$(cat "${__object:?}/parameter/$attribute")"
             value_is="$(get_current_value "$attribute" "$value_should")"
 
             # format mode in four digits => same as stat returns
@@ -133,7 +133,7 @@ case "$state_should" in
    absent)
         if [ "$type" = "directory" ]; then
             echo "rm -rf '$destination'"
-            echo remove >> "$__messages_out"
+            echo remove >> "${__messages_out:?}"
         fi
    ;;
    *)

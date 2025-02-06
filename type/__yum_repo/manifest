@@ -18,15 +18,15 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-os=$(cat "$__global/explorer/os")
-state="$(cat "$__object/parameter/state")"
+os=$(cat "${__global:?}/explorer/os")
+state="$(cat "${__object:?}/parameter/state")"
 
 case "$os" in
    scientific|centos)
-      repo_name="$__object_id"
+      repo_name="${__object_id:?}"
       export repo_name
       repo_file="/etc/yum.repos.d/${repo_name}.repo"
-      "$__type/files/repo.template" | \
+      "${__type:?}/files/repo.template" | \
          __file "$repo_file" \
             --owner root --group root --mode 644 \
             --state "$state" \

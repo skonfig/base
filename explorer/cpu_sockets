@@ -23,7 +23,7 @@
 
 # FIXME: other system types (not linux ...)
 
-os=$("$__explorer/os")
+os=$("${__explorer:?}/os")
 case "$os" in
     "macosx")
         system_profiler SPHardwareDataType | grep "Number of Processors" | awk -F': ' '{print $2}'

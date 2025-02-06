@@ -18,7 +18,7 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-systemctl_present=$(cat "${__object}/explorer/systemctl-present")
+systemctl_present=$(cat "${__object:?}/explorer/systemctl-present")
 
 if [ "${systemctl_present}" -ne 0 ]; then
     echo "systemctl does not seem to be present on this system" >&2
@@ -26,10 +26,10 @@ if [ "${systemctl_present}" -ne 0 ]; then
     exit 1
 fi
 
-name="${__object_id}"
-source=$(cat "${__object}/parameter/source")
-state=$(cat "${__object}/parameter/state")
-enablement_state=$(cat "${__object}/parameter/enablement-state")
+name="${__object_id:?}"
+source=$(cat "${__object:?}/parameter/source")
+state=$(cat "${__object:?}/parameter/state")
+enablement_state=$(cat "${__object:?}/parameter/enablement-state")
 
 # The unit must be disabled before removing its unit file. The unit file is
 # therefore removed by gencode-remote of this type, not here.
@@ -39,7 +39,7 @@ fi
 
 # stdin is not propagated automatically to sub-objects
 if [ "${source}" = "-" ]; then
-    source="${__object}/stdin"
+    source="${__object:?}/stdin"
 fi
 
 unitfile_state="${state}"
@@ -53,7 +53,7 @@ fi
 
 unitfile_dir="/etc/systemd/system"
 
-if [ -f "${__object}/parameter/drop-in" ]; then
+if [ -f "${__object:?}/parameter/drop-in" ]; then
     unitfile_dir="${unitfile_dir}/${name}.d"
 
     __directory "${unitfile_dir}" \

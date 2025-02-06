@@ -19,11 +19,11 @@
 #
 
 #get params
-section=$(cat "$__object/parameter/section")
-key=$(cat "$__object/parameter/key")
-value=$(cat "$__object/parameter/value")
-file=$(cat "$__object/parameter/file" 2>/dev/null)
-state=$(cat "$__object/parameter/state" 2>/dev/null)
+section=$(cat "${__object:?}/parameter/section")
+key=$(cat "${__object:?}/parameter/key")
+value=$(cat "${__object:?}/parameter/value")
+file=$(cat "${__object:?}/parameter/file" 2>/dev/null)
+state=$(cat "${__object:?}/parameter/state" 2>/dev/null)
 
 #path variable default /etc/pacman.d
 sec_path="/etc/pacman.d"

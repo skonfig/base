@@ -21,14 +21,14 @@
 # Prints the path of the destination file chosen to be managed.
 #
 
-if [ -f "$__object/parameter/file" ]; then
-	cat "$__object/parameter/file"
+if [ -f "${__object:?}/parameter/file" ]; then
+	cat "${__object:?}/parameter/file"
 else
-	if [ -s "$__object/parameter/owner" ]
+	if [ -s "${__object:?}/parameter/owner" ]
 	then
-		owner=$(cat "$__object/parameter/owner")
+		owner=$(cat "${__object:?}/parameter/owner")
 	else
-		owner="$__object_id"
+		owner="${__object_id:?}"
 	fi
 
 	if command -v getent >/dev/null

@@ -21,7 +21,7 @@
 #
 
 
-os=$(cat "$__global/explorer/os")
+os=$(cat "${__global:?}/explorer/os")
 
 case "$os" in
    # Linux
@@ -39,10 +39,10 @@ case "$os" in
    ;;
 esac
 
-conf_path=$(cat "$__object/explorer/conf-path")
+conf_path=$(cat "${__object:?}/explorer/conf-path")
 
-__key_value "$__object_name" \
-   --key "$__object_id" \
+__key_value "${__object_name:?}" \
+   --key "${__object_id:?}" \
    --file "${conf_path}" \
-   --value "$(cat "$__object/parameter/value")" \
+   --value "$(cat "${__object:?}/parameter/value")" \
    --delimiter '='

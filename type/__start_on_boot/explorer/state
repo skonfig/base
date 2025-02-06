@@ -21,11 +21,11 @@
 # Check whether the given name will be started on boot or not.
 #
 
-os=$("$__explorer/os")
-runlevel=$("$__explorer/runlevel")
-init=$("$__explorer/init")
-target_runlevel="$(cat "$__object/parameter/target_runlevel")"
-name="$__object_id"
+os=$("${__explorer:?}/os")
+runlevel=$("${__explorer:?}/runlevel")
+init=$("${__explorer:?}/init")
+target_runlevel="$(cat "${__object:?}/parameter/target_runlevel")"
+name="${__object_id:?}"
 
 if [ "$init" = 'systemd' ]; then
     # this handles ALL linux distros with systemd

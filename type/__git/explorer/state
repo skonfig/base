@@ -20,7 +20,7 @@
 # Check whether repository exists
 #
 
-destination="/$__object_id/.git"
+destination="/${__object_id:?}/.git"
 
 if [ -d "$destination" ]; then
    echo present

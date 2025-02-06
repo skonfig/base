@@ -25,10 +25,10 @@ if [ ! -x /usr/bin/equery ]; then
     exit 1
 fi
 
-if [ -f "$__object/parameter/name" ]; then
-   name="$(cat "$__object/parameter/name")"
+if [ -f "${__object:?}/parameter/name" ]; then
+   name="$(cat "${__object:?}/parameter/name")"
 else
-   name="$__object_id"
+   name="${__object_id:?}"
 fi
 
 # shellcheck disable=SC2016

@@ -24,37 +24,37 @@
 
 zypper_def_opts=" -q --non-interactive --gpg-auto-import-keys "
 
-if [ -f "$__object/parameter/repo_desc" ]; then
-   desc="$(cat "$__object/parameter/repo_desc")"
+if [ -f "${__object:?}/parameter/repo_desc" ]; then
+   desc="$(cat "${__object:?}/parameter/repo_desc")"
 else
-   desc="$__object_id"
+   desc="${__object_id:?}"
 fi
 
-if [ -f "$__object/parameter/uri" ]; then
-   uri="$(cat "$__object/parameter/uri")"
+if [ -f "${__object:?}/parameter/uri" ]; then
+   uri="$(cat "${__object:?}/parameter/uri")"
 else
-   uri="$__object_id"
+   uri="${__object_id:?}"
 fi
 
-if [ -f "$__object/parameter/repo_id" ]; then
-   id="$(cat "$__object/parameter/repo_id")"
+if [ -f "${__object:?}/parameter/repo_id" ]; then
+   id="$(cat "${__object:?}/parameter/repo_id")"
 else
-   id="$__object_id"
+   id="${__object_id:?}"
 fi
 
-state="$(cat "$__object/parameter/state")"
+state="$(cat "${__object:?}/parameter/state")"
 
-repo_id="$(cat "$__object/explorer/repo_id")"
+repo_id="$(cat "${__object:?}/explorer/repo_id")"
 
 act_id=""
-if grep -q "$id" "$__object/explorer/all_repo_ids"; then
+if grep -q "$id" "${__object:?}/explorer/all_repo_ids"; then
     act_id="$id"
-elif grep -q "$repo_id" "$__object/explorer/all_repo_ids"; then
+elif grep -q "$repo_id" "${__object:?}/explorer/all_repo_ids"; then
     act_id="$repo_id" 
 fi
 
 repostate="disabled"
-if grep -q "$act_id" "$__object/explorer/enabled_repo_ids"; then
+if grep -q "$act_id" "${__object:?}/explorer/enabled_repo_ids"; then
     repostate="enabled"
 fi
 

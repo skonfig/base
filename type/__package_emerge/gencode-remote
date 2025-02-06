@@ -18,21 +18,21 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-if [ -f "$__object/parameter/name" ]; then
-   name="$__object/parameter/name"
+if [ -f "${__object:?}/parameter/name" ]; then
+   name="${__object:?}/parameter/name"
 else
-   name="$__object_id"
+   name="${__object_id:?}"
 fi
 
-state_should="$(cat "$__object/parameter/state")"
+state_should="$(cat "${__object:?}/parameter/state")"
 
-version="$(cat "$__object/parameter/version")"
+version="$(cat "${__object:?}/parameter/version")"
 
 if [ -n "$version" ]; then
     name="=$name-$version"
 fi
 
-pkg_version="$(cat "$__object/explorer/pkg_version")"
+pkg_version="$(cat "${__object:?}/explorer/pkg_version")"
 if [ -z "$pkg_version" ]; then
     state_is="absent"
 elif [ -z "$version" ] && [ "$(echo "$pkg_version" | wc -l)" -gt 1 ]; then
@@ -61,11 +61,11 @@ fi
 case "$state_should" in
    present)
         echo "emerge '$name' &>/dev/null || exit 1"
-        echo "installed" >> "$__messages_out"
+        echo "installed" >> "${__messages_out:?}"
         ;;
    absent)
         echo "emerge -C '$name' &>/dev/null || exit 1"
-        echo "removed" >> "$__messages_out"
+        echo "removed" >> "${__messages_out:?}"
         ;;
    *)
         echo "Unknown state: $state_should" >&2

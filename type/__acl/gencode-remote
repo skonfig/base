@@ -18,35 +18,35 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-file_is="$( cat "$__object/explorer/file_is" )"
+file_is="$( cat "${__object:?}/explorer/file_is" )"
 
 if [ "$file_is" = 'missing' ] \
-    && [ -z "$__cdist_dry_run" ] \
-    && [ ! -f "$__object/parameter/file" ] \
-    && [ ! -f "$__object/parameter/directory" ]
+    && [ -z "${__cdist_dry_run:?}" ] \
+    && [ ! -f "${__object:?}/parameter/file" ] \
+    && [ ! -f "${__object:?}/parameter/directory" ]
 then
     exit 0
 fi
 
-os="$( cat "$__global/explorer/os" )"
+os="$( cat "${__global:?}/explorer/os" )"
 
-acl_path="/$__object_id"
+acl_path="/${__object_id:?}"
 
-acl_is="$( cat "$__object/explorer/acl_is" )"
+acl_is="$( cat "${__object:?}/explorer/acl_is" )"
 
-if [ -f "$__object/parameter/source" ]
+if [ -f "${__object:?}/parameter/source" ]
 then
-    acl_source="$( cat "$__object/parameter/source" )"
+    acl_source="$( cat "${__object:?}/parameter/source" )"
 
     if [ "$acl_source" = '-' ]
     then
-        acl_should="$( cat "$__object/stdin" )"
+        acl_should="$( cat "${__object:?}/stdin" )"
     else
         acl_should="$( grep -Ev '^#|^$' "$acl_source" )"
     fi
-elif [ -f "$__object/parameter/entry" ]
+elif [ -f "${__object:?}/parameter/entry" ]
 then
-    acl_should="$( cat "$__object/parameter/entry" )"
+    acl_should="$( cat "${__object:?}/parameter/entry" )"
 else
     echo 'no parameters set' >&2
     exit 1
@@ -60,14 +60,14 @@ echo "$acl_should" \
     | sort -u \
     | while read -r l
     do
-        if ! grep "$l" -Fxq "$__object/explorer/getent"
+        if ! grep "$l" -Fxq "${__object:?}/explorer/getent"
         then
             echo "no $l' in target" | sed "s/:/ '/" >&2
             exit 1
         fi
     done
 
-if [ -f "$__object/parameter/default" ]
+if [ -f "${__object:?}/parameter/default" ]
 then
     acl_should="$( echo "$acl_should" \
         | sed 's/^default://' \
@@ -86,7 +86,7 @@ fi
 
 setfacl_exec='setfacl'
 
-if [ -f "$__object/parameter/recursive" ]
+if [ -f "${__object:?}/parameter/recursive" ]
 then
     if echo "$os" | grep -Fq 'freebsd'
     then
@@ -96,7 +96,7 @@ then
     fi
 fi
 
-if [ -f "$__object/parameter/remove" ]
+if [ -f "${__object:?}/parameter/remove" ]
 then
     echo "$acl_is" | while read -r acl
     do
@@ -117,7 +117,7 @@ then
         fi
 
         echo "$setfacl_exec -x \"$remove\" \"$acl_path\""
-        echo "removed '$remove'" >> "$__messages_out"
+        echo "removed '$remove'" >> "${__messages_out:?}"
     done
 fi
 
@@ -136,6 +136,6 @@ do
         echo "setting default ACL in $os is currently not supported" >&2
     else
         echo "$setfacl_exec -m \"$acl\" \"$acl_path\""
-        echo "added '$acl'" >> "$__messages_out"
+        echo "added '$acl'" >> "${__messages_out:?}"
     fi
 done

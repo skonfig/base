@@ -21,16 +21,16 @@
 
 set -e
 
-hostname=$__object_id
-state=$(cat "${__object}/parameter/state")
+hostname=${__object_id:?}
+state=$(cat "${__object:?}/parameter/state")
 marker="# __hosts/${hostname}"
 
 if test "${state}" != 'absent'
 then
-	ip=$(cat "${__object}/parameter/ip")
-	if test -s "${__object}/parameter/alias"
+	ip=$(cat "${__object:?}/parameter/ip")
+	if test -s "${__object:?}/parameter/alias"
 	then
-		aliases=$(while read -r a; do printf '\t%s' "$a"; done <"$__object/parameter/alias")
+		aliases=$(while read -r a; do printf '\t%s' "$a"; done <"${__object:?}/parameter/alias")
 	fi
 
 	set -- --line "$(printf '%s\t%s%s  %s' \

@@ -20,48 +20,48 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-os_version=$(cat "${__global}/explorer/os_version")
-machine=$(cat "${__global}/explorer/machine")
+os_version=$(cat "${__global:?}/explorer/os_version")
+machine=$(cat "${__global:?}/explorer/machine")
 
-if [ -f "${__object}/parameter/version" ]; then
-	version=$(cat "${__object}/parameter/version")
+if [ -f "${__object:?}/parameter/version" ]; then
+	version=$(cat "${__object:?}/parameter/version")
 fi
 
-if [ -f "${__object}/parameter/flavor" ]; then
-	flavor=$(cat "${__object}/parameter/flavor")
+if [ -f "${__object:?}/parameter/flavor" ]; then
+	flavor=$(cat "${__object:?}/parameter/flavor")
 fi
 
 # Do not show progress bar
 pkgopts='-x'
 
-name="${__object_id}"
-if [ -f "${__object}/parameter/name" ]; then
-	name=$(cat "${__object}/parameter/name")
+name="${__object_id:?}"
+if [ -f "${__object:?}/parameter/name" ]; then
+	name=$(cat "${__object:?}/parameter/name")
 fi
 
 if [ -n "${version}" ] && [ -n "${flavor}" ]; then
 	pkgid="${name}-${version}-${flavor}"
 elif [ -n "${version}" ]; then
 	pkgid="${name}-${version}"
-elif [ -f "${__object}/parameter/flavor" ]; then
+elif [ -f "${__object:?}/parameter/flavor" ]; then
 	pkgid="${name}--${flavor}"
 else
 	pkgid="${name}"
 fi
 
-state_should=$(cat "${__object}/parameter/state")
+state_should=$(cat "${__object:?}/parameter/state")
 
-if [ -f "${__object}/parameter/pkg_path" ]; then
-	pkg_path=$(cat "${__object}/parameter/pkg_path")
+if [ -f "${__object:?}/parameter/pkg_path" ]; then
+	pkg_path=$(cat "${__object:?}/parameter/pkg_path")
 else
-	has_installurl=$(cat "${__object}/explorer/has_installurl")
+	has_installurl=$(cat "${__object:?}/explorer/has_installurl")
 	if [ 'yes' != "${has_installurl}" ]; then
 		# There is no default PKG_PATH, try to provide one
 		pkg_path="ftp://ftp.openbsd.org/pub/OpenBSD/${os_version}/packages/${machine}/"
 	fi
 fi
 
-state_is=$(cat "${__object}/explorer/pkg_state")
+state_is=$(cat "${__object:?}/explorer/pkg_state")
 [ "${state_is}" = "${state_should}" ] && exit 0
 
 case "${state_should}" in
@@ -86,7 +86,7 @@ then
 	exit 1
 fi
 EOF
-		echo 'installed' >> "${__messages_out}"
+		echo 'installed' >> "${__messages_out:?}"
 		;;
 
 	absent)
@@ -106,7 +106,7 @@ then
 	exit 1
 fi
 EOF
-		echo 'removed' >> "${__messages_out}"
+		echo 'removed' >> "${__messages_out:?}"
 		;;
 	*)
 		echo "Unknown state: ${state_should}" >&2

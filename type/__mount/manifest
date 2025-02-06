@@ -18,25 +18,25 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-path="$(cat "$__object/parameter/path" 2>/dev/null || echo "/$__object_id")"
-state="$(cat "$__object/parameter/state")"
+path="$(cat "${__object:?}/parameter/path" 2>/dev/null || echo "/${__object_id:?}")"
+state="$(cat "${__object:?}/parameter/state")"
 
-if [ ! -f "$__object/parameter/nofstab" ]; then
+if [ ! -f "${__object:?}/parameter/nofstab" ]; then
    # Generate an entry for /etc/fstab
    (
-printf "%s" "$(cat "$__object/parameter/device")"
+printf "%s" "$(cat "${__object:?}/parameter/device")"
 printf " %s" "$path"
-type="$(cat "$__object/parameter/type")"
+type="$(cat "${__object:?}/parameter/type")"
 printf " %s" "$type"
-options="$(cat "$__object/parameter/options")"
+options="$(cat "${__object:?}/parameter/options")"
 printf " %s" "$options"
-printf " %s" "$(cat "$__object/parameter/dump")"
-printf ' %s\n' "$(cat "$__object/parameter/pass")"
+printf " %s" "$(cat "${__object:?}/parameter/dump")"
+printf ' %s\n' "$(cat "${__object:?}/parameter/pass")"
 ) | \
-__block "$__object_name" \
+__block "${__object_name:?}" \
    --file "/etc/fstab" \
-   --prefix "#cdist:$__object_name" \
-   --suffix "#/cdist:$__object_name" \
+   --prefix "#cdist:${__object_name:?}" \
+   --suffix "#/cdist:${__object_name:?}" \
    --state "$state" \
    --text -
 fi

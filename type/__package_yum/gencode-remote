@@ -18,23 +18,23 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-if [ -f "$__object/parameter/name" ]; then
-   name="$(cat "$__object/parameter/name")"
+if [ -f "${__object:?}/parameter/name" ]; then
+   name="$(cat "${__object:?}/parameter/name")"
 else
-   name="$__object_id"
+   name="${__object_id:?}"
 fi
 
 # Support installing from an URL
-if [ -f "$__object/parameter/url" ]; then
-   install_name="$(cat "$__object/parameter/url")"
+if [ -f "${__object:?}/parameter/url" ]; then
+   install_name="$(cat "${__object:?}/parameter/url")"
 else
    install_name="$name"
 fi
 
 
-state_should="$(cat "$__object/parameter/state")"
+state_should="$(cat "${__object:?}/parameter/state")"
 
-if grep -q -E "(scientific|centos|almalinux|eurolinux|rocky|redhat|amazon)" "$__global/explorer/os"; then
+if grep -q -E "(scientific|centos|almalinux|eurolinux|rocky|redhat|amazon)" "${__global:?}/explorer/os"; then
     opts="-y --quiet"
 else
     opts="--assumeyes --quiet"
@@ -43,8 +43,8 @@ fi
 not_provided="^no package provides"
 not_installed='is not installed$'
 
-if grep -q "$not_provided" "$__object/explorer/pkg_version"; then
-    if grep -q "$not_installed" "$__object/explorer/pkg_version"; then
+if grep -q "$not_provided" "${__object:?}/explorer/pkg_version"; then
+    if grep -q "$not_installed" "${__object:?}/explorer/pkg_version"; then
         state_is="absent"
     else
         state_is="present"
@@ -58,11 +58,11 @@ fi
 case "$state_should" in
     present)
         echo "yum $opts install '$install_name'"
-        echo "installed" >> "$__messages_out"
+        echo "installed" >> "${__messages_out:?}"
     ;;
     absent)
         echo "yum $opts remove '$name'"
-        echo "removed" >> "$__messages_out"
+        echo "removed" >> "${__messages_out:?}"
     ;;
     *)
         echo "Unknown state: $state_should" >&2

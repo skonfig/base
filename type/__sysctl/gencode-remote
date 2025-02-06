@@ -19,15 +19,15 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-value_should="$(cat "$__object/parameter/value")"
-value_is="$(cat "$__object/explorer/value")"
+value_should="$(cat "${__object:?}/parameter/value")"
+value_is="$(cat "${__object:?}/explorer/value")"
 
 if [ "$value_should" = "$value_is" ]; then
    # Nothing to do
    exit 0
 fi
 
-os=$(cat "$__global/explorer/os")
+os=$(cat "${__global:?}/explorer/os")
 case "$os" in
    # Linux
    redhat|centos|almalinux|eurolinux|rocky|ubuntu|debian|devuan|archlinux|gentoo|coreos)
@@ -54,4 +54,4 @@ case "$os" in
 esac
 
 # set the current runtime value
-printf 'sysctl %s %s="%s"\n' "$flag" "$__object_id" "$value_should"
+printf 'sysctl %s %s="%s"\n' "$flag" "${__object_id:?}" "$value_should"

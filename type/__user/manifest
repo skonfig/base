@@ -19,13 +19,13 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-case $(cat "${__global}/explorer/os")
+case $(cat "${__global:?}/explorer/os")
 in
 	(alpine)
 		__package shadow
 		;;
 	(openwrt)
-		case $(cat "${__object}/parameter/state")
+		case $(cat "${__object:?}/parameter/state")
 		in
 			(present)
 				if test -f "${__object:?}/parameter/create-home"
@@ -36,7 +36,7 @@ in
 					#       useradd: cannot create directory /home/user
 					__directory /home --owner 0 --group 0 --mode 0755
 				fi
-				if test -s "${__object}/explorer/passwd"
+				if test -s "${__object:?}/explorer/passwd"
 				then
 					# NOTE: The package might not be required if no changes
 					# are required, but determining if changes are required is
@@ -47,7 +47,7 @@ in
 				fi
 				;;
 			(absent)
-				if test -s "${__object}/explorer/passwd"
+				if test -s "${__object:?}/explorer/passwd"
 				then
 					__package shadow-userdel
 				fi

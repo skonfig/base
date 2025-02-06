@@ -20,10 +20,10 @@
 # Retrieve the id from the repo with the uri from parameter uri  - parsed zypper output.
 #
 
-if [ -f "$__object/parameter/uri" ]; then
-   uri="$(cat "$__object/parameter/uri")"
+if [ -f "${__object:?}/parameter/uri" ]; then
+   uri="$(cat "${__object:?}/parameter/uri")"
 else
-   uri="$__object_id"
+   uri="${__object_id:?}"
 fi
 # shellcheck disable=SC2005,SC2046
 echo $(zypper lr -u | grep -F "$uri" | cut -d'|' -f 1 | grep -E '^[0-9]')

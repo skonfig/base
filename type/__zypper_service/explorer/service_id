@@ -20,10 +20,10 @@
 # Prints the ID of the zypper service configured to use --uri.
 #
 
-if [ -f "$__object/parameter/uri" ]; then
-   uri="$(cat "$__object/parameter/uri")"
+if [ -f "${__object:?}/parameter/uri" ]; then
+   uri="$(cat "${__object:?}/parameter/uri")"
 else
-   uri="/$__object_id"
+   uri="/${__object_id:?}"
 fi
 # simpler command which works only on SLES11 SP3 or newer:
 # echo $(zypper ls -u -E | grep -E "\<$uri\>" | cut -d'|' -f 1 )

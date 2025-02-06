@@ -100,13 +100,13 @@ do_user() {
 }
 
 if [ "$state" = "present" ]; then
-    cd "$__object/parameter"
-    if grep -q "^${name}:" "$__object/explorer/passwd"; then
+    cd "${__object:?}/parameter"
+    if grep -q "^${name}:" "${__object:?}/explorer/passwd"; then
        for property in *; do
           new_value="$(cat "$property")"
           unset current_value
 
-          file="$__object/explorer/passwd"
+          file="${__object:?}/explorer/passwd"
 
           case "$property" in
              gid)
@@ -116,7 +116,7 @@ if [ "$state" = "present" ]; then
                    # We were passed a group name.  Compare the gid in
                    # the user's /etc/passwd entry with the gid of the
                    # group returned by the group explorer.
-                   gid_from_group=$(awk -F: '{ print $3 }' "$__object/explorer/group")
+                   gid_from_group=$(awk -F: '{ print $3 }' "${__object:?}/explorer/group")
                    gid_from_passwd=$(awk -F: '{ print $4 }' "$file")
                    if [ "$gid_from_group" != "$gid_from_passwd" ]; then
                       current_value="$gid_from_passwd"
@@ -127,7 +127,7 @@ if [ "$state" = "present" ]; then
              ;;
              password)
                 field=2
-                file="$__object/explorer/shadow"
+                file="${__object:?}/explorer/shadow"
              ;;
              comment) field=5 ;;
              home)    field=6 ;;
@@ -152,14 +152,14 @@ if [ "$state" = "present" ]; then
        done
 
        if [ $# -gt 0 ]; then
-          echo mod >> "$__messages_out"
+          echo mod >> "${__messages_out:?}"
 
           do_user mod "${name}" "$@"
        else
           true
        fi
     else
-        echo add >> "$__messages_out"
+        echo add >> "${__messages_out:?}"
         for property in *; do
             [ "$property" = "state" ] && continue
             [ "$property" = "remove-home" ] && continue
@@ -174,7 +174,7 @@ if [ "$state" = "present" ]; then
        do_user add "${name}" "$@"
     fi
 elif [ "$state" = "absent" ]; then
-    if grep -q "^${name}:" "$__object/explorer/passwd"; then
+    if grep -q "^${name}:" "${__object:?}/explorer/passwd"; then
         #user exists, but state != present, so delete it
         set --
         if [ -f "${__object:?}/parameter/remove-home" ]; then

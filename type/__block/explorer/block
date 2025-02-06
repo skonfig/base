@@ -22,13 +22,13 @@
 # Nothing, if it does not exist (or is empty, obviously).
 #
 
-file="$(cat "$__object/parameter/file" 2>/dev/null || echo "/$__object_id")"
+file="$(cat "${__object:?}/parameter/file" 2>/dev/null || echo "/${__object_id:?}")"
 
 # file does not exist, nothing we could do
 [ -f "$file" ] || exit 0
 
-prefix=$(cat "$__object/parameter/prefix" 2>/dev/null || echo "#cdist:__block/$__object_id")
-suffix=$(cat "$__object/parameter/suffix" 2>/dev/null || echo "#/cdist:__block/$__object_id")
+prefix=$(cat "${__object:?}/parameter/prefix" 2>/dev/null || echo "#cdist:__block/${__object_id:?}")
+suffix=$(cat "${__object:?}/parameter/suffix" 2>/dev/null || echo "#/cdist:__block/${__object_id:?}")
 awk -v prefix="^$prefix\$" -v suffix="^$suffix\$" '{
    if (match($0,prefix)) {
       triggered=1

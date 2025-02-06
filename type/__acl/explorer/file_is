@@ -22,11 +22,11 @@
 # One of: directory, regular, other, missing.
 #
 
-if [ -e "/$__object_id" ]
+if [ -e "/${__object_id:?}" ]
 then
-    if [ -d "/$__object_id" ]
+    if [ -d "/${__object_id:?}" ]
     then echo directory
-    elif [ -f "/$__object_id" ]
+    elif [ -f "/${__object_id:?}" ]
     then echo regular
     else echo other
     fi

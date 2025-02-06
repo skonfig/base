@@ -25,10 +25,10 @@ if ! pkg -N >/dev/null 2>&1; then
    exit
 fi
 
-if [ -f "$__object/parameter/name" ]; then
-   name="$(cat "$__object/parameter/name")"
+if [ -f "${__object:?}/parameter/name" ]; then
+   name="$(cat "${__object:?}/parameter/name")"
 else
-   name="$__object_id"
+   name="${__object_id:?}"
 fi
 
 # Don't produce "no pkgs installed" output -- breaks things

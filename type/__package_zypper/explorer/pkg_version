@@ -21,14 +21,14 @@
 # Retrieve the status of a package of different types
 #
 
-if [ -f "$__object/parameter/name" ]; then
-   name="$(cat "$__object/parameter/name")"
+if [ -f "${__object:?}/parameter/name" ]; then
+   name="$(cat "${__object:?}/parameter/name")"
 else
-   name="$__object_id"
+   name="${__object_id:?}"
 fi
 
-if [ -f "$__object/parameter/ptype" ]; then
-   ptype="$(cat "$__object/parameter/ptype")"
+if [ -f "${__object:?}/parameter/ptype" ]; then
+   ptype="$(cat "${__object:?}/parameter/ptype")"
 else
    ptype="package"
 fi

@@ -25,7 +25,7 @@
 : "${__object:?}"  # assert __object is set
 __type_path=${__object%%${__object_id:?}*}
 readonly __type_path
-test -d "${__type_path}" || { echo 'Cannot determine __type_path' >&2; exit 1; }
+test -d "${__type_path:?}" || { echo 'Cannot determine __type_path' >&2; exit 1; }
 LOCKFILE="${__type_path:?}/.cdist_opkg.lock"
 readonly LOCKFILE
 

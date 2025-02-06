@@ -18,35 +18,35 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-name="${__object_id}"
-state=$(cat "${__object}/parameter/state")
-current_enablement_state=$(cat "${__object}/explorer/enablement-state")
+name="${__object_id:?}"
+state=$(cat "${__object:?}/parameter/state")
+current_enablement_state=$(cat "${__object:?}/explorer/enablement-state")
 
 if [ "${state}" = "absent" ]; then
     if [ -n "${current_enablement_state}" ]; then
         echo "systemctl --now disable ${name}"
         echo "rm -f /etc/systemd/system/${name}"
         echo "systemctl daemon-reload"
-        echo 'removed' >> "${__messages_out}"
+        echo 'removed' >> "${__messages_out:?}"
     fi
 
     exit 0
 fi
 
-unit_status=$(cat "${__object}/explorer/unit-status")
-desired_enablement_state=$(cat "${__object}/parameter/enablement-state")
+unit_status=$(cat "${__object:?}/explorer/unit-status")
+desired_enablement_state=$(cat "${__object:?}/parameter/enablement-state")
 
 if [ "${current_enablement_state}" = "masked" ] && \
     [ "${desired_enablement_state}" != "masked" ]; then
     echo "systemctl unmask ${name}"
 fi
 
-if [ -f "${__object}/parameter/restart" ]; then
+if [ -f "${__object:?}/parameter/restart" ]; then
     if [ "${desired_enablement_state}" = "masked" ]; then
         if [ "${unit_status}" = "active" ]; then
             echo "systemctl stop ${name}"
         fi
-    elif grep -q "^__file/etc/systemd/system/${name}" "${__messages_in}" || \
+    elif grep -q "^__file/etc/systemd/system/${name}" "${__messages_in:?}" || \
         [ "${unit_status}" != "active" ]; then
         echo "systemctl restart ${name} || true"
     fi
@@ -63,17 +63,17 @@ case "${desired_enablement_state}" in
     ;;
     enabled)
         echo "systemctl enable ${name}"
-        echo 'enabled' >> "${__messages_out}"
+        echo 'enabled' >> "${__messages_out:?}"
     ;;
     disabled)
         echo "systemctl disable ${name}"
-        echo 'disabled' >> "${__messages_out}"
+        echo 'disabled' >> "${__messages_out:?}"
     ;;
     masked)
         # disable before masking to ensure symlinks in *.wants/ are cleaned up
         echo "systemctl disable ${name}"
         echo "systemctl mask ${name}"
-        echo 'masked' >> "${__messages_out}"
+        echo 'masked' >> "${__messages_out:?}"
     ;;
     *)
         echo "Unsupported unit status: ${desired_enablement_state}" >&2

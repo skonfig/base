@@ -21,9 +21,9 @@
 
 
 # Get parameter and explorer
-state_should="$(cat "$__object/parameter/state")"
-arch_wanted="$__object_id"
-main_arch="$(cat "$__object/explorer/architecture")"
+state_should="$(cat "${__object:?}/parameter/state")"
+arch_wanted="${__object_id:?}"
+main_arch="$(cat "${__object:?}/explorer/architecture")"
 
 # Exit here if dpkg do not work (empty explorer)
 if [ -z "$main_arch" ]; then
@@ -39,7 +39,7 @@ if [ "$arch_wanted" = "$main_arch" ]; then
     caution="yes"
 
 # Check if the architecture not already used
-elif grep -qFx "$arch_wanted" "$__object/explorer/foreign-architectures"; then
+elif grep -qFx "$arch_wanted" "${__object:?}/explorer/foreign-architectures"; then
     state_is="present"
 
 # arch does not exist
@@ -57,7 +57,7 @@ if [ "$state_is" != "$state_should" ]; then
             # updating the index to make the new architecture available
             echo "apt update"
 
-            echo added >> "$__messages_out"
+            echo added >> "${__messages_out:?}"
             ;;
 
         absent)
@@ -71,7 +71,7 @@ if [ "$state_is" != "$state_should" ]; then
             # print remove code
             printf "dpkg --remove-architecture '%s'\n" "$arch_wanted"
 
-            echo removed >> "$__messages_out"
+            echo removed >> "${__messages_out:?}"
             ;;
 
         *)

@@ -21,7 +21,7 @@
 # Prints the group(5) entry of the owner’s primary group.
 #
 
-gid=$("$__type_explorer/passwd" | cut -d':' -f4)
+gid=$("${__type_explorer:?}/passwd" | cut -d':' -f4)
 
 if command -v getent >/dev/null
 then

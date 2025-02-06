@@ -22,16 +22,16 @@
 
 quote() { printf '%s\n' "$*" | sed "s/'/'\\\\''/g;1s/^/'/;\$s/\$/'/"; }
 
-if grep -Eq '^(missing|match)$' "$__object/explorer/state"
+if grep -Eq '^(missing|match)$' "${__object:?}/explorer/state"
 then
     exit 0
 fi
 
-os="$( cat "$__global/explorer/os" )"
+os="$( cat "${__global:?}/explorer/os" )"
 
-src="/$__object_id"
+src="/${__object_id:?}"
 
-dst="$( sed 's/\/$//' "$__object/parameter/destination" )"
+dst="$( sed 's/\/$//' "${__object:?}/parameter/destination" )"
 
 cmd=''
 
@@ -39,16 +39,16 @@ case "$src" in
     *.tar|*.tgz|*.tar.*|*.txz|*.tbz2)
         cmd="mkdir -p '$dst' && tar --directory='$dst' --extract --file='$src'"
 
-        if [ -f "$__object/parameter/tar-strip" ]
+        if [ -f "${__object:?}/parameter/tar-strip" ]
         then
-            tar_strip="$( cat "$__object/parameter/tar-strip" )"
+            tar_strip="$( cat "${__object:?}/parameter/tar-strip" )"
 
             cmd="$cmd --strip-components=$tar_strip"
         fi
 
-        if [ -f "$__object/parameter/tar-extra-args" ]
+        if [ -f "${__object:?}/parameter/tar-extra-args" ]
         then
-            tar_extra_args="$( cat "$__object/parameter/tar-extra-args" )"
+            tar_extra_args="$( cat "${__object:?}/parameter/tar-extra-args" )"
 
             cmd="$cmd $tar_extra_args"
         fi
@@ -82,7 +82,7 @@ case "$src" in
     ;;
 esac
 
-if [ -f "$__object/parameter/backup-destination" ]
+if [ -f "${__object:?}/parameter/backup-destination" ]
 then
     backup_dst="${dst:?}.cdist__unpack_backup_$(date +%s)"
     echo "if [ -e $(quote "${dst}") ]; then mv $(quote "${dst}") $(quote "${backup_dst}"); fi"
@@ -92,22 +92,22 @@ fi
 echo "$cmd"
 printf 'unpacked to %s\n' "${dst}" >>"${__messages_out:?}"
 
-if [ -f "$__object/parameter/sum-file" ]
+if [ -f "${__object:?}/parameter/sum-file" ]
 then
-    sum_file="$( cat "$__object/parameter/sum-file" )"
+    sum_file="$( cat "${__object:?}/parameter/sum-file" )"
 else
     sum_file="$src.cdist__unpack_sum"
 fi
 
 echo "cksum '$src' | awk '{ print \$1\$2 }' > '$sum_file'"
 
-if [ ! -f "$__object/parameter/preserve-archive" ]
+if [ ! -f "${__object:?}/parameter/preserve-archive" ]
 then
     echo "rm -f '$src'"
     printf 'removed archive %s\n' "${src}" >>"${__messages_out:?}"
 fi
 
-if [ -f "$__object/parameter/onchange" ]
+if [ -f "${__object:?}/parameter/onchange" ]
 then
-    cat "$__object/parameter/onchange"
+    cat "${__object:?}/parameter/onchange"
 fi

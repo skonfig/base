@@ -41,7 +41,7 @@ conf_file='/etc/apt/apt.conf.d/51unattended-upgrades-cdist'
 
 conf='# this file is managed by cdist'
 
-if [ -f "$__object/parameter/option" ]
+if [ -f "${__object:?}/parameter/option" ]
 then
     o=''
 
@@ -49,12 +49,12 @@ then
     do
         o="$( printf '%s\nUnattended-Upgrade::%s "%s";\n' "$o" "${l%%=*}" "${l#*=}" )"
     done \
-        < "$__object/parameter/option"
+        < "${__object:?}/parameter/option"
 
     conf="$( printf '%s\n%s\n' "$conf" "$o" )"
 fi
 
-if [ -f "$__object/parameter/blacklist" ]
+if [ -f "${__object:?}/parameter/blacklist" ]
 then
     b='Unattended-Upgrade::Package-Blacklist {'
 
@@ -62,7 +62,7 @@ then
     do
         b="$( printf '%s\n"%s";\n' "$b" "$l" )"
     done \
-        < "$__object/parameter/blacklist"
+        < "${__object:?}/parameter/blacklist"
 
     conf="$( printf '%s\n%s\n}\n' "$conf" "$b" )"
 fi

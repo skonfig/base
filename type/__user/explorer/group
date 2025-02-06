@@ -20,8 +20,8 @@
 # Get an existing groups group entry.
 #
 
-if [ -f "$__object/parameter/gid" ]; then
-   gid=$(cat "$__object/parameter/gid")
+if [ -f "${__object:?}/parameter/gid" ]; then
+   gid=$(cat "${__object:?}/parameter/gid")
    if command -v getent >/dev/null; then
       getent group "$gid" || true
    elif [ -f /etc/group ]; then

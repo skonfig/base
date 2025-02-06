@@ -21,11 +21,11 @@
 # exist.
 #
 
-if [ -f "$__object/parameter/file" ]
+if [ -f "${__object:?}/parameter/file" ]
 then
-    file="$( cat "$__object/parameter/file" )"
+    file="$( cat "${__object:?}/parameter/file" )"
 else
-    file="/$__object_id"
+    file="/${__object_id:?}"
 fi
 
 if [ ! -e "$file" ]

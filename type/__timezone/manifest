@@ -20,8 +20,8 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-timezone=$(cat "$__object/parameter/tz")
-os=$(cat "$__global/explorer/os")
+timezone=$(cat "${__object:?}/parameter/tz")
+os=$(cat "${__global:?}/explorer/os")
 
 case "$os" in
     archlinux|debian|ubuntu|devuan|alpine)

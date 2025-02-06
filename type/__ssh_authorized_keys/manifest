@@ -19,28 +19,28 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-owner="$(cat "$__object/parameter/owner" 2>/dev/null || echo "$__object_id")"
-state="$(cat "$__object/parameter/state" 2>/dev/null)"
-file="$(cat "$__object/explorer/file")"
+owner="$(cat "${__object:?}/parameter/owner" 2>/dev/null || echo "${__object_id:?}")"
+state="$(cat "${__object:?}/parameter/state" 2>/dev/null)"
+file="$(cat "${__object:?}/explorer/file")"
 
-if [ ! -f "$__object/parameter/nofile" ] && [ -z "$file" ]
+if [ ! -f "${__object:?}/parameter/nofile" ] && [ -z "$file" ]
 then
 	echo "Cannot determine path of authorized_keys file" >&2
 	exit 1
 fi
 
-if [ ! -f "$__object/parameter/noparent" ] || [ ! -f "$__object/parameter/nofile" ]; then
-   group="$(cut -d':' -f 1 "$__object/explorer/group")"
+if [ ! -f "${__object:?}/parameter/noparent" ] || [ ! -f "${__object:?}/parameter/nofile" ]; then
+   group="$(cut -d':' -f 1 "${__object:?}/explorer/group")"
    if [ -z "$group" ]; then
       echo "Failed to get owners group from explorer." >&2
       exit 1
    fi
 
-   if [ ! -f "$__object/parameter/noparent" ]; then
+   if [ ! -f "${__object:?}/parameter/noparent" ]; then
       __ssh_dot_ssh "$owner"
       export require="__ssh_dot_ssh/$owner"
    fi
-   if [ ! -f "$__object/parameter/nofile" ]; then
+   if [ ! -f "${__object:?}/parameter/nofile" ]; then
       # Ensure that authorized_keys file exists and has the right permissions.
       __file "$file" \
          --owner "$owner" \
@@ -66,25 +66,25 @@ while read -r key; do
    set -- "$@" --file "$file"
    set -- "$@" --key "$key"
    set -- "$@" --state "$state"
-   if [ -f "$__object/parameter/option" ]; then
+   if [ -f "${__object:?}/parameter/option" ]; then
       # shellcheck disable=SC2046
-      set -- "$@" $(printf -- '--option %s ' $(cat "$__object/parameter/option"))
+      set -- "$@" $(printf -- '--option %s ' $(cat "${__object:?}/parameter/option"))
    fi
-   if [ -f "$__object/parameter/comment" ]; then
-      set -- "$@" --comment "$(cat "$__object/parameter/comment")"
+   if [ -f "${__object:?}/parameter/comment" ]; then
+      set -- "$@" --comment "$(cat "${__object:?}/parameter/comment")"
    fi
    # Ensure __ssh_authorized_key does not read stdin
    __ssh_authorized_key "$@" < /dev/null
-done < "$__object/parameter/key"
+done < "${__object:?}/parameter/key"
 
-if [ -f "$__object/parameter/remove-unknown" ] &&
-    [ -s "$__object/explorer/keys" ]
+if [ -f "${__object:?}/parameter/remove-unknown" ] &&
+    [ -s "${__object:?}/explorer/keys" ]
 then
     while read -r key
     do
         type_and_key="$( _type_and_key "$key" )"
 
-        if grep -Fq "$type_and_key" "$__object/parameter/key"
+        if grep -Fq "$type_and_key" "${__object:?}/parameter/key"
         then
             continue
         fi
@@ -95,5 +95,5 @@ then
             --state absent \
                 < /dev/null
     done \
-        < "$__object/explorer/keys"
+        < "${__object:?}/explorer/keys"
 fi

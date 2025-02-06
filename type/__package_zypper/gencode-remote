@@ -25,17 +25,17 @@
 
 globalopts="--quiet --non-interactive"
 
-if [ -f "$__object/parameter/name" ]; then
-    name="$__object/parameter/name"
+if [ -f "${__object:?}/parameter/name" ]; then
+    name="${__object:?}/parameter/name"
 else
-    name="$__object_id"
+    name="${__object_id:?}"
 fi
 
-state_should="$(cat "$__object/parameter/state")"
-ptype="$(cat "$__object/parameter/ptype")"
+state_should="$(cat "${__object:?}/parameter/state")"
+ptype="$(cat "${__object:?}/parameter/ptype")"
 
-if [ -f "$__object/parameter/version" ]; then
-    version_should="$(cat "$__object/parameter/version")"
+if [ -f "${__object:?}/parameter/version" ]; then
+    version_should="$(cat "${__object:?}/parameter/version")"
     if [ "$ptype" != "package" ]; then
         echo "version support only for type package implemented" >&2
         exit 2
@@ -44,7 +44,7 @@ else
     version_should=""
 fi
 
-pkg_version="$(cat "$__object/explorer/pkg_version")"
+pkg_version="$(cat "${__object:?}/explorer/pkg_version")"
 if [ -z "$pkg_version" ]; then
     state_is="absent"
     version_is=""
@@ -59,17 +59,17 @@ case "$state_should" in
         if [ -z "$version_should" ]; then
             [ "$state_is" = "present" ] && exit 0 # if state is present, we dont need to do anything
             echo "zypper $globalopts install --type '$ptype' --auto-agree-with-licenses '$name' >/dev/null"
-            echo "removed" >> "$__messages_out"
+            echo "removed" >> "${__messages_out:?}"
         else
             [ "$state_is" = "present" ] && [ "$version_should" = "$version_is" ] && exit 0 # if state is present and version is correct, we dont need to do anything
             echo "zypper $globalopts install --oldpackage --type '$ptype' --auto-agree-with-licenses '$name' = '$version_should' >/dev/null"
-            echo "installed" >> "$__messages_out"
+            echo "installed" >> "${__messages_out:?}"
         fi
     ;;
     absent)
         [ "$state_is" = "absent" ] && exit 0 # if state is absent, we dont need to do anything
         echo "zypper $globalopts remove --type '$ptype' '$name' >/dev/null"
-        echo "removed" >> "$__messages_out"
+        echo "removed" >> "${__messages_out:?}"
     ;;
     *)
         echo "Unknown state: $state_should" >&2

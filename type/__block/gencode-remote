@@ -23,22 +23,22 @@ quote() {
    printf '%s\n' "$1" | sed "s/'/'\\\\''/g;1s/^/'/;\$s/\$/'/"
 }
 
-file="$(cat "$__object/parameter/file" 2>/dev/null || echo "/$__object_id")"
-state_should=$(cat "$__object/parameter/state")
-prefix=$(cat "$__object/parameter/prefix" 2>/dev/null || echo "#cdist:__block/$__object_id")
-suffix=$(cat "$__object/parameter/suffix" 2>/dev/null || echo "#/cdist:__block/$__object_id")
+file="$(cat "${__object:?}/parameter/file" 2>/dev/null || echo "/${__object_id:?}")"
+state_should=$(cat "${__object:?}/parameter/state")
+prefix=$(cat "${__object:?}/parameter/prefix" 2>/dev/null || echo "#cdist:__block/${__object_id:?}")
+suffix=$(cat "${__object:?}/parameter/suffix" 2>/dev/null || echo "#/cdist:__block/${__object_id:?}")
 
-block="$__object/files/block"
-if [ ! -s "$__object/explorer/block" ]; then
+block="${__object:?}/files/block"
+if [ ! -s "${__object:?}/explorer/block" ]; then
    state_is='absent'
 else
-   state_is=$(diff -q "$block" "$__object/explorer/block" >/dev/null \
+   state_is=$(diff -q "$block" "${__object:?}/explorer/block" >/dev/null \
       && echo present \
       || echo changed
    )
 fi
 
-state_should="$(cat "$__object/parameter/state")"
+state_should="$(cat "${__object:?}/parameter/state")"
 if [ "$state_should" = "$state_is" ]; then
    # Nothing to do, move along
    exit 0
@@ -72,10 +72,10 @@ quoted_file="$(quote "$file")"
 case "$state_should" in
    present)
       if [ "$state_is" = "changed" ]; then
-         echo update >> "$__messages_out"
+         echo update >> "${__messages_out:?}"
          remove_block
       else
-         echo add >> "$__messages_out"
+         echo add >> "${__messages_out:?}"
       fi
       cat << DONE
 cat >> $quoted_file << '${__type##*/}_DONE'
@@ -84,7 +84,7 @@ ${__type##*/}_DONE
 DONE
    ;;
    absent)
-      echo remove >> "$__messages_out"
+      echo remove >> "${__messages_out:?}"
       remove_block
    ;;
 esac

@@ -23,7 +23,7 @@
 
 # shellcheck disable=SC1090
 # shellcheck disable=SC1091
-file="$( . "$__type_explorer/file" )"
+file="$( . "${__type_explorer:?}/file" )"
 
 if [ -f "$file" ]
 then

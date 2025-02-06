@@ -20,25 +20,25 @@
 # Prints the currently installed version of a package.
 #
 
-if [ -f "${__object}/parameter/name" ]
+if [ -f "${__object:?}/parameter/name" ]
 then
-	pkgid="$(cat "${__object}/parameter/name")"
+	pkgid="$(cat "${__object:?}/parameter/name")"
 else
-	pkgid="${__object_id}"
+	pkgid="${__object_id:?}"
 fi
 
-if [ -f "${__object}/parameter/version" ]
+if [ -f "${__object:?}/parameter/version" ]
 then
-	pkgid="${pkgid}-$(cat "${__object}/parameter/version")"
+	pkgid="${pkgid}-$(cat "${__object:?}/parameter/version")"
 fi
 
-if [ -f "${__object}/parameter/flavor" ]
+if [ -f "${__object:?}/parameter/flavor" ]
 then
 	# If a flavor but no version is given we need to add another -,
 	# otherwise pkg_info confuses the flavor with the version.
-	[ -f "${__object}/parameter/version" ] || pkgid="${pkgid}-"
+	[ -f "${__object:?}/parameter/version" ] || pkgid="${pkgid}-"
 
-	pkgid="${pkgid}-$(cat "${__object}/parameter/flavor")"
+	pkgid="${pkgid}-$(cat "${__object:?}/parameter/flavor")"
 fi
 
 

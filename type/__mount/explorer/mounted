@@ -21,7 +21,7 @@
 # "no" otherwise.
 #
 
-path="$(cat "$__object/parameter/path" 2>/dev/null || echo "/$__object_id")"
+path="$(cat "${__object:?}/parameter/path" 2>/dev/null || echo "/${__object_id:?}")"
 
 if mountpoint -q "$path"; then
    echo yes

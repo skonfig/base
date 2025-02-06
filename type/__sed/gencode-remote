@@ -18,27 +18,27 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-if [ -f "$__object/parameter/file" ]
+if [ -f "${__object:?}/parameter/file" ]
 then
-    file="$( cat "$__object/parameter/file" )"
+    file="$( cat "${__object:?}/parameter/file" )"
 else
-    file="/$__object_id"
+    file="/${__object_id:?}"
 fi
 
-script="$( cat "$__object/parameter/script" )"
+script="$( cat "${__object:?}/parameter/script" )"
 
 if [ "$script" = '-' ]
 then
-    script="$( cat "$__object/stdin" )"
+    script="$( cat "${__object:?}/stdin" )"
 fi
 
 # since stdin is not available in explorer, we pull file from target with explorer
 
-file_from_target="$__object/explorer/file"
+file_from_target="${__object:?}/explorer/file"
 
 sed_cmd='sed'
 
-if [ -f "$__object/parameter/regexp-extended" ]
+if [ -f "${__object:?}/parameter/regexp-extended" ]
 then
     sed_cmd="$sed_cmd -E"
 fi
@@ -55,7 +55,7 @@ fi
 # and we use cp because we want to preserve destination file's attributes
 
 # shellcheck disable=SC2016
-echo 'tmp="$__object/tempfile"'
+echo 'tmp="${__object:?}/tempfile"'
 
 echo "$sed_cmd -f - '$file' > \"\$tmp\" << EOF"
 
@@ -68,9 +68,9 @@ echo "cp \"\$tmp\" '$file'"
 # shellcheck disable=SC2016
 echo 'rm -f "$tmp"'
 
-echo 'change' >> "$__messages_out"
+echo 'change' >> "${__messages_out:?}"
 
-if [ -f "$__object/parameter/onchange" ]
+if [ -f "${__object:?}/parameter/onchange" ]
 then
-    cat "$__object/parameter/onchange"
+    cat "${__object:?}/parameter/onchange"
 fi

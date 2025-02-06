@@ -20,7 +20,7 @@
 # Prints whether the APT cache is outdated.
 #
 
-maxage="$( cat "$__object/parameter/maxage" )"
+maxage="$( cat "${__object:?}/parameter/maxage" )"
 
 # Some of following code is duplicated in __package_apt/gencode-remote.
 # If you change anything here, please make changes there too.

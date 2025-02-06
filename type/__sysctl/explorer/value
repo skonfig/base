@@ -26,4 +26,4 @@ then
 fi
 
 # get the current runtime value
-sysctl -n "${__object_id}" || true
+sysctl -n "${__object_id:?}" || true

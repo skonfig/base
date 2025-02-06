@@ -22,7 +22,7 @@
 # One of: directory, file, symlink, none, unknown.
 #
 
-destination="/$__object_id"
+destination="/${__object_id:?}"
 
 if [ ! -e "$destination" ]; then
    echo none

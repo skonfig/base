@@ -21,18 +21,18 @@
 # value.
 #
 
-src="/$__object_id"
+src="/${__object_id:?}"
 
-if [ -f "$__object/parameter/sum-file" ]
+if [ -f "${__object:?}/parameter/sum-file" ]
 then
-    src_sum_was_file="$( cat "$__object/parameter/sum-file" )"
+    src_sum_was_file="$( cat "${__object:?}/parameter/sum-file" )"
 else
     src_sum_was_file="$src.cdist__unpack_sum"
 fi
 
 if [ ! -f "$src" ]
 then
-    if [ -n "$__cdist_dry_run" ]
+    if [ -n "${__cdist_dry_run-}" ]
     then
         echo 'mismatch'
     else

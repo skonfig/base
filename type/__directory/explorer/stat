@@ -27,7 +27,7 @@
 # mode: {numeric mode 4 digits} {mode string}
 #
 
-destination="/$__object_id"
+destination="/${__object_id:?}"
 
 fallback() {
    # Patch the output together, manually
@@ -44,7 +44,7 @@ fallback() {
    mode=$(echo "$mode_text" | awk '{for(i=8;i>=0;--i){c=substr($1,10-i,1);k+=((c~/[rwxst]/)*2^i);if(!(i%3))k+=(tolower(c)~/[lst]/)*2^(9+i/3)}printf("%04o",k)}')
 
    printf 'type: %s\nowner: %d %s\ngroup: %d %s\nmode: %s %s\n' \
-      "$("$__type_explorer/type")" \
+      "$("${__type_explorer:?}/type")" \
       "$uid" "$owner" \
       "$gid" "$group" \
       "$mode" "$mode_text"
@@ -58,7 +58,7 @@ command -v stat >/dev/null 2>&1 || {
    exit
 }
 
-case $("$__explorer/os")
+case $("${__explorer:?}/os")
 in
    freebsd|netbsd|openbsd|macosx)
       stat -f 'type: %HT

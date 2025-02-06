@@ -19,17 +19,17 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-state_should="$(cat "$__object/parameter/state")"
-state_is=$(cat "$__object/explorer/state")
-init=$(cat "$__global/explorer/init")
-target_runlevel="$(cat "$__object/parameter/target_runlevel")"
+state_should="$(cat "${__object:?}/parameter/state")"
+state_is=$(cat "${__object:?}/explorer/state")
+init=$(cat "${__global:?}/explorer/init")
+target_runlevel="$(cat "${__object:?}/parameter/target_runlevel")"
 
 # Short circuit if nothing is to be done
 [ "$state_should" = "$state_is" ] && exit 0
 
-os=$(cat "$__global/explorer/os")
-os_version=$(cat "$__global/explorer/os_version")
-name="$__object_id"
+os=$(cat "${__global:?}/explorer/os")
+os_version=$(cat "${__global:?}/explorer/os_version")
+name="${__object_id:?}"
 
 case "$state_should" in
     present)

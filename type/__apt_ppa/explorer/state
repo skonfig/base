@@ -20,7 +20,7 @@
 # Get the current state of the PPA.
 #
 
-name="$__object_id"
+name="${__object_id:?}"
 
 # shellcheck disable=SC1091
 . /etc/lsb-release

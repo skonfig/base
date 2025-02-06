@@ -166,9 +166,9 @@ then
 	# IPv6 fix
 	if expr "${__target_host:?}" : '[0-9a-fA-F:]+$' >/dev/null
 	then
-		target_host="[${__target_host}]"
+		target_host="[${__target_host:?}]"
 	else
-		target_host="${__target_host}"
+		target_host="${__target_host:?}"
 	fi
 
 	remote_cmd="cat >$(shquot "${upload_destination:?}")"

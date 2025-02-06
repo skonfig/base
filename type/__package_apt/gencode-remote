@@ -19,27 +19,27 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-if [ -f "$__object/parameter/name" ]; then
-   name="$(cat "$__object/parameter/name")"
+if [ -f "${__object:?}/parameter/name" ]; then
+   name="$(cat "${__object:?}/parameter/name")"
 else
-   name="$__object_id"
+   name="${__object_id:?}"
 fi
 
 state_should=$(cat "${__object:?}/parameter/state")
 version_should=$(cat "${__object:?}/parameter/version" 2>/dev/null) || true
 
-if [ -f "$__object/parameter/target-release" ]; then
-   target_release=$(cat "$__object/parameter/target-release")
+if [ -f "${__object:?}/parameter/target-release" ]; then
+   target_release=$(cat "${__object:?}/parameter/target-release")
 fi
 
-if [ -f "$__object/parameter/install-recommends" ]; then
+if [ -f "${__object:?}/parameter/install-recommends" ]; then
     # required if __apt_norecommends is used
     recommendsparam="-o APT::Install-Recommends=1"
 else
     recommendsparam="-o APT::Install-Recommends=0"
 fi
 
-if [ -f "$__object/parameter/purge-if-absent" ]; then
+if [ -f "${__object:?}/parameter/purge-if-absent" ]; then
 	purgeparam="--purge"
 else
 	purgeparam=""

@@ -20,7 +20,7 @@
 # Returns the full package name if package is installed, empty otherwise.
 #
 
-package=$( basename "$__object_id" )
+package=$( basename "${__object_id:?}" )
 
 dpkg_status="$(dpkg-query --show --showformat='${db:Status-Abbrev} ${binary:Package}_${Version}_${Architecture}.deb\n' "${package%%_*}" 2>/dev/null || true)"
 

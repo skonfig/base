@@ -18,25 +18,25 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-name="$__object_id"
-state="$(cat "$__object/parameter/state")"
-uri="$(cat "$__object/parameter/uri")"
+name="${__object_id:?}"
+state="$(cat "${__object:?}/parameter/state")"
+uri="$(cat "${__object:?}/parameter/uri")"
 
-if [ -f "$__object/parameter/distribution" ]; then
-   distribution="$(cat "$__object/parameter/distribution")"
+if [ -f "${__object:?}/parameter/distribution" ]; then
+   distribution="$(cat "${__object:?}/parameter/distribution")"
 else
-   distribution="$(cat "$__global/explorer/lsb_codename")"
+   distribution="$(cat "${__global:?}/explorer/lsb_codename")"
 fi
 
-component="$(cat "$__object/parameter/component")"
+component="$(cat "${__object:?}/parameter/component")"
 
-if [ -f "$__object/parameter/arch" ]; then
-	forcedarch="arch=$(cat "$__object/parameter/arch")"
+if [ -f "${__object:?}/parameter/arch" ]; then
+	forcedarch="arch=$(cat "${__object:?}/parameter/arch")"
 fi
 
-if [ -f "$__object/parameter/signed-by" ]; then
+if [ -f "${__object:?}/parameter/signed-by" ]; then
    # Take all '--signed-by' parameter values present on separate lines and join them with a comma
-   signed_by="signed-by=$(sed -e ':a' -e '$!N' -e 's/\n/,/' -e 'ta' "$__object/parameter/signed-by")"
+   signed_by="signed-by=$(sed -e ':a' -e '$!N' -e 's/\n/,/' -e 'ta' "${__object:?}/parameter/signed-by")"
 fi
 
 # export variables for use in template
@@ -48,9 +48,9 @@ export forcedarch
 export signed_by
 
 # generate file from template
-mkdir "$__object/files"
-"$__type/files/source.list.template" > "$__object/files/source.list"
+mkdir "${__object:?}/files"
+"${__type:?}/files/source.list.template" > "${__object:?}/files/source.list"
 __file "/etc/apt/sources.list.d/${name}.list" \
-   --source "$__object/files/source.list" \
+   --source "${__object:?}/files/source.list" \
    --owner root --group root --mode 0644 \
    --state "$state"

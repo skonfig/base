@@ -18,17 +18,17 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-destination="$__object_id"
-stage_dir="$(cat "$__object/parameter/stage-dir")"
+destination="${__object_id:?}"
+stage_dir="$(cat "${__object:?}/parameter/stage-dir")"
 stage_file="${stage_dir}/${destination}"
 
 set -- "/${destination}"
 for param in owner group mode state; do
-   if [ -f "$__object/parameter/$param" ]; then
-      set -- "$@" "--${param}" "$(cat "$__object/parameter/$param")"
+   if [ -f "${__object:?}/parameter/$param" ]; then
+      set -- "$@" "--${param}" "$(cat "${__object:?}/parameter/$param")"
    fi
 done
 set -- "$@" --source "$stage_file"
 
-require="$__object_name" \
+require="${__object_name:?}" \
    __file "$@"
