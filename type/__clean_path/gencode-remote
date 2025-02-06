@@ -25,6 +25,7 @@ then
     exit 0
 fi
 
+# shellcheck disable=SC2016
 echo '${__type:?}/explorer/find -depth -exec rm -rf {} +'
 
 ln -sf "${found}" "${__messages_out:?}"

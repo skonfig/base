@@ -53,5 +53,6 @@ set_remote_path() {
 			;;
 	esac
 
+	# shellcheck disable=SC2016
 	${_remote_path:+printf 'PATH=${PATH}:%s\n' "${_remote_path}"}
 }

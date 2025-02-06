@@ -94,6 +94,7 @@ in
                 # Debian < 5 (without apt-mark) don't need to be supported,
                 # because the state explorer will report all packages as manual
                 # for those.
+                # shellcheck disable=SC2016
                 echo 'if ! head -n1 "$(command -v apt-mark)" | grep -qF python'
 
                 # new C++ implementation (Debian >= 7)
@@ -145,7 +146,7 @@ then
 fi
 EOF
 
-        echo "${aptget} ${recommendsparam} install${target_release:+ --target-release '${target_release}'} '${name}'"
+        echo "${aptget} ${recommendsparam} install${target_release:+ --target-release "'${target_release}'"} '${name}'"
         echo 'installed' >>"${__messages_out:?}"
     ;;
     absent)
