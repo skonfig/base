@@ -201,7 +201,7 @@ check_chroot_procfs() (
 				read -r _ _ _ _ hmntpnt _ <<-EOF
 				$(grep -e "^$((mntid)) " /proc/1/mountinfo)
 				EOF
-				printf '%s\n' "${hmntpnt%${cmntpnt}}"
+				printf '%s\n' "${hmntpnt%"${cmntpnt}"}"
 			done </proc/self/mountinfo \
 			| sort -u \
 			| head -n 1  # just take the first...

@@ -22,8 +22,8 @@
 # Retrieve the status of a package - parses opkg output.
 #
 
-: "${__object:?}"  # assert __object is set
-__type_path=${__object%%${__object_id:?}*}
+: "${__object:?}" "${__object_id:?}"  # assert __object is set
+__type_path=${__object%%"${__object:?}"*}
 readonly __type_path
 test -d "${__type_path:?}" || { echo 'Cannot determine __type_path' >&2; exit 1; }
 LOCKFILE="${__type_path:?}/.cdist_opkg.lock"

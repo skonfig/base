@@ -20,7 +20,7 @@
 #
 
 : "${__object:?}" "${__object_id:?}"  # assert __object and __object_id is set
-__type_path=${__object%%${__object_id}*}
+__type_path=${__object%%"${__object_id}"*}
 readonly __type_path
 test -d "${__type_path}" || { echo 'Cannot determine __type_path' >&2; exit 1; }
 LOCKFILE="${__type_path%/*/*/*}/.cdist_crontab.lock"
