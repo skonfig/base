@@ -81,7 +81,7 @@ BEGIN {
          getline
          if (_find($0, pattern)) {
             found_line++
-	    if (index($0, line) == 1) { correct_line++ }
+         if (index($0, line) == 1) { correct_line++ }
             correct_pos = 1
             exit 0
          }
