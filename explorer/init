@@ -1,27 +1,26 @@
 #!/bin/sh -e
 #
 # 2016 Daniel Heule (hda at sfs.biz)
-# Copyright 2017, Philippe Gregoire <pg@pgregoire.xyz>
+# 2017 Philippe Gregoire (pg at pgregoire.xyz)
 # 2020,2023 Dennis Camera (dennis.camera at riiengineering.ch)
 #
-# This file is part of cdist.
+# This file is part of skonfig-base.
 #
-# cdist is free software: you can redistribute it and/or modify
+# skonfig-base is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# cdist is distributed in the hope that it will be useful,
+# skonfig-base is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with cdist. If not, see <http://www.gnu.org/licenses/>.
-#
+# along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 # Returns the name of the init system (PID 1)
-
+#
 # Expected values:
 # Linux:
 #  Adélie Linux:
@@ -68,6 +67,7 @@
 #
 # Solaris/Illumos:
 #   smf, init???
+#
 
 # NOTE: init systems can be stacked. This is popular to run OpenRC on top of
 # sysvinit (Gentoo) or busybox-init (Alpine), but can also be used to run runit

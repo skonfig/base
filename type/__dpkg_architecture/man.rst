@@ -86,7 +86,7 @@ Useful commands:
 
 AUTHORS
 -------
-* Matthias Stecher <matthiasstecher at gmx.de>
+* Matthias Stecher <matthiasstecher--@--gmx.de>
 
 
 COPYING

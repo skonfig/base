@@ -66,7 +66,7 @@ SEE ALSO
 AUTHORS
 -------
 * Matthias Stecher <matthiasstecher--@--gmx.de>
-* Dennis Camera <cdist--@--dtnr.ch>
+* Dennis Camera <dennis.camera--@--riiengineering.ch>
 
 
 COPYING

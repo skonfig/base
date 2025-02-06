@@ -43,7 +43,7 @@ SEE ALSO
 AUTHORS
 -------
 * Nico Schottelius <nico-cdist--@--schottelius.org>
-* Ander Punnar <ander@kvlt.ee>
+* Ander Punnar <ander--@--kvlt.ee>
 
 
 COPYING

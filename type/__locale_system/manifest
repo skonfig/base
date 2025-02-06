@@ -3,7 +3,7 @@
 # 2012-2016 Steven Armstrong (steven-cdist at armstrong.cc)
 # 2016 Carlos Ortigoza (carlos.ortigoza at ungleich.ch)
 # 2016 Nico Schottelius (nico.schottelius at ungleich.ch)
-# 2020,2022,2023 Dennis Camera (dennis.camera at riiengineering.ch
+# 2020,2022-2023 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -19,8 +19,6 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
-#
-# Configure system-wide locale by modifying i18n file.
 #
 
 version_ge() {

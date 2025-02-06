@@ -49,7 +49,7 @@ SEE ALSO
 
 AUTHORS
 -------
-* Chase Allen James <nx-cdist@nu-ex.com>
+* Chase Allen James <nx-cdist--@--nu-ex.com>
 
 
 COPYING

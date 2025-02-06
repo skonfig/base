@@ -1,7 +1,7 @@
 # -*- mode: sh; indent-tabs-mode: t -*-
 # shellcheck shell=sh
 #
-# 2023 Dennis Camera (dennis.camera at riiengineering.ch
+# 2023 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #

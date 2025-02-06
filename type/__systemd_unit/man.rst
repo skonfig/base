@@ -92,8 +92,8 @@ EXAMPLES
 
 AUTHORS
 -------
-* Ľubomír Kučera <lubomir.kucera.jr at gmail.com>
-* Ander Punnar <ander-at-kvlt-dot-ee>
+* Ľubomír Kučera <lubomir.kucera.jr--@--gmail.com>
+* Ander Punnar <ander--@--kvlt.ee>
 
 
 COPYING

@@ -1,22 +1,34 @@
 #!/bin/sh -e
 #
 # 2018 Steven Armstrong (steven-cdist at armstrong.cc)
-# 2020 Dennis Camera (dennis.camera at ssrq-sds-fds.ch)
+# 2020 Dennis Camera (dennis.camera at riiengineering.ch)
 #
-# This file is part of cdist.
+# This file is part of skonfig-base.
 #
-# cdist is free software: you can redistribute it and/or modify
+# skonfig-base is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# cdist is distributed in the hope that it will be useful,
+# skonfig-base is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+# along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
+#
+# Prints the current state of the line in the destination file.
+#
+# The output of this explorer is one of these values:
+#   present
+#     A line equal to --line is present in the file and located at an acceptable position.
+#   matching
+#     A line matching --regex is present, but it differs from --line.
+#   wrongposition
+#     A line matching --regex or --line is found in the file, but at the wrong position.
+#   absent
+#     No line matching --regex or --line was found in the file.
 #
 
 if [ -f "$__object/parameter/file" ]; then

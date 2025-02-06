@@ -48,12 +48,12 @@ SEE ALSO
 
 AUTHORS
 -------
-* Christian G. Warden <cwarden@xerus.org>
+* Christian G. Warden <cwarden--@--xerus.org>
 
 
 COPYING
 -------
-Copyright \(C) 2012 SwellPath, Inc.
+Copyright \(C) 2012 Christian G. Warden.
 You can redistribute it and/or modify it under the terms of the GNU General
 Public License as published by the Free Software Foundation, either version 3 of
 the License, or (at your option) any later version.

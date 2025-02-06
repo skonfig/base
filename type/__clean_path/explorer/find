@@ -1,6 +1,6 @@
 #!/bin/sh -e
 #
-# 2024 Ander Punnar (ander-at-kvlt-dot-ee)
+# 2024 Ander Punnar (ander at kvlt.ee)
 # 2024 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
@@ -17,6 +17,9 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
+#
+# Prints all files found which should be removed.
+#
 
 if [ -f "$__object/parameter/path" ]
 then

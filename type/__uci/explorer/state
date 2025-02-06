@@ -1,21 +1,21 @@
 #!/bin/sh -e
 #
-# 2020,2022 Dennis Camera (cdist at dtnr.ch)
+# 2020,2022 Dennis Camera (dennis.camera at riiengineering.ch)
 #
-# This file is part of cdist.
+# This file is part of skonfig-base.
 #
-# cdist is free software: you can redistribute it and/or modify
+# skonfig-base is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# cdist is distributed in the hope that it will be useful,
+# skonfig-base is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with cdist. If not, see <http://www.gnu.org/licenses/>.
+# along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 # This explorer retrieves the current state of the configuration option
 # The output of this explorer is one of these values:
@@ -30,6 +30,7 @@
 #   rearranged
 #     The configuration option is present (a list) and has the same values as
 #     the parameter --value, but in a different order.
+#
 
 # NOTE: older releases of OpenWrt do not include sbin in PATH but uci(1) is
 #       installed in /sbin.
