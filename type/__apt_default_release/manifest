@@ -23,7 +23,8 @@
 os=$(cat "${__global:?}/explorer/os")
 release=$(cat "${__object:?}/parameter/release")
 
-case ${os} in
+case ${os}
+in
    ubuntu|debian|devuan)
       __file /etc/apt/apt.conf.d/99-default-release \
          --owner root --group root --mode 644 \

@@ -27,7 +27,8 @@ mode=$(cat "${__object:?}/parameter/mode")
 
 # Let __directory handle removal of git repos
 
-case ${state_should} in
+case ${state_should}
+in
     present)
         source=$(cat "${__object:?}/parameter/source")
         case ${source}

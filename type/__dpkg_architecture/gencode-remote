@@ -50,7 +50,8 @@ fi
 
 # Check what to do
 if [ "${state_is}" != "${state_should}" ]; then
-    case ${state_should} in
+    case ${state_should}
+    in
         present)
             # print add code
             printf "dpkg --add-architecture '%s'\n" "${arch_wanted}"

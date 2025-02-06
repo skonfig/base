@@ -45,7 +45,8 @@ mode=$(cat "${__object:?}/parameter/mode")
  && [ "${group}" = "${group_is}" ] \
  && [ -n "${mode}" ] && exit 0
 
-case ${state_should} in
+case ${state_should}
+in
     present)
         if [ "${state_should}" != "${state_is}" ]; then
             echo git clone --quiet "${recursive}" "${shallow}" "${branch}" "${source}" "${destination}"

@@ -32,9 +32,11 @@ fi
 # here we check only if the states are valid,
 # emit messages and
 # let awk do the work ...
-case ${state_should} in
+case ${state_should}
+in
     absent)
-        case ${state_is} in
+        case ${state_is}
+        in
             absent|nosuchfile)
                 # nothing to do
             ;;
@@ -49,7 +51,8 @@ case ${state_should} in
         esac
     ;;
     present)
-        case ${state_is} in
+        case ${state_is}
+        in
             nosuchfile)
                 echo 'create' >> "${__messages_out:?}"
                 fire_onchange=1

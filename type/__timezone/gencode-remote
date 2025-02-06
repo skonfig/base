@@ -27,7 +27,8 @@ if [ "${timezone_is}" = "${timezone_should}" ]; then
     exit 0
 fi
 
-case ${os} in
+case ${os}
+in
    ubuntu|debian|devuan|coreos|alpine)
       echo "echo \"${timezone_should}\" > /etc/timezone"
    ;;

@@ -21,7 +21,8 @@
 #
 
 set +e
-case $("${__explorer:?}/os") in
+case $("${__explorer:?}/os")
+in
    checkpoint)
        echo 'CheckPoint'
    ;;

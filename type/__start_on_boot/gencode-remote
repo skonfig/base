@@ -31,16 +31,19 @@ os=$(cat "${__global:?}/explorer/os")
 os_version=$(cat "${__global:?}/explorer/os_version")
 name=${__object_id:?}
 
-case ${state_should} in
+case ${state_should}
+in
     present)
         if [ "${init}" = 'systemd' ]; then
             # this handles ALL linux distros with systemd
             # e.g. archlinux, gentoo in some cases, new RHEL and SLES versions
             echo "systemctl -q enable '${name}'"
         else
-            case ${os} in
+            case ${os}
+            in
                 debian)
-                    case ${os_version} in
+                    case ${os_version}
+                    in
                         [1-7]*)
                             echo "update-rc.d '${name}' defaults >/dev/null"
                         ;;
@@ -100,7 +103,8 @@ case ${state_should} in
             echo "systemctl -q disable '${name}'"
 
         else
-            case ${os} in
+            case ${os}
+            in
                 debian|ubuntu|devuan)
                     echo "update-rc.d -f '${name}' remove"
                 ;;

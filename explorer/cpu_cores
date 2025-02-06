@@ -25,7 +25,8 @@
 # FIXME: other system types (not linux ...)
 
 os=$("${__explorer:?}/os")
-case ${os} in
+case ${os}
+in
     macosx)
         sysctl -n hw.physicalcpu
     ;;

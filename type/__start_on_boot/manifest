@@ -28,7 +28,8 @@ name=${__object_id:?}
 
 os=$(cat "${__global:?}/explorer/os")
 
-case ${os} in
+case ${os}
+in
     freebsd)
 	if [ "${state_should}" = 'present' ]; then
 	    value='YES'

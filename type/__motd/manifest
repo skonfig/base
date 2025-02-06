@@ -31,7 +31,8 @@ fi
 os=$(cat "${__global:?}/explorer/os")
 
 
-case ${os} in
+case ${os}
+in
    freebsd)
       # FreeBSD uses motd.template to prepend system information on boot
       # (this actually only applies starting with version 13,

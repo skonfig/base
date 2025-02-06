@@ -35,7 +35,8 @@ dst=$(sed 's/\/$//' "${__object:?}/parameter/destination")
 
 cmd=''
 
-case ${src} in
+case ${src}
+in
     *.tar|*.tgz|*.tar.*|*.txz|*.tbz2)
         cmd="mkdir -p '${dst}' && tar --directory='${dst}' --extract --file='${src}'"
 
@@ -54,7 +55,8 @@ case ${src} in
         fi
     ;;
     *.7z)
-        case ${os} in
+        case ${os}
+        in
             centos|almalinux|eurolinux|rocky|fedora|redhat)
                 cmd='7za'
             ;;

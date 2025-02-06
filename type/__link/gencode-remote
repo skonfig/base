@@ -24,7 +24,8 @@ destination="/${__object_id:?}"
 type=$(cat "${__object:?}/parameter/type")
 source=$(cat "${__object:?}/parameter/source")
 
-case ${type} in
+case ${type}
+in
     symbolic)
         lnopt='-s'
     ;;
@@ -43,7 +44,8 @@ state_should=$(cat "${__object:?}/parameter/state")
 [ "${state_should}" = "${state_is}" ] && exit 0
 
 file_type=$(cat "${__object:?}/explorer/type")
-case ${state_should} in
+case ${state_should}
+in
     present)
         if [ "${file_type}" = 'directory' ]; then
             # our destination is currently a directory, delete it

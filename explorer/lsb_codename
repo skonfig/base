@@ -21,7 +21,8 @@
 #
 
 set +e
-case $("${__explorer:?}/os") in
+case $("${__explorer:?}/os")
+in
    checkpoint)
        awk '{printf("%s\n", $(NF-1))}' /etc/cp-release
    ;;

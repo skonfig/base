@@ -45,7 +45,8 @@ if [ "${state_should}" = "${state_is}" ]; then
     exit 0
 fi
 
-case ${state_should} in
+case ${state_should}
+in
     hold|unhold)
         echo "apt-mark ${state_should} ${name} > /dev/null"
     ;;

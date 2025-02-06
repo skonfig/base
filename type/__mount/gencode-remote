@@ -27,7 +27,8 @@ if [ "${state_should}" = "${state_is}" ]; then
    exit 0
 fi
 
-case ${state_should} in
+case ${state_should}
+in
    present)
       if [ -f "${__object:?}/parameter/nofstab" ]; then
          # mount manually

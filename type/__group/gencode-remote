@@ -26,7 +26,8 @@ state=$(cat "${__object:?}/parameter/state")
 
 # Use short option names for portability
 shorten_property() {
-   case $1 in
+   case $1
+   in
       gid) echo ' -g';;
       password) echo ' -p';;
       system) echo ' -r';;
@@ -35,7 +36,8 @@ shorten_property() {
 
 
 if [ "${state}" = 'present' ]; then
-   case ${os} in
+   case ${os}
+   in
       freebsd)
          supported_change_properties='gid'
       ;;
@@ -49,7 +51,8 @@ if [ "${state}" = 'present' ]; then
          if [ -f "${__object:?}/parameter/${property}" ]; then
             new_value=$(cat "${__object:?}/parameter/${property}")
             unset current_value
-            case ${property} in
+            case ${property}
+            in
                password)
                   current_value=$(awk -F: '{ print $2 }' "${__object:?}/explorer/gshadow")
                ;;

@@ -36,7 +36,8 @@ fi
 # Leave if nothing is to be done
 [ "${state_is}" = "${state_should}" ] && exit 0
 
-case ${state_should} in
+case ${state_should}
+in
     present)
         echo "luarocks install '${name}'"
         echo 'installed' >> "${__messages_out:?}"
