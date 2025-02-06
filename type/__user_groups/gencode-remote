@@ -18,9 +18,9 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-user="$(cat "${__object:?}/parameter/user" 2>/dev/null || echo "${__object_id:?}")"
-state_should="$(cat "${__object:?}/parameter/state")"
-oldusermod="$(cat "${__object:?}/explorer/oldusermod")"
+user=$(cat "${__object:?}/parameter/user" 2>/dev/null || echo "${__object_id:?}")
+state_should=$(cat "${__object:?}/parameter/state")
+oldusermod=$(cat "${__object:?}/explorer/oldusermod")
 os=$(cat "${__global:?}/explorer/os")
 
 mkdir "${__object:?}/files"
@@ -29,10 +29,10 @@ sort "${__object:?}/parameter/group" > "${__object:?}/files/group.sorted"
 
 case "$state_should" in
    present)
-      changed_groups="$(comm -13 "${__object:?}/explorer/group" "${__object:?}/files/group.sorted")"
+      changed_groups=$(comm -13 "${__object:?}/explorer/group" "${__object:?}/files/group.sorted")
    ;;
    absent)
-      changed_groups="$(comm -12 "${__object:?}/explorer/group" "${__object:?}/files/group.sorted")"
+      changed_groups=$(comm -12 "${__object:?}/explorer/group" "${__object:?}/files/group.sorted")
    ;;
 esac
 

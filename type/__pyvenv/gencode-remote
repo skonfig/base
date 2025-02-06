@@ -19,15 +19,15 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-state_is="$(cat "${__object:?}/explorer/state")"
-owner_is="$(cat "${__object:?}/explorer/owner")"
-group_is="$(cat "${__object:?}/explorer/group")"
+state_is=$(cat "${__object:?}/explorer/state")
+owner_is=$(cat "${__object:?}/explorer/owner")
+group_is=$(cat "${__object:?}/explorer/group")
 
-state_should="$(cat "${__object:?}/parameter/state")"
+state_should=$(cat "${__object:?}/parameter/state")
 
-owner="$(cat "${__object:?}/parameter/owner")"
-group="$(cat "${__object:?}/parameter/group")"
-mode="$(cat "${__object:?}/parameter/mode")"
+owner=$(cat "${__object:?}/parameter/owner")
+group=$(cat "${__object:?}/parameter/group")
+mode=$(cat "${__object:?}/parameter/mode")
 
 [  "$state_should" = "$state_is" ] && \
 [  "$owner" = "$owner_is" ] && \
@@ -35,9 +35,9 @@ mode="$(cat "${__object:?}/parameter/mode")"
 [  -n "$mode" ] && exit 0
 
 destination="/${__object_id:?}"
-venvparams="$(cat "${__object:?}/parameter/venvparams")"
+venvparams=$(cat "${__object:?}/parameter/venvparams")
 pyvenvparam="${__object:?}/parameter/pyvenv"
-interpreter="$(cat "${__object:?}/parameter/interpreter")"
+interpreter=$(cat "${__object:?}/parameter/interpreter")
 
 if [ -f "$pyvenvparam" ]
 then

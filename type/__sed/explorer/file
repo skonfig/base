@@ -23,7 +23,7 @@
 
 if [ -f "${__object:?}/parameter/file" ]
 then
-    file="$( cat "${__object:?}/parameter/file" )"
+    file=$(cat "${__object:?}/parameter/file")
 else
     file="/${__object_id:?}"
 fi

@@ -25,7 +25,7 @@
 
 type="${__object:?}/parameter/type"
 if [ -f "$type" ]; then
-   type="$(cat "$type")"
+   type=$(cat "$type")
 else
    # By default determine package manager based on operating system
    os=$(cat "${__global:?}/explorer/os")
@@ -53,7 +53,7 @@ else
    esac
 fi
 
-state="$(cat "${__object:?}/parameter/state")"
+state=$(cat "${__object:?}/parameter/state")
 
 set -- "$@" "${__object_id:?}" "--state" "$state"
 cd "${__object:?}/parameter"

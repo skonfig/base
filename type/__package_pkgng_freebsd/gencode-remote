@@ -23,13 +23,13 @@
 #set -x
 
 if [ -f "${__object:?}/parameter/name" ]; then
-   name="$(cat "${__object:?}/parameter/name")"
+   name=$(cat "${__object:?}/parameter/name")
 else
    name="${__object_id:?}"
 fi
 
-flavor="$(cat "${__object:?}/parameter/flavor")"
-version="$(cat "${__object:?}/parameter/version")"
+flavor=$(cat "${__object:?}/parameter/flavor")
+version=$(cat "${__object:?}/parameter/version")
 
 if [ -f "${__object:?}/parameter/upgrade" ]; then
    upgrade="true"
@@ -37,10 +37,10 @@ else
    upgrade="false"
 fi
 
-repo="$(cat "${__object:?}/parameter/repo")"
-state="$(cat "${__object:?}/parameter/state")"
-curr_version="$(cat "${__object:?}/explorer/pkg_version")"
-pkg_bootstrapped="$(cat "${__object:?}/explorer/pkg_bootstrapped")"
+repo=$(cat "${__object:?}/parameter/repo")
+state=$(cat "${__object:?}/parameter/state")
+curr_version=$(cat "${__object:?}/explorer/pkg_version")
+pkg_bootstrapped=$(cat "${__object:?}/explorer/pkg_bootstrapped")
 add_cmd="pkg install -y"
 rm_cmd="pkg delete -y"
 upg_cmd="pkg upgrade -y"

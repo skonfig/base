@@ -44,7 +44,7 @@ do
         continue
     fi
 
-    link="$( awk 'NR==2' "$altdir/${__object_id:?}" )"
+    link=$(awk 'NR==2' "$altdir/${__object_id:?}")
 
     if [ -n "$link" ]
     then

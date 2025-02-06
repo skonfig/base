@@ -21,7 +21,7 @@
 
 __package gnupg
 
-state_should="$(cat "${__object:?}/parameter/state")"
+state_should=$(cat "${__object:?}/parameter/state")
 
 incompatible_args()
 {
@@ -33,7 +33,7 @@ incompatible_args()
 
 if [ -f "${__object:?}/parameter/source" ]; then
 	method="source"
-	src="$(cat "${__object:?}/parameter/source")"
+	src=$(cat "${__object:?}/parameter/source")
 	if [ "${src}" = "-" ]; then
 		src="${__object:?}/stdin"
 	fi
@@ -43,7 +43,7 @@ if [ -f "${__object:?}/parameter/uri" ]; then
 		incompatible_args uri
 	fi
 	method="uri"
-	src="$(cat "${__object:?}/parameter/uri")"
+	src=$(cat "${__object:?}/parameter/uri")
 fi
 if [ -f "${__object:?}/parameter/keyid" ]; then
 	if [ -n "${method}" ]; then
@@ -80,7 +80,7 @@ EOF
 	fi
 fi
 
-keydir="$(cat "${__object:?}/parameter/keydir")"
+keydir=$(cat "${__object:?}/parameter/keydir")
 keyfile="${keydir}/${__object_id:?}.gpg"
 keyfilecdist="${keyfile}.cdist"
 if [ "${state_should}" != "absent" ]; then
@@ -92,7 +92,7 @@ if [ "${state_should}" = "absent" ]; then
 	__file "${keyfile}" --state "absent"
 	__file "${keyfilecdist}" --state "absent"
 elif [ "${method}" = "source" ] || [ "${method}" = "uri" ]; then
-	dearmor="$(cat <<-EOF
+	dearmor=$(cat <<-EOF
 	if [ '${state_should}' = 'present' ]; then
 		# Dearmor if necessary
 		if grep -Fq 'BEGIN PGP PUBLIC KEY BLOCK' '${keyfilecdist}'; then
@@ -105,7 +105,7 @@ elif [ "${method}" = "source" ] || [ "${method}" = "uri" ]; then
 		chmod 0444 '${keyfile}'
 	fi
 	EOF
-	)"
+	)
 
 	if [ "${method}" = "uri" ]; then
 		__download "${keyfilecdist}" \

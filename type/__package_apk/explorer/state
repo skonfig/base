@@ -21,14 +21,14 @@
 #
 
 if [ -f "${__object:?}/parameter/name" ]; then
-   name="$(cat "${__object:?}/parameter/name")"
+   name=$(cat "${__object:?}/parameter/name")
 else
    name="${__object_id:?}"
 fi
 
 # Remove the @.. repo tag for finding out whether it is installed
 # f.i. pass@testing => pass
-name="$(echo "$name" | sed 's/@.*//')"
+name=$(echo "$name" | sed 's/@.*//')
 
 if [ "$(apk list -I "$name")" ]; then
     echo present

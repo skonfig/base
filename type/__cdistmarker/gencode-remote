@@ -19,11 +19,11 @@
 #
 
 # The marker file is established in the docs, but it isn't obligatory.
-destination="$(cat "${__object:?}/parameter/destination")"
+destination=$(cat "${__object:?}/parameter/destination")
 
 # The basic output of date is usually good enough, but variety is the
 #   spice of life...
-format="$(cat "${__object:?}/parameter/format")"
+format=$(cat "${__object:?}/parameter/format")
 
 # Dump the timestamp in UTC to the marker
 echo "date $format > $destination"

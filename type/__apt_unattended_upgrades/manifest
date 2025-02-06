@@ -47,11 +47,11 @@ then
 
     while read -r l
     do
-        o="$( printf '%s\nUnattended-Upgrade::%s "%s";\n' "$o" "${l%%=*}" "${l#*=}" )"
+        o=$(printf '%s\nUnattended-Upgrade::%s "%s";\n' "$o" "${l%%=*}" "${l#*=}")
     done \
         < "${__object:?}/parameter/option"
 
-    conf="$( printf '%s\n%s\n' "$conf" "$o" )"
+    conf=$(printf '%s\n%s\n' "$conf" "$o")
 fi
 
 if [ -f "${__object:?}/parameter/blacklist" ]
@@ -60,11 +60,11 @@ then
 
     while read -r l
     do
-        b="$( printf '%s\n"%s";\n' "$b" "$l" )"
+        b=$(printf '%s\n"%s";\n' "$b" "$l")
     done \
         < "${__object:?}/parameter/blacklist"
 
-    conf="$( printf '%s\n%s\n}\n' "$conf" "$b" )"
+    conf=$(printf '%s\n%s\n}\n' "$conf" "$b")
 fi
 
 if [ "$( echo "$conf" | wc -l )" -gt 1 ]

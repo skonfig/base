@@ -20,16 +20,16 @@
 
 if [ -f "${__object:?}/parameter/file" ]
 then
-    file="$( cat "${__object:?}/parameter/file" )"
+    file=$(cat "${__object:?}/parameter/file")
 else
     file="/${__object_id:?}"
 fi
 
-script="$( cat "${__object:?}/parameter/script" )"
+script=$(cat "${__object:?}/parameter/script")
 
 if [ "$script" = '-' ]
 then
-    script="$( cat "${__object:?}/stdin" )"
+    script=$(cat "${__object:?}/stdin")
 fi
 
 # since stdin is not available in explorer, we pull file from target with explorer

@@ -22,7 +22,7 @@
 
 if [ -f "${__object:?}/parameter/name" ]
 then
-	pkgid="$(cat "${__object:?}/parameter/name")"
+	pkgid=$(cat "${__object:?}/parameter/name")
 else
 	pkgid="${__object_id:?}"
 fi

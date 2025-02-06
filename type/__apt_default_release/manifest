@@ -21,7 +21,7 @@
 
 
 os=$(cat "${__global:?}/explorer/os")
-release="$(cat "${__object:?}/parameter/release")"
+release=$(cat "${__object:?}/parameter/release")
 
 case "$os" in
    ubuntu|debian|devuan)

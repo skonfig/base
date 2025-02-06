@@ -19,8 +19,8 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-gentoolkit_installed="$(cat "${__object:?}/explorer/gentoolkit_installed")"
-flaggie_installed="$(cat "${__object:?}/explorer/flaggie_installed")"
+gentoolkit_installed=$(cat "${__object:?}/explorer/gentoolkit_installed")
+flaggie_installed=$(cat "${__object:?}/explorer/flaggie_installed")
 
 if [ "${gentoolkit_installed}" != "true" ]; then
     # emerge app-portage/gentoolkit

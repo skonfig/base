@@ -31,11 +31,11 @@ else
     name="${__object_id:?}"
 fi
 
-state_should="$(cat "${__object:?}/parameter/state")"
-ptype="$(cat "${__object:?}/parameter/ptype")"
+state_should=$(cat "${__object:?}/parameter/state")
+ptype=$(cat "${__object:?}/parameter/ptype")
 
 if [ -f "${__object:?}/parameter/version" ]; then
-    version_should="$(cat "${__object:?}/parameter/version")"
+    version_should=$(cat "${__object:?}/parameter/version")
     if [ "$ptype" != "package" ]; then
         echo "version support only for type package implemented" >&2
         exit 2
@@ -44,7 +44,7 @@ else
     version_should=""
 fi
 
-pkg_version="$(cat "${__object:?}/explorer/pkg_version")"
+pkg_version=$(cat "${__object:?}/explorer/pkg_version")
 if [ -z "$pkg_version" ]; then
     state_is="absent"
     version_is=""

@@ -21,7 +21,7 @@
 #
 
 if [ -f "${__object:?}/parameter/keyid" ]; then
-   keyid="$(cat "${__object:?}/parameter/keyid")"
+   keyid=$(cat "${__object:?}/parameter/keyid")
 else
    keyid="${__object_id:?}"
 fi
@@ -39,7 +39,7 @@ if [ -f "${__object:?}/parameter/use-deprecated-apt-key" ]; then
    exit
 fi
 
-keydir="$(cat "${__object:?}/parameter/keydir")"
+keydir=$(cat "${__object:?}/parameter/keydir")
 keyfile="$keydir/${__object_id:?}.gpg"
 
 if [ -f "$keyfile" ]

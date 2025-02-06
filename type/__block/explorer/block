@@ -22,7 +22,7 @@
 # Nothing, if it does not exist (or is empty, obviously).
 #
 
-file="$(cat "${__object:?}/parameter/file" 2>/dev/null || echo "/${__object_id:?}")"
+file=$(cat "${__object:?}/parameter/file" 2>/dev/null || echo "/${__object_id:?}")
 
 # file does not exist, nothing we could do
 [ -f "$file" ] || exit 0

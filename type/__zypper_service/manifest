@@ -24,14 +24,14 @@
 
 
 if [ -f "${__object:?}/parameter/uri" ]; then
-   uri="$(cat "${__object:?}/parameter/uri")"
+   uri=$(cat "${__object:?}/parameter/uri")
 else
    uri="${__object_id:?}"
 fi
 
-state_should="$(cat "${__object:?}/parameter/state")"
+state_should=$(cat "${__object:?}/parameter/state")
 
-exp_uri="$(cat "${__object:?}/explorer/service_uri")"
+exp_uri=$(cat "${__object:?}/explorer/service_uri")
 
 if [ "$uri" = "$exp_uri" ] ; then
     state_is="present"
@@ -44,7 +44,7 @@ fi
 [ "$state_is" = "$state_should" ] && exit 0
 
 # we need this list to remove ids, but we must do this in reverse order
-exp_repos="$(rev "${__object:?}/explorer/repo_ids")"
+exp_repos=$(rev "${__object:?}/explorer/repo_ids")
 
 # boolean parameter
 if [ -f "${__object:?}/parameter/remove-all-repos" ]; then

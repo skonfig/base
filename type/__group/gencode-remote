@@ -20,8 +20,8 @@
 #
 
 name="${__object_id:?}"
-os="$(cat "${__global:?}/explorer/os")"
-state="$(cat "${__object:?}/parameter/state")"
+os=$(cat "${__global:?}/explorer/os")
+state=$(cat "${__object:?}/parameter/state")
 
 
 # Use short option names for portability
@@ -47,14 +47,14 @@ if [ "$state" = "present" ]; then
       # change existing
       for property in $supported_change_properties; do
          if [ -f "${__object:?}/parameter/$property" ]; then
-            new_value="$(cat "${__object:?}/parameter/$property")"
+            new_value=$(cat "${__object:?}/parameter/$property")
             unset current_value
             case "$property" in
                password)
-                  current_value="$(awk -F: '{ print $2 }' "${__object:?}/explorer/gshadow")"
+                  current_value=$(awk -F: '{ print $2 }' "${__object:?}/explorer/gshadow")
                ;;
                gid)
-                  current_value="$(awk -F: '{ print $3 }' "${__object:?}/explorer/group")"
+                  current_value=$(awk -F: '{ print $3 }' "${__object:?}/explorer/group")
                ;;
             esac
             if [ "$new_value" != "$current_value" ]; then
@@ -75,7 +75,7 @@ if [ "$state" = "present" ]; then
       # create new
       for property in $supported_change_properties; do
          if [ -f "${__object:?}/parameter/$property" ]; then
-            new_value="$(cat "${__object:?}/parameter/$property")"
+            new_value=$(cat "${__object:?}/parameter/$property")
             if [ -z "$new_value" ]; then
                # Boolean parameters have no value
                set -- "$@" "$(shorten_property "$property")"

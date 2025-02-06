@@ -32,7 +32,7 @@
 
 # get name of the service
 if [ -f "${__object:?}/parameter/name" ]; then
-    name="$(cat "${__object:?}/parameter/name")"
+    name=$(cat "${__object:?}/parameter/name")
 else
     name="${__object_id:?}"
 fi

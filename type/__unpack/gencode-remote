@@ -27,11 +27,11 @@ then
     exit 0
 fi
 
-os="$( cat "${__global:?}/explorer/os" )"
+os=$(cat "${__global:?}/explorer/os")
 
 src="/${__object_id:?}"
 
-dst="$( sed 's/\/$//' "${__object:?}/parameter/destination" )"
+dst=$(sed 's/\/$//' "${__object:?}/parameter/destination")
 
 cmd=''
 
@@ -41,14 +41,14 @@ case "$src" in
 
         if [ -f "${__object:?}/parameter/tar-strip" ]
         then
-            tar_strip="$( cat "${__object:?}/parameter/tar-strip" )"
+            tar_strip=$(cat "${__object:?}/parameter/tar-strip")
 
             cmd="$cmd --strip-components=$tar_strip"
         fi
 
         if [ -f "${__object:?}/parameter/tar-extra-args" ]
         then
-            tar_extra_args="$( cat "${__object:?}/parameter/tar-extra-args" )"
+            tar_extra_args=$(cat "${__object:?}/parameter/tar-extra-args")
 
             cmd="$cmd $tar_extra_args"
         fi
@@ -94,7 +94,7 @@ printf 'unpacked to %s\n' "${dst}" >>"${__messages_out:?}"
 
 if [ -f "${__object:?}/parameter/sum-file" ]
 then
-    sum_file="$( cat "${__object:?}/parameter/sum-file" )"
+    sum_file=$(cat "${__object:?}/parameter/sum-file")
 else
     sum_file="$src.cdist__unpack_sum"
 fi

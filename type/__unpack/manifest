@@ -20,7 +20,7 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-os="$( cat "${__global:?}/explorer/os" )"
+os=$(cat "${__global:?}/explorer/os")
 
 src="/${__object_id:?}"
 

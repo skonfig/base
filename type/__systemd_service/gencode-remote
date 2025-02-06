@@ -26,15 +26,15 @@
 # get name of the service
 name="${__object:?}/parameter/name"
 if [ -f "$name" ]; then
-    name="$(cat "$name")"
+    name=$(cat "$name")
 else
     name="${__object_id:?}"
 fi
 
 
 # read current status and parameters
-state="$(cat "${__object:?}/explorer/state")"
-should="$(cat "${__object:?}/parameter/state")"
+state=$(cat "${__object:?}/explorer/state")
+should=$(cat "${__object:?}/parameter/state")
 
 # if systemd/service does not exist
 if [ -z "$state" ]; then
@@ -65,7 +65,7 @@ if [ -f "${__object:?}/parameter/action" ] \
     && [ -z "$required_action" ] && [ "$state" = "running" ]; then
 
     # there must be an action
-    action="$(cat "${__object:?}/parameter/action")"
+    action=$(cat "${__object:?}/parameter/action")
 
     # select the action to the required element
     case "$action" in

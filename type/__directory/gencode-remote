@@ -94,8 +94,8 @@ case "$state_should" in
       # clearing S_ISUID and S_ISGID bits (see chown(2))
       for attribute in group owner mode; do
          if [ -f "${__object:?}/parameter/$attribute" ]; then
-            value_should="$(cat "${__object:?}/parameter/$attribute")"
-            value_is="$(get_current_value "$attribute" "$value_should")"
+            value_should=$(cat "${__object:?}/parameter/$attribute")
+            value_is=$(get_current_value "$attribute" "$value_should")
 
             # format mode in four digits => same as stat returns
             if [ "$attribute" = mode ]; then

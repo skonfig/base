@@ -19,7 +19,7 @@
 #
 
 os=$(cat "${__global:?}/explorer/os")
-state="$(cat "${__object:?}/parameter/state")"
+state=$(cat "${__object:?}/parameter/state")
 
 case "$os" in
    scientific|centos)

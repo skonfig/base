@@ -23,7 +23,7 @@
 
 if [ -f "${__object:?}/parameter/path" ]
 then
-    path="$( cat "${__object:?}/parameter/path" )"
+    path=$(cat "${__object:?}/parameter/path")
 else
     path="/${__object_id:?}"
 fi

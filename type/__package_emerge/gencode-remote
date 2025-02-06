@@ -24,15 +24,15 @@ else
    name="${__object_id:?}"
 fi
 
-state_should="$(cat "${__object:?}/parameter/state")"
+state_should=$(cat "${__object:?}/parameter/state")
 
-version="$(cat "${__object:?}/parameter/version")"
+version=$(cat "${__object:?}/parameter/version")
 
 if [ -n "$version" ]; then
     name="=$name-$version"
 fi
 
-pkg_version="$(cat "${__object:?}/explorer/pkg_version")"
+pkg_version=$(cat "${__object:?}/explorer/pkg_version")
 if [ -z "$pkg_version" ]; then
     state_is="absent"
 elif [ -z "$version" ] && [ "$(echo "$pkg_version" | wc -l)" -gt 1 ]; then
@@ -46,9 +46,9 @@ elif [ -n "$version" ] && [ "$(echo "$pkg_version" | cut -d " " -f 1 | sort | un
 else
     state_is="present"
     if [ -n "$version" ] && echo "$pkg_version" | cut -d " " -f 2 | grep -q -x "$version"; then
-        installed_version="$(echo "$pkg_version" | cut -d " " -f 2 | grep -x "$version")"
+        installed_version=$(echo "$pkg_version" | cut -d " " -f 2 | grep -x "$version")
     else
-        installed_version="$(echo "$pkg_version" | cut -d " " -f 2 | tail -n 1)"
+        installed_version=$(echo "$pkg_version" | cut -d " " -f 2 | tail -n 1)
     fi
 fi
 

@@ -103,7 +103,7 @@ if [ "$state" = "present" ]; then
     cd "${__object:?}/parameter"
     if grep -q "^${name}:" "${__object:?}/explorer/passwd"; then
        for property in *; do
-          new_value="$(cat "$property")"
+          new_value=$(cat "$property")
           unset current_value
 
           file="${__object:?}/explorer/passwd"
@@ -143,7 +143,7 @@ if [ "$state" = "present" ]; then
           # appropriate file/field.
           if [ -z "$current_value" ]; then
              export field
-             current_value="$(awk -F: '{ print $ENVIRON["field"] }' < "$file")"
+             current_value=$(awk -F: '{ print $ENVIRON["field"] }' < "$file")
           fi
 
           if [ "$new_value" != "$current_value" ]; then
@@ -163,7 +163,7 @@ if [ "$state" = "present" ]; then
         for property in *; do
             [ "$property" = "state" ] && continue
             [ "$property" = "remove-home" ] && continue
-            new_value="$(cat "$property")"
+            new_value=$(cat "$property")
             if [ -z "$new_value" ];then       # Boolean values have no value
               set -- "$@" "$(shorten_property "$property")"
             else

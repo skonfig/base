@@ -23,7 +23,7 @@ quote() {
    printf '%s\n' "$1" | sed "s/'/'\\\\''/g;1s/^/'/;\$s/\$/'/"
 }
 
-file="$(cat "${__object:?}/parameter/file" 2>/dev/null || echo "/${__object_id:?}")"
+file=$(cat "${__object:?}/parameter/file" 2>/dev/null || echo "/${__object_id:?}")
 state_should=$(cat "${__object:?}/parameter/state")
 prefix=$(cat "${__object:?}/parameter/prefix" 2>/dev/null || echo "#cdist:__block/${__object_id:?}")
 suffix=$(cat "${__object:?}/parameter/suffix" 2>/dev/null || echo "#/cdist:__block/${__object_id:?}")
@@ -38,7 +38,7 @@ else
    )
 fi
 
-state_should="$(cat "${__object:?}/parameter/state")"
+state_should=$(cat "${__object:?}/parameter/state")
 if [ "$state_should" = "$state_is" ]; then
    # Nothing to do, move along
    exit 0
@@ -68,7 +68,7 @@ mv -f "\$tmpfile" $quoted_file
 DONE
 }
 
-quoted_file="$(quote "$file")"
+quoted_file=$(quote "$file")
 case "$state_should" in
    present)
       if [ "$state_is" = "changed" ]; then

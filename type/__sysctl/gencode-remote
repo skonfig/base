@@ -19,8 +19,8 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-value_should="$(cat "${__object:?}/parameter/value")"
-value_is="$(cat "${__object:?}/explorer/value")"
+value_should=$(cat "${__object:?}/parameter/value")
+value_is=$(cat "${__object:?}/explorer/value")
 
 if [ "$value_should" = "$value_is" ]; then
    # Nothing to do

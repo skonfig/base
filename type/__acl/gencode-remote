@@ -18,7 +18,7 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-file_is="$( cat "${__object:?}/explorer/file_is" )"
+file_is=$(cat "${__object:?}/explorer/file_is")
 
 if [ "$file_is" = 'missing' ] \
     && [ -z "${__cdist_dry_run:?}" ] \
@@ -28,25 +28,25 @@ then
     exit 0
 fi
 
-os="$( cat "${__global:?}/explorer/os" )"
+os=$(cat "${__global:?}/explorer/os")
 
 acl_path="/${__object_id:?}"
 
-acl_is="$( cat "${__object:?}/explorer/acl_is" )"
+acl_is=$(cat "${__object:?}/explorer/acl_is")
 
 if [ -f "${__object:?}/parameter/source" ]
 then
-    acl_source="$( cat "${__object:?}/parameter/source" )"
+    acl_source=$(cat "${__object:?}/parameter/source")
 
     if [ "$acl_source" = '-' ]
     then
-        acl_should="$( cat "${__object:?}/stdin" )"
+        acl_should=$(cat "${__object:?}/stdin")
     else
-        acl_should="$( grep -Ev '^#|^$' "$acl_source" )"
+        acl_should=$(grep -Ev '^#|^$' "$acl_source")
     fi
 elif [ -f "${__object:?}/parameter/entry" ]
 then
-    acl_should="$( cat "${__object:?}/parameter/entry" )"
+    acl_should=$(cat "${__object:?}/parameter/entry")
 else
     echo 'no parameters set' >&2
     exit 1
@@ -69,10 +69,10 @@ echo "$acl_should" \
 
 if [ -f "${__object:?}/parameter/default" ]
 then
-    acl_should="$( echo "$acl_should" \
+    acl_should=$(echo "$acl_should" \
         | sed 's/^default://' \
         | sort -u \
-        | sed 's/\(.*\)/default:\1\n\1/' )"
+        | sed 's/\(.*\)/default:\1\n\1/')
 fi
 
 if [ "$file_is" = 'regular' ] \
@@ -81,7 +81,7 @@ then
     # only directories can have default ACLs,
     # but instead of error,
     # let's just remove default entries
-    acl_should="$( echo "$acl_should" | grep -Ev '^default:' )"
+    acl_should=$(echo "$acl_should" | grep -Ev '^default:')
 fi
 
 setfacl_exec='setfacl'
@@ -113,7 +113,7 @@ then
         then
             remove="$acl"
         else
-            remove="$( echo "$acl" | sed 's/:...$//' )"
+            remove=$(echo "$acl" | sed 's/:...$//')
         fi
 
         echo "$setfacl_exec -x \"$remove\" \"$acl_path\""

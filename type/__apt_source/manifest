@@ -19,16 +19,16 @@
 #
 
 name="${__object_id:?}"
-state="$(cat "${__object:?}/parameter/state")"
-uri="$(cat "${__object:?}/parameter/uri")"
+state=$(cat "${__object:?}/parameter/state")
+uri=$(cat "${__object:?}/parameter/uri")
 
 if [ -f "${__object:?}/parameter/distribution" ]; then
-   distribution="$(cat "${__object:?}/parameter/distribution")"
+   distribution=$(cat "${__object:?}/parameter/distribution")
 else
-   distribution="$(cat "${__global:?}/explorer/lsb_codename")"
+   distribution=$(cat "${__global:?}/explorer/lsb_codename")
 fi
 
-component="$(cat "${__object:?}/parameter/component")"
+component=$(cat "${__object:?}/parameter/component")
 
 if [ -f "${__object:?}/parameter/arch" ]; then
 	forcedarch="arch=$(cat "${__object:?}/parameter/arch")"

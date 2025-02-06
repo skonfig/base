@@ -30,7 +30,7 @@ if [ -h "$destination" ]; then
 elif [ ! -e "$destination" ]; then
     echo none
 elif [ -f "$destination" ]; then
-    type="$(cat "${__object:?}/parameter/type")"
+    type=$(cat "${__object:?}/parameter/type")
     case "$type" in
         hard)
             # Currently not worth the effor to change it, stat is not defined by POSIX

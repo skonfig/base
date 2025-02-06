@@ -24,7 +24,7 @@
 os=$("${__explorer:?}/os")
 runlevel=$("${__explorer:?}/runlevel")
 init=$("${__explorer:?}/init")
-target_runlevel="$(cat "${__object:?}/parameter/target_runlevel")"
+target_runlevel=$(cat "${__object:?}/parameter/target_runlevel")
 name="${__object_id:?}"
 
 if [ "$init" = 'systemd' ]; then

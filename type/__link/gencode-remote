@@ -21,8 +21,8 @@
 
 destination="/${__object_id:?}"
 
-type="$(cat "${__object:?}/parameter/type")"
-source="$(cat "${__object:?}/parameter/source")"
+type=$(cat "${__object:?}/parameter/type")
+source=$(cat "${__object:?}/parameter/source")
 
 case "$type" in
     symbolic)
@@ -37,12 +37,12 @@ case "$type" in
     ;;
 esac
 
-state_is="$(cat "${__object:?}/explorer/state")"
-state_should="$(cat "${__object:?}/parameter/state")"
+state_is=$(cat "${__object:?}/explorer/state")
+state_should=$(cat "${__object:?}/parameter/state")
 
 [ "$state_should" = "$state_is" ] && exit 0
 
-file_type="$(cat "${__object:?}/explorer/type")"
+file_type=$(cat "${__object:?}/explorer/type")
 case "$state_should" in
     present)
         if [ "$file_type" = "directory" ]; then

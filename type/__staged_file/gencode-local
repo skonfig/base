@@ -22,10 +22,10 @@
 #set -x
 
 destination="${__object_id:?}"
-source="$(cat "${__object:?}/parameter/source")"
-stage_dir="$(cat "${__object:?}/parameter/stage-dir")"
-state="$(cat "${__object:?}/parameter/state")"
-fetch_command="$(cat "${__object:?}/parameter/fetch-command")"
+source=$(cat "${__object:?}/parameter/source")
+stage_dir=$(cat "${__object:?}/parameter/stage-dir")
+state=$(cat "${__object:?}/parameter/state")
+fetch_command=$(cat "${__object:?}/parameter/fetch-command")
 stage_file="${stage_dir}/${destination}"
 stage_file_dir="${stage_file%/*}"
 source_file_name="${source##*/}"
@@ -68,7 +68,7 @@ fetch_and_prepare_file() {
    printf 'cd "$tmpdir"\n'
    # shellcheck disable=SC2059
    printf "$fetch_command > \"%s\"\\n" "$source" "$source_file_name"
-   prepare_command="$(cat "${__object:?}/parameter/prepare-command")"
+   prepare_command=$(cat "${__object:?}/parameter/prepare-command")
    # shellcheck disable=SC2059
    printf "$prepare_command > \"%s\"\\n" "$source_file_name" "$stage_file"
    printf 'cd - >/dev/null\n'
@@ -79,7 +79,7 @@ fetch_and_prepare_file() {
 cat << DONE
 verify_cksum() {
    cksum_is="\$(cksum "$stage_file" | cut -d' ' -f1,2)"
-   cksum_should="$(cut -d' ' -f1,2 "${__object:?}/parameter/cksum")"
+   cksum_should=$(cut -d' ' -f1,2 "${__object:?}/parameter/cksum")
    if [ "\$cksum_is" = "\$cksum_should" ]; then
       return 0
    else

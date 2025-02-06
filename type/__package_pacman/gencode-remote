@@ -28,9 +28,9 @@ else
    name="${__object_id:?}"
 fi
 
-state_should="$(cat "${__object:?}/parameter/state")"
+state_should=$(cat "${__object:?}/parameter/state")
 
-pkg_version="$(cat "${__object:?}/explorer/pkg_version")"
+pkg_version=$(cat "${__object:?}/explorer/pkg_version")
 if [ -z "$pkg_version" ]; then
     state_is="absent"
 else
