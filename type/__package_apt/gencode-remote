@@ -27,7 +27,7 @@ else
 fi
 
 state_should=$(cat "${__object:?}/parameter/state")
-version_should=$(cat "${__object:?}/parameter/version" 2>/dev/null) || true
+version_should=$(cat "${__object:?}/parameter/version" 2>/dev/null) || :
 
 if [ -f "${__object:?}/parameter/target-release" ]
 then

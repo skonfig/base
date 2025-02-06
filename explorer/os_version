@@ -99,7 +99,7 @@ in
                (jessie) devuan_version=1 ;;
                (*) exit 1
             esac
-            devuan_suffix=$(expr "${devuan_codename}" : '[^/]*/\(.*\)$' || true)
+            devuan_suffix=$(expr "${devuan_codename}" : '[^/]*/\(.*\)$' || :)
             case ${devuan_suffix}
             in
                ('')

@@ -453,7 +453,7 @@ init=$(find_init)
 	test -x "${init}" \
 		&& guess_by_path "${init}" \
 		|| guess_by_comm_name "$(basename "${init}")"
-} && exit 0 || true
+} && exit 0 || :
 
 
 # Guessing based on the file path and name didn’t lead to a definitive result.

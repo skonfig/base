@@ -57,7 +57,7 @@ then
 		awk '{ if (!m[$1]++) print $1 }' "${filename}" \
 		| while read -r package
 		  do
-			  echo "DEBIAN_FRONTEND=noninteractive dpkg-reconfigure ${package} || true"
+			  echo "DEBIAN_FRONTEND=noninteractive dpkg-reconfigure ${package} || :"
 		  done
 	fi
 

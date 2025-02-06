@@ -55,7 +55,7 @@ then
     elif grep -q "^__file/etc/systemd/system/${name}" "${__messages_in:?}" || \
         [ "${unit_status}" != 'active' ]
     then
-        echo "systemctl restart ${name} || true"
+        echo "systemctl restart ${name} || :"
     fi
 fi
 

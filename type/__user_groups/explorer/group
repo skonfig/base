@@ -22,4 +22,4 @@
 
 user=$(cat "${__object:?}/parameter/user" 2>/dev/null || echo "${__object_id:?}")
 
-(id -G -n "${user}" | tr ' ' '\n' | sort) 2>/dev/null || true
+(id -G -n "${user}" | tr ' ' '\n' | sort) 2>/dev/null || :

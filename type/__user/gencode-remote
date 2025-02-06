@@ -165,7 +165,7 @@ then
 
           do_user mod "${name}" "$@"
        else
-          true
+          :
        fi
     else
         echo add >> "${__messages_out:?}"

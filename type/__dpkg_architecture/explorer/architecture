@@ -24,4 +24,4 @@
 
 
 # print or die in the gencode-remote
-dpkg --print-architecture || true
+dpkg --print-architecture || :
