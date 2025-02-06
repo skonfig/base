@@ -26,4 +26,4 @@ destination=$(cat "${__object:?}/parameter/destination")
 format=$(cat "${__object:?}/parameter/format")
 
 # Dump the timestamp in UTC to the marker
-echo "date $format > $destination"
+echo "date ${format} > ${destination}"

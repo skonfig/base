@@ -32,14 +32,14 @@ block="${__object:?}/files/block"
 if [ ! -s "${__object:?}/explorer/block" ]; then
    state_is='absent'
 else
-   state_is=$(diff -q "$block" "${__object:?}/explorer/block" >/dev/null \
+   state_is=$(diff -q "${block}" "${__object:?}/explorer/block" >/dev/null \
       && echo present \
       || echo changed
    )
 fi
 
 state_should=$(cat "${__object:?}/parameter/state")
-if [ "$state_should" = "$state_is" ]; then
+if [ "${state_should}" = "${state_is}" ]; then
    # Nothing to do, move along
    exit 0
 fi
@@ -48,10 +48,10 @@ remove_block() {
    cat << DONE
 tmpfile=\$(mktemp ${quoted_file}.skonfig.XXXXXX)
 # preserve ownership and permissions of existing file
-if [ -f $quoted_file ]; then
-   cp -p $quoted_file "\$tmpfile"
+if [ -f ${quoted_file} ]; then
+   cp -p ${quoted_file} "\${tmpfile}"
 fi
-awk -v prefix=$(quote "$prefix") -v suffix=$(quote "$suffix") '
+awk -v prefix=$(quote "${prefix}") -v suffix=$(quote "${suffix}") '
 {
    if (\$0 == prefix) {
       triggered=1
@@ -63,23 +63,23 @@ awk -v prefix=$(quote "$prefix") -v suffix=$(quote "$suffix") '
    } else {
       print
    }
-}' $quoted_file > "\$tmpfile"
-mv -f "\$tmpfile" $quoted_file
+}' ${quoted_file} > "\${tmpfile}"
+mv -f "\${tmpfile}" ${quoted_file}
 DONE
 }
 
-quoted_file=$(quote "$file")
-case $state_should in
+quoted_file=$(quote "${file}")
+case ${state_should} in
    present)
-      if [ "$state_is" = "changed" ]; then
+      if [ "${state_is}" = "changed" ]; then
          echo update >> "${__messages_out:?}"
          remove_block
       else
          echo add >> "${__messages_out:?}"
       fi
       cat << DONE
-cat >> $quoted_file << '${__type##*/}_DONE'
-$(cat "$block")
+cat >> ${quoted_file} << '${__type##*/}_DONE'
+$(cat "${block}")
 ${__type##*/}_DONE
 DONE
    ;;

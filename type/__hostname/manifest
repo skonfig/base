@@ -74,7 +74,7 @@ in
             #     --file /etc/rc.conf \
             #     --delimiter '=' --exact_delimiter \
             #     --key 'HOSTNAME' \
-            #     --value "\"$name_should\""
+            #     --value "\"${name_should}\""
         fi
         ;;
     (centos|fedora|redhat|scientific)
@@ -102,7 +102,7 @@ in
                 --key 'hostname' \
                 --value "\"${name_should}\""
         else
-            set_hostname_systemd "$name_should"
+            set_hostname_systemd "${name_should}"
         fi
         ;;
     (freebsd)

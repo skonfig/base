@@ -25,7 +25,7 @@ assert ()                 #  If condition false,
 
 	if [ -z "$2" ]          # Not enough parameters passed.
 	then
-		return $E_PARAM_ERR   # No damage done.
+		return ${E_PARAM_ERR}   # No damage done.
 	fi
 
 	lineno=$2
@@ -35,8 +35,8 @@ assert ()                 #  If condition false,
 		echo "Assertion failed:  \"$1\""
 		# shellcheck disable=SC2039
 		# shellcheck disable=SC3044
-		echo "File \"$0\", line $lineno, called by $(caller 0)"
-		exit $E_ASSERT_FAILED
+		echo "File \"$0\", line ${lineno}, called by $(caller 0)"
+		exit ${E_ASSERT_FAILED}
 	fi
 }
 
@@ -65,23 +65,23 @@ cmd=""
 # FIXME: This is ugly.
 execcmd(){
 	# Set the PACKAGESITE if we're ADDing a new package
-	if [ "$1" = "add" ] && [ -n "$pkgsite" ]; then
+	if [ "$1" = "add" ] && [ -n "${pkgsite}" ]; then
 		# Use http.../All/ if we know the exact version we want, use .../Latest/ otherwise
 		pkgsite="export PACKAGESITE=${pkgsite}"
-		[ -n "$version" ] && pkgsite="${pkgsite}/All/" || pkgsite="${pkgsite}/Latest/"
+		[ -n "${version}" ] && pkgsite="${pkgsite}/All/" || pkgsite="${pkgsite}/Latest/"
 		echo "${pkgsite}"
 	fi
 	echo "${2} 2>&- >&-"	# Silence the output of the command
 	echo "status=\$?"
-	echo "if [ \"\$status\" -ne \"0\" ]; then"
-	echo "	echo \"Error: ${cmd} exited nonzero with \$status\"'!' >&2"
+	echo "if [ \"\${status}\" -ne \"0\" ]; then"
+	echo "	echo \"Error: ${cmd} exited nonzero with \${status}\"'!' >&2"
 	echo "	exit 1"
 	echo "fi"
 }
 
-if [ -n "$curr_version" ]; then	# PKG *is* installed
-	if [ "$state" = "absent" ]; then	# Shouldn't be installed
-		if [ -n "$flavor" ]; then
+if [ -n "${curr_version}" ]; then	# PKG *is* installed
+	if [ "${state}" = "absent" ]; then	# Shouldn't be installed
+		if [ -n "${flavor}" ]; then
 			cmd="${rm_cmd} ${name}-${flavor}-${curr_version}"
 		else
 			cmd="${rm_cmd} ${name}-${curr_version}"
@@ -90,13 +90,13 @@ if [ -n "$curr_version" ]; then	# PKG *is* installed
 		echo "removed" >> "${__messages_out:?}"
 		exit 0
 	else	# Should be installed
-		if [ -n "$version" ]; then	# Want a specific version
-			if [ "$version" = "$curr_version" ]; then	# Current version is correct
+		if [ -n "${version}" ]; then	# Want a specific version
+			if [ "${version}" = "${curr_version}" ]; then	# Current version is correct
 				exit 0
 			else	# Current version is wrong, fix
-				#updatepkg "$name" "$version"
+				#updatepkg "${name}" "${version}"
 				# shellcheck disable=SC2039
-				assert "! ${version} = ${curr_version}" $LINENO
+				assert "! ${version} = ${curr_version}" ${LINENO}
 				cmd="${rm_cmd} ${name}-${curr_version}"
 				execcmd "remove" "${cmd}"
 				cmd="${add_cmd} -r ${name}-${version}"
@@ -108,15 +108,15 @@ if [ -n "$curr_version" ]; then	# PKG *is* installed
 		fi
 	fi
 else	# PKG *isn't* installed
-	if [ "$state" = "absent" ]; then	# Shouldn't be installed
+	if [ "${state}" = "absent" ]; then	# Shouldn't be installed
 		exit 0
-	elif [ "$state" = "present" ]; then	# Is not currently installed, should be
-		if [ -n "$flavor" ]; then
+	elif [ "${state}" = "present" ]; then	# Is not currently installed, should be
+		if [ -n "${flavor}" ]; then
 			cmd="${add_cmd} -r ${name}-${flavor}"
 		else
 			cmd="${add_cmd} -r ${name}"
 		fi
-		if [ -n "$version" ]; then
+		if [ -n "${version}" ]; then
 			cmd="${cmd}-${version}"
 		fi
 		execcmd "add" "${cmd}"

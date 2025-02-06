@@ -39,20 +39,20 @@ for altdir in \
     /var/lib/dpkg/alternatives \
     /var/lib/alternatives
 do
-    if [ ! -f "$altdir/${__object_id:?}" ]
+    if [ ! -f "${altdir}/${__object_id:?}" ]
     then
         continue
     fi
 
-    link=$(awk 'NR==2' "$altdir/${__object_id:?}")
+    link=$(awk 'NR==2' "${altdir}/${__object_id:?}")
 
-    if [ -n "$link" ]
+    if [ -n "${link}" ]
     then
         break
     fi
 done
 
-if [ -z "$link" ] && [ -z "${__cdist_dry_run+dry run}" ]
+if [ -z "${link}" ] && [ -z "${__cdist_dry_run+dry run}" ]
 then
     # NOTE: ignore error for dry-runs because a package providing the link
     #       might be managed by another cdist object (which wasn't executed,
@@ -61,4 +61,4 @@ then
     exit 1
 fi
 
-echo "$link"
+echo "${link}"

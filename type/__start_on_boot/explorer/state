@@ -27,20 +27,20 @@ init=$("${__explorer:?}/init")
 target_runlevel=$(cat "${__object:?}/parameter/target_runlevel")
 name=${__object_id:?}
 
-if [ "$init" = 'systemd' ]; then
+if [ "${init}" = 'systemd' ]; then
     # this handles ALL linux distros with systemd
     # e.g. archlinux, gentoo, new RHEL and SLES versions
-    state=$(systemctl is-enabled "$name" >/dev/null 2>&1 \
+    state=$(systemctl is-enabled "${name}" >/dev/null 2>&1 \
         && echo present \
         || echo absent)
 
 else
-    case $os in
+    case ${os} in
         debian|openwrt|devuan)
             state="absent"
-            for file in "/etc/rc$runlevel.d/S"??"$name"
+            for file in "/etc/rc${runlevel}.d/S"??"${name}"
             do
-                if [ -f "$file" ]
+                if [ -f "${file}" ]
                 then
                     state="present"
                     break
@@ -49,9 +49,9 @@ else
         ;;
         ubuntu)
             state="absent"
-            for file in "/etc/rc$runlevel.d/S"??"$name"
+            for file in "/etc/rc${runlevel}.d/S"??"${name}"
             do
-                if [ -f "$file" ]
+                if [ -f "${file}" ]
                 then
                     state="present"
                     break
@@ -62,17 +62,17 @@ else
         ;;
 
         amazon|scientific|centos|almalinux|eurolinux|rocky|fedora|owl|redhat)
-            state=$(chkconfig --level "$runlevel" "$name" || echo absent)
-            [ "$state" ] || state="present"
+            state=$(chkconfig --level "${runlevel}" "${name}" || echo absent)
+            [ "${state}" ] || state="present"
         ;;
         suse)
             # check for target if set, usable for boot. services in runlevel B
-            if [ "$target_runlevel" != 'default' ]; then
-                runlevel=$target_runlevel
+            if [ "${target_runlevel}" != 'default' ]; then
+                runlevel=${target_runlevel}
             fi
             # suses chkconfig has the same name, but works different ...
-            state=$(chkconfig --check "$name" "$runlevel" || echo absent)
-            [ "$state" ] || state="present"
+            state=$(chkconfig --check "${name}" "${runlevel}" || echo absent)
+            [ "${state}" ] || state="present"
         ;;
         gentoo|alpine)
             state="absent"
@@ -85,7 +85,7 @@ else
         ;;
         freebsd)
             state="absent"
-            service -e | grep "/$name$" && state="present"
+            service -e | grep "/${name}$" && state="present"
         ;;
         openbsd)
             state='absent'
@@ -94,10 +94,10 @@ else
         ;;
 
         *)
-           echo "Unsupported os: $os" >&2
+           echo "Unsupported os: ${os}" >&2
            exit 1
         ;;
     esac
 fi
 
-echo $state
+echo ${state}

@@ -27,4 +27,4 @@ else
 fi
 
 # Except gem failing, if package is not known / installed
-gem list -i "$name" 2>/dev/null || exit 0
+gem list -i "${name}" 2>/dev/null || exit 0

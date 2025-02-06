@@ -43,7 +43,7 @@ fi
 state=$(cat "${__object:?}/parameter/state")
 
 # if present state is requested and $name is e.g. editor, check if any editor is installed instead
-if [ "$state" = 'present' ]
+if [ "${state}" = 'present' ]
 then
 	rprovides=$(apt-cache showpkg "${name}" | sed -e '1,/^Reverse Provides:/d' -e 's/ .*$//')
 fi

@@ -36,6 +36,6 @@ apt_opts="-o Acquire::AllowReleaseInfoChange::Suite=true -o Acquire::AllowReleas
 # run 'apt-get update' only if something changed with our sources.list file
 #   it will be run a second time on error as a redundancy messure to success
 if grep -q "^__file${destination}" "${__messages_in:?}"; then
-   printf 'apt-get %s update || apt-get %s update\n' "$apt_opts" "$apt_opts"
+   printf 'apt-get %s update || apt-get %s update\n' "${apt_opts}" "${apt_opts}"
 fi
 

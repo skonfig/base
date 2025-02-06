@@ -33,12 +33,12 @@ else
    ptype="package"
 fi
 
-case $ptype in
+case ${ptype} in
     package)
-        zypper search --details --match-exact --installed-only --type "$ptype" "$name" | grep -E '^i' | cut -d " " -f 3,7 || true
+        zypper search --details --match-exact --installed-only --type "${ptype}" "${name}" | grep -E '^i' | cut -d " " -f 3,7 || true
     ;;
     patch|pattern|product|srcpackage)
-        zypper search --match-exact --installed-only --type "$ptype" "$name" | grep -E '^i' | cut -d " " -f 3 || true
+        zypper search --match-exact --installed-only --type "${ptype}" "${name}" | grep -E '^i' | cut -d " " -f 3 || true
     ;;
     *)
         echo "unknown ptype in __package_zypper explorer" >&2

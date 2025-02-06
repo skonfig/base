@@ -134,9 +134,9 @@ in
 if [ ! -d /var/lib/apt/lists ] \\
     || [ -n "\$( find /etc/apt -newer /var/lib/apt/lists )" ] \\
     || [ ! -f /var/cache/apt/pkgcache.bin ] \\
-    || [ "\$( stat --format %Y /var/cache/apt/pkgcache.bin )" -lt "\$( date +%s -d '-$maxage seconds' )" ]
+    || [ "\$( stat --format %Y /var/cache/apt/pkgcache.bin )" -lt "\$( date +%s -d '-${maxage} seconds' )" ]
 then
-    apt-get $apt_opts update || apt-get $apt_opts update
+    apt-get ${apt_opts} update || apt-get ${apt_opts} update
     touch -c /var/lib/apt/lists
 fi
 EOF
@@ -153,7 +153,7 @@ EOF
         fi
     ;;
     *)
-        echo "Unknown state: $state_should" >&2
+        echo "Unknown state: ${state_should}" >&2
         exit 1
     ;;
 esac

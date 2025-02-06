@@ -25,26 +25,26 @@ destination="/${__object_id:?}"
 
 # NOTE: Test for symlink first because a symlink can exist but point to a
 #       non-existing file, in which case `test -h` is 0 but `test -e` is 1.
-if [ -h "$destination" ]; then
+if [ -h "${destination}" ]; then
     echo symlink
-elif [ ! -e "$destination" ]; then
+elif [ ! -e "${destination}" ]; then
     echo none
-elif [ -f "$destination" ]; then
+elif [ -f "${destination}" ]; then
     type=$(cat "${__object:?}/parameter/type")
-    case $type in
+    case ${type} in
         hard)
             # Currently not worth the effor to change it, stat is not defined by POSIX
             # and different OSes has different implementations for it.
             # shellcheck disable=SC2012
-            link_count=$(ls -l "$destination" | awk '{ print $2 }')
-            if [ "$link_count" -gt 1 ]; then
+            link_count=$(ls -l "${destination}" | awk '{ print $2 }')
+            if [ "${link_count}" -gt 1 ]; then
                 echo hardlink
                 exit 0
             fi
         ;;
     esac
     echo file
-elif [ -d "$destination" ]; then
+elif [ -d "${destination}" ]; then
     echo directory
 else
     echo unknown

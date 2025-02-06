@@ -30,11 +30,11 @@ fi
 
 if command -v getent >/dev/null
 then
-	gid=$(getent passwd "$owner" | cut -d':' -f4)
-	getent group "$gid" || true
+	gid=$(getent passwd "${owner}" | cut -d':' -f4)
+	getent group "${gid}" || true
 else
 	# Fallback to local file scanning
-	case $owner
+	case ${owner}
 	in
 		[0-9][0-9]*)
 			gid=$(awk -F: "\$3 == \"${owner}\" { print \$4 }" /etc/passwd)
@@ -44,5 +44,5 @@ else
 			;;
 	esac
 
-	awk -F: "\$3 == \"$gid\" { print }" /etc/group
+	awk -F: "\$3 == \"${gid}\" { print }" /etc/group
 fi

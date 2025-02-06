@@ -26,20 +26,20 @@ fi
 state_should=$(cat "${__object:?}/parameter/state")
 state_is=$(cat "${__object:?}/explorer/state")
 
-if [ "$state_should" = "$state_is" ]; then
+if [ "${state_should}" = "${state_is}" ]; then
    # nothing to do
    exit 0
 fi
 
-case $state_should in
+case ${state_should} in
    present)
       uri=$(cat "${__object:?}/parameter/uri")
-      printf 'curl -s -L "%s" | apt-key add -\n' "$uri"
+      printf 'curl -s -L "%s" | apt-key add -\n' "${uri}"
    ;;
    absent)
       cat << DONE
-keyid=\$(apt-key list | grep -B1 "$name" | awk '/pub/ { print \$2 }' | cut -d'/' -f 2)
-apt-key del \$keyid
+keyid=\$(apt-key list | grep -B1 "${name}" | awk '/pub/ { print \$2 }' | cut -d'/' -f 2)
+apt-key del \${keyid}
 DONE
    ;;
 esac

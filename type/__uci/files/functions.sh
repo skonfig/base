@@ -53,7 +53,7 @@ uci_validate_name() {
 
 uci_validate_tuple() (
 	tok=${1:?}
-	case $tok
+	case ${tok}
 	in
 		(*.*.*)
 			# check option

@@ -24,8 +24,8 @@
 # system.
 
 type="${__object:?}/parameter/type"
-if [ -f "$type" ]; then
-   type=$(cat "$type")
+if [ -f "${type}" ]; then
+   type=$(cat "${type}")
 else
    # By default determine package manager based on operating system
    os=$(cat "${__global:?}/explorer/os")
@@ -47,7 +47,7 @@ else
          openbsd) type="pkg_openbsd" ;;
          alpine|chimera) type="apk" ;;
          *)
-            echo "Don't know how to manage packages on: $os" >&2
+            echo "Don't know how to manage packages on: ${os}" >&2
             exit 1
          ;;
    esac
@@ -55,12 +55,12 @@ fi
 
 state=$(cat "${__object:?}/parameter/state")
 
-set -- "$@" "${__object_id:?}" "--state" "$state"
+set -- "$@" "${__object_id:?}" "--state" "${state}"
 cd "${__object:?}/parameter"
 for property in *; do
-   if [ "$property" != "type" ] && [ "$property" != "state" ]; then
-      set -- "$@" "--$property" "$(cat "$property")"
+   if [ "${property}" != "type" ] && [ "${property}" != "state" ]; then
+      set -- "$@" "--${property}" "$(cat "${property}")"
    fi
 done
 
-__package_$type "$@"
+__package_${type} "$@"

@@ -57,7 +57,7 @@ _readlink() {
 case ${type}
 in
    symbolic)
-      if [ -h "$destination" ]; then
+      if [ -h "${destination}" ]; then
          source_is=$(_readlink "${destination}")
          # ignore trailing slashes for comparison
          if [ "${source_is%/}" = "${source%/}" ]; then

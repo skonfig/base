@@ -53,4 +53,4 @@ mkdir "${__object:?}/files"
 __file "/etc/apt/sources.list.d/${name}.list" \
    --source "${__object:?}/files/source.list" \
    --owner root --group root --mode 0644 \
-   --state "$state"
+   --state "${state}"

@@ -27,7 +27,7 @@ fi
 
 script=$(cat "${__object:?}/parameter/script")
 
-if [ "$script" = '-' ]
+if [ "${script}" = '-' ]
 then
     script=$(cat "${__object:?}/stdin")
 fi
@@ -40,13 +40,13 @@ sed_cmd='sed'
 
 if [ -f "${__object:?}/parameter/regexp-extended" ]
 then
-    sed_cmd="$sed_cmd -E"
+    sed_cmd="${sed_cmd} -E"
 fi
 
 # do sed dry run, diff result and if no change, then there's nothing to do
 # also redirect diff's output to stderr for debugging purposes
 
-if echo "$script" | $sed_cmd -f - "$file_from_target" | diff -u "$file_from_target" - >&2
+if echo "${script}" | ${sed_cmd} -f - "${file_from_target}" | diff -u "${file_from_target}" - >&2
 then
     exit 0
 fi
@@ -57,16 +57,16 @@ fi
 # shellcheck disable=SC2016
 echo 'tmp="${__object:?}/tempfile"'
 
-echo "$sed_cmd -f - '$file' > \"\$tmp\" << EOF"
+echo "${sed_cmd} -f - '${file}' > \"\${tmp}\" << EOF"
 
-echo "$script"
+echo "${script}"
 
 echo 'EOF'
 
-echo "cp \"\$tmp\" '$file'"
+echo "cp \"\${tmp}\" '${file}'"
 
 # shellcheck disable=SC2016
-echo 'rm -f "$tmp"'
+echo 'rm -f "${tmp}"'
 
 echo 'change' >> "${__messages_out:?}"
 

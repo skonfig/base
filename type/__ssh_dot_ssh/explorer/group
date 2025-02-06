@@ -25,7 +25,7 @@ gid=$("${__type_explorer:?}/passwd" | cut -d':' -f4)
 
 if command -v getent >/dev/null
 then
-	getent group "$gid" || true
+	getent group "${gid}" || true
 else
-	awk -F: "\$3 == \"$gid\" { print }" /etc/group
+	awk -v gid="${gid}" -F: '$3 == gid { print }' /etc/group
 fi

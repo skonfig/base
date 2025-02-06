@@ -32,7 +32,7 @@ name=${__object_id:?}
 
 if command -v getent >/dev/null
 then
-	getent group "$name" || true
+	getent group "${name}" || true
 elif [ -f /etc/group ]
 then
 	grep "^${name}:" /etc/group || true

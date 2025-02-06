@@ -32,7 +32,7 @@ fi
 #   If such usage of apt-key is desired the additional installation of
 #   the GNU Privacy Guard suite (packaged in gnupg) is required.
 if [ -f "${__object:?}/parameter/use-deprecated-apt-key" ]; then
-   if apt-key export "$keyid" | head -n 1 | grep -Fqe "BEGIN PGP PUBLIC KEY BLOCK"
+   if apt-key export "${keyid}" | head -n 1 | grep -Fqe "BEGIN PGP PUBLIC KEY BLOCK"
       then echo present
       else echo absent
    fi
@@ -40,9 +40,9 @@ if [ -f "${__object:?}/parameter/use-deprecated-apt-key" ]; then
 fi
 
 keydir=$(cat "${__object:?}/parameter/keydir")
-keyfile="$keydir/${__object_id:?}.gpg"
+keyfile="${keydir}/${__object_id:?}.gpg"
 
-if [ -f "$keyfile" ]
+if [ -f "${keyfile}" ]
 then
    echo present
    exit

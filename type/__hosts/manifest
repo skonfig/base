@@ -30,7 +30,7 @@ then
 	ip=$(cat "${__object:?}/parameter/ip")
 	if test -s "${__object:?}/parameter/alias"
 	then
-		aliases=$(while read -r a; do printf '\t%s' "$a"; done <"${__object:?}/parameter/alias")
+		aliases=$(while read -r a; do printf '\t%s' "${a}"; done <"${__object:?}/parameter/alias")
 	fi
 
 	set -- --line "$(printf '%s\t%s%s  %s' \

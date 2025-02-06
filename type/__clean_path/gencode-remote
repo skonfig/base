@@ -20,18 +20,18 @@
 
 found="${__object:?}/explorer/find"
 
-if [ ! -s "$found" ]
+if [ ! -s "${found}" ]
 then
     exit 0
 fi
 
 echo '${__type:?}/explorer/find -depth -exec rm -rf {} +'
 
-ln -sf "$found" "${__messages_out:?}"
+ln -sf "${found}" "${__messages_out:?}"
 
 onchange="${__object:?}/parameter/onchange"
 
-if [ -f "$onchange" ]
+if [ -f "${onchange}" ]
 then
-    cat "$onchange"
+    cat "${onchange}"
 fi

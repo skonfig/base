@@ -30,20 +30,20 @@ stage_file="${stage_dir}/${destination}"
 stage_file_dir="${stage_file%/*}"
 source_file_name="${source##*/}"
 
-if [ "$state" = "absent" ]; then
+if [ "${state}" = "absent" ]; then
    # nothing to do
    exit 0
 fi
 
 #printf 'set -x\n'
 
-if [ ! -d "$stage_dir" ]; then
-   printf 'mkdir -p "%s"\n' "$stage_dir"
-   printf 'chmod 700 "%s"\n' "$stage_dir"
+if [ ! -d "${stage_dir}" ]; then
+   printf 'mkdir -p "%s"\n' "${stage_dir}"
+   printf 'chmod 700 "%s"\n' "${stage_dir}"
 fi
 
-if [ ! -d "$stage_file_dir" ]; then
-   printf 'mkdir -p "%s"\n' "$stage_file_dir"
+if [ ! -d "${stage_file_dir}" ]; then
+   printf 'mkdir -p "%s"\n' "${stage_file_dir}"
 fi
 
 
@@ -57,30 +57,30 @@ get_file() {
 
 fetch_file() {
    # shellcheck disable=SC2059
-   printf "$fetch_command" "$source"
-   printf ' > "%s"\n' "$stage_file"
+   printf "${fetch_command}" "${source}"
+   printf ' > "%s"\n' "${stage_file}"
 }
 
 fetch_and_prepare_file() {
    # shellcheck disable=SC2016
    printf 'tmpdir="$(mktemp -d -p "/tmp" "%s")"\n' "${__type##*/}.XXXXXXXXXX"
    # shellcheck disable=SC2016
-   printf 'cd "$tmpdir"\n'
+   printf 'cd "${tmpdir}"\n'
    # shellcheck disable=SC2059
-   printf "$fetch_command > \"%s\"\\n" "$source" "$source_file_name"
+   printf "${fetch_command} > \"%s\"\\n" "${source}" "${source_file_name}"
    prepare_command=$(cat "${__object:?}/parameter/prepare-command")
    # shellcheck disable=SC2059
-   printf "$prepare_command > \"%s\"\\n" "$source_file_name" "$stage_file"
+   printf "${prepare_command} > \"%s\"\\n" "${source_file_name}" "${stage_file}"
    printf 'cd - >/dev/null\n'
    # shellcheck disable=SC2016
-   printf 'rm -rf "$tmpdir"\n'
+   printf 'rm -rf "${tmpdir}"\n'
 }
 
 cat << DONE
 verify_cksum() {
-   cksum_is="\$(cksum "$stage_file" | cut -d' ' -f1,2)"
+   cksum_is="\$(cksum "${stage_file}" | cut -d' ' -f1,2)"
    cksum_should=$(cut -d' ' -f1,2 "${__object:?}/parameter/cksum")
-   if [ "\$cksum_is" = "\$cksum_should" ]; then
+   if [ "\${cksum_is}" = "\${cksum_should}" ]; then
       return 0
    else
       return 1
@@ -88,7 +88,7 @@ verify_cksum() {
 }
 DONE
 
-if [ ! -f "$stage_file" ]; then
+if [ ! -f "${stage_file}" ]; then
    get_file
 else
    printf 'verify_cksum || {\n'

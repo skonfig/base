@@ -24,11 +24,11 @@ stage_file="${stage_dir}/${destination}"
 
 set -- "/${destination}"
 for param in owner group mode state; do
-   if [ -f "${__object:?}/parameter/$param" ]; then
-      set -- "$@" "--${param}" "$(cat "${__object:?}/parameter/$param")"
+   if [ -f "${__object:?}/parameter/${param}" ]; then
+      set -- "$@" "--${param}" "$(cat "${__object:?}/parameter/${param}")"
    fi
 done
-set -- "$@" --source "$stage_file"
+set -- "$@" --source "${stage_file}"
 
 require="${__object_name:?}" \
    __file "$@"

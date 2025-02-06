@@ -27,7 +27,7 @@ mode=$(cat "${__object:?}/parameter/mode")
 
 # Let __directory handle removal of git repos
 
-case $state_should in
+case ${state_should} in
     present)
         source=$(cat "${__object:?}/parameter/source")
         case ${source}
@@ -47,13 +47,13 @@ case $state_should in
 
     absent)
         __directory "${__object_id:?}" --state absent \
-            --owner "$owner" \
-            --group "$group" \
-            --mode "$mode"
+            --owner "${owner}" \
+            --group "${group}" \
+            --mode "${mode}"
     ;;
 
     *)
-        echo "Unknown state: $state_should" >&2
+        printf 'Unknown state: %s\n' "${state_should}" >&2
         exit 1
     ;;
 esac

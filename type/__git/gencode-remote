@@ -40,22 +40,22 @@ mode=$(cat "${__object:?}/parameter/mode")
 [ -f "${__object:?}/parameter/recursive" ] && recursive='--recurse-submodules' || recursive=''
 [ -f "${__object:?}/parameter/shallow" ] && shallow='--depth 1 --shallow-submodules' || shallow=''
 
-[ "$state_should" = "$state_is" ] \
- && [ "$owner" = "$owner_is" ] \
- && [ "$group" = "$group_is" ] \
- && [ -n "$mode" ] && exit 0
+[ "${state_should}" = "${state_is}" ] \
+ && [ "${owner}" = "${owner_is}" ] \
+ && [ "${group}" = "${group_is}" ] \
+ && [ -n "${mode}" ] && exit 0
 
-case $state_should in
+case ${state_should} in
     present)
-        if [ "$state_should" != "$state_is" ]; then
-            echo git clone --quiet "$recursive" "$shallow" "$branch" "$source" "$destination"
+        if [ "${state_should}" != "${state_is}" ]; then
+            echo git clone --quiet "${recursive}" "${shallow}" "${branch}" "${source}" "${destination}"
         fi
-        if { [ -n "$owner" ] && [ "$owner_is" != "$owner" ]; } || \
-           { [ -n "$group" ] && [ "$group_is" != "$group" ]; }; then
-            echo chown -R "${owner}:${group}" "$destination"
+        if { [ -n "${owner}" ] && [ "${owner_is}" != "${owner}" ]; } || \
+           { [ -n "${group}" ] && [ "${group_is}" != "${group}" ]; }; then
+            echo chown -R "${owner}:${group}" "${destination}"
         fi
-        if [ -n "$mode" ]; then
-            echo chmod -R "$mode" "$destination"
+        if [ -n "${mode}" ]; then
+            echo chmod -R "${mode}" "${destination}"
         fi
     ;;
 
@@ -64,7 +64,7 @@ case $state_should in
     ;;
 
     *)
-        echo "Unknown state: $state_should" >&2
+        printf 'Unknown state: %s\n' "${state_should}" >&2
         exit 1
     ;;
 esac

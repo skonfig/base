@@ -34,8 +34,8 @@ shorten_property() {
 }
 
 
-if [ "$state" = "present" ]; then
-   case $os in
+if [ "${state}" = "present" ]; then
+   case ${os} in
       freebsd)
          supported_change_properties="gid"
       ;;
@@ -45,11 +45,11 @@ if [ "$state" = "present" ]; then
    esac
    if grep -q "^${name}:" "${__object:?}/explorer/group"; then
       # change existing
-      for property in $supported_change_properties; do
-         if [ -f "${__object:?}/parameter/$property" ]; then
-            new_value=$(cat "${__object:?}/parameter/$property")
+      for property in ${supported_change_properties}; do
+         if [ -f "${__object:?}/parameter/${property}" ]; then
+            new_value=$(cat "${__object:?}/parameter/${property}")
             unset current_value
-            case $property in
+            case ${property} in
                password)
                   current_value=$(awk -F: '{ print $2 }' "${__object:?}/explorer/gshadow")
                ;;
@@ -57,46 +57,46 @@ if [ "$state" = "present" ]; then
                   current_value=$(awk -F: '{ print $3 }' "${__object:?}/explorer/group")
                ;;
             esac
-            if [ "$new_value" != "$current_value" ]; then
-               set -- "$@" "$(shorten_property "$property")" \'"$new_value"\'
-               echo "change $property $new_value $current_value" >> "${__messages_out:?}"
+            if [ "${new_value}" != "${current_value}" ]; then
+               set -- "$@" "$(shorten_property "${property}")" \'"${new_value}"\'
+               echo "change ${property} ${new_value} ${current_value}" >> "${__messages_out:?}"
             fi
          fi
       done
       if [ $# -gt 0 ]; then
-         if [ "$os" = "freebsd" ]; then
-            echo pw groupmod "$@" "$name"
+         if [ "${os}" = "freebsd" ]; then
+            echo pw groupmod "$@" "${name}"
          else
-            echo groupmod "$@" "$name"
+            echo groupmod "$@" "${name}"
          fi
          echo mod >> "${__messages_out:?}"
       fi
    else
       # create new
-      for property in $supported_change_properties; do
-         if [ -f "${__object:?}/parameter/$property" ]; then
-            new_value=$(cat "${__object:?}/parameter/$property")
-            if [ -z "$new_value" ]; then
+      for property in ${supported_change_properties}; do
+         if [ -f "${__object:?}/parameter/${property}" ]; then
+            new_value=$(cat "${__object:?}/parameter/${property}")
+            if [ -z "${new_value}" ]; then
                # Boolean parameters have no value
-               set -- "$@" "$(shorten_property "$property")"
+               set -- "$@" "$(shorten_property "${property}")"
             else
-               set -- "$@" "$(shorten_property "$property")" \'"$new_value"\'
+               set -- "$@" "$(shorten_property "${property}")" \'"${new_value}"\'
             fi
          fi
       done
-      if [ "$os" = "freebsd" ]; then
-         echo pw groupadd "$name" "$@"
+      if [ "${os}" = "freebsd" ]; then
+         echo pw groupadd "${name}" "$@"
       else
-         echo groupadd "$@" "$name"
+         echo groupadd "$@" "${name}"
       fi
    fi
 else
    # delete existing
    if grep -q "^${name}:" "${__object:?}/explorer/group"; then
-      if [ "$os" = "freebsd" ]; then
-         echo pw groupdel "$name"
+      if [ "${os}" = "freebsd" ]; then
+         echo pw groupdel "${name}"
       else
-         echo groupdel "$name"
+         echo groupdel "${name}"
       fi
       echo remove >> "${__messages_out:?}"
    fi

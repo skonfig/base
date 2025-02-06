@@ -27,12 +27,12 @@ case $("${__explorer:?}/os") in
    ;;
    openwrt)
       # shellcheck disable=SC1091
-      (. /etc/openwrt_release && echo "$DISTRIB_CODENAME")
+      (. /etc/openwrt_release && echo "${DISTRIB_CODENAME}")
    ;;
    *)
       lsb_release=$(command -v lsb_release)
-      if [ -x "$lsb_release" ]; then
-         $lsb_release --short --codename
+      if [ -x "${lsb_release}" ]; then
+         ${lsb_release} --short --codename
       fi
    ;;
 esac

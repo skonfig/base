@@ -28,19 +28,19 @@ state_should=$(cat "${__object:?}/parameter/state")
 state_is=$(cat "${__object:?}/explorer/state")
 
 # Nothing to be done
-[ "$state_is" = "$state_should" ] && exit 0
+[ "${state_is}" = "${state_should}" ] && exit 0
 
-case $state_should in
+case ${state_should} in
     present)
-        echo "apk add -q '$name'"
+        echo "apk add -q '${name}'"
         echo "installed" >> "${__messages_out:?}"
     ;;
     absent)
-        echo "apk del -q '$name'"
+        echo "apk del -q '${name}'"
         echo "removed" >> "${__messages_out:?}"
     ;;
     *)
-        echo "Unknown state: $state_should" >&2
+        echo "Unknown state: ${state_should}" >&2
         exit 1
     ;;
 esac

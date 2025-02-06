@@ -27,7 +27,7 @@ maxage=$(cat "${__object:?}/parameter/maxage")
 if [ ! -d /var/lib/apt/lists ] \
     || [ -n "$( find /etc/apt -newer /var/lib/apt/lists )" ] \
     || [ ! -f /var/cache/apt/pkgcache.bin ] \
-    || [ "$( stat --format %Y /var/cache/apt/pkgcache.bin )" -lt "$( date +%s -d "-$maxage seconds" )" ]
+    || [ "$( stat --format %Y /var/cache/apt/pkgcache.bin )" -lt "$( date +%s -d "-${maxage} seconds" )" ]
 then
     echo 'outdated'
 else

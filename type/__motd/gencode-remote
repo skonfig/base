@@ -20,7 +20,7 @@
 
 os=$(cat "${__global:?}/explorer/os")
 
-case $os in
+case ${os} in
     freebsd)
         # FreeBSD only updates /etc/motd on boot,
 	# as seen in /etc/rc.d/motd

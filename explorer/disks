@@ -57,12 +57,12 @@ in
 
         if command -v lsblk >/dev/null 2>&1
         then
-            lsblk -e "$(echo "$ign_majors" | tr ' ' ',')" -dno name
+            lsblk -e "$(echo "${ign_majors}" | tr ' ' ',')" -dno name
         elif test -d /sys/block/
         then
             # shellcheck disable=SC2012
             ls -1 /sys/block/ \
-            | awk -v ign_majors="$(echo "$ign_majors" | tr ' ' '|')" '
+            | awk -v ign_majors="$(echo "${ign_majors}" | tr ' ' '|')" '
                 {
                   devfile = "/sys/block/" $0 "/dev"
                   getline devno < devfile

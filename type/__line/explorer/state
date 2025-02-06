@@ -37,7 +37,7 @@ else
    file="/${__object_id:?}"
 fi
 
-[ -f "$file" ] || exit 0
+[ -f "${file}" ] || exit 0
 
 if [ -f "${__object:?}/parameter/before" ]; then
    position="before"
@@ -54,7 +54,7 @@ else
    needle="line"
 fi
 
-awk -v position="$position" -v needle="$needle" '
+awk -v position="${position}" -v needle="${needle}" '
 function _find(_text, _pattern) {
    if (needle == "regex") {
       return match(_text, _pattern)
@@ -116,4 +116,4 @@ END {
       print "absent"
    }
 }
-' "$file"
+' "${file}"

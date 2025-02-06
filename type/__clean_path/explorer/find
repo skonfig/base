@@ -28,7 +28,7 @@ else
     path="/${__object_id:?}"
 fi
 
-if [ ! -d "$path" ]
+if [ ! -d "${path}" ]
 then
     exit 0
 fi
@@ -71,7 +71,7 @@ do
 done
 
 
-set -- 'find' "$path" '!' '-path' "$path" "$@"
+set -- 'find' "${path}" '!' '-path' "${path}" "$@"
 
 # for debugging purposes
 #echo "__clean_path/${__object_id:?}: $*" >&2

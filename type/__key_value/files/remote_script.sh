@@ -39,15 +39,15 @@ export exact_delimiter
 
 tmpfile=$(mktemp "${file}.skonfig.XXXXXX")
 # preserve ownership and permissions by copying existing file over tmpfile
-if [ -f "$file" ]; then
-    cp -p "$file" "$tmpfile"
+if [ -f "${file}" ]; then
+    cp -p "${file}" "${tmpfile}"
 else
-    touch "$file"
+    touch "${file}"
 fi
 
 awk_bin=$(PATH=$(getconf PATH 2>/dev/null) && command -v awk || echo awk)
 
-"${awk_bin}" -f - "$file" >"$tmpfile" <<"AWK_EOF"
+"${awk_bin}" -f - "${file}" >"${tmpfile}" <<"AWK_EOF"
 BEGIN {
     # import variables in a secure way ..
     state=ENVIRON["state"]
@@ -126,4 +126,4 @@ END {
     }
 }
 AWK_EOF
-mv -f "$tmpfile" "$file"
+mv -f "${tmpfile}" "${file}"

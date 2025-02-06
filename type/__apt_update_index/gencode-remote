@@ -35,7 +35,7 @@ if [ -f "${__object:?}/parameter/always" ] \
     || [ "$( cat "${__object:?}/explorer/state" )" = 'outdated' ]
 then
     cat << EOF
-apt-get $apt_opts update || apt-get $apt_opts update
+apt-get ${apt_opts} update || apt-get ${apt_opts} update
 touch -c /var/lib/apt/lists
 EOF
 fi

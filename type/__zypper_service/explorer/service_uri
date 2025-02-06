@@ -26,4 +26,4 @@ else
    uri="/${__object_id:?}"
 fi
 # shellcheck disable=SC2005,SC2046
-echo $(zypper ls -u | awk 'BEGIN { FS = "[ ]+\\|[ ]+" } ; $4 == "Yes" && $NF == "'"$uri"'" {print $NF}')
+echo $(zypper ls -u | awk 'BEGIN { FS = "[ ]+\\|[ ]+" } ; $4 == "Yes" && $NF == "'"${uri}"'" {print $NF}')

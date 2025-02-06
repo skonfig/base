@@ -39,7 +39,7 @@ state=$(cat "${__object:?}/parameter/state")
 
 file=$(cat "${__object:?}/parameter/file")
 
-if [ ! -f "$file" ]; then
+if [ ! -f "${file}" ]; then
     echo "nosuchfile"
     exit
 fi
@@ -56,7 +56,7 @@ export key state delimiter value exact_delimiter
 
 awk_bin=$(PATH=$(getconf PATH 2>/dev/null) && command -v awk || echo awk)
 
-"${awk_bin}" -f - "$file" <<"AWK_EOF"
+"${awk_bin}" -f - "${file}" <<"AWK_EOF"
 BEGIN {
     state=ENVIRON["state"]
     key=ENVIRON["key"]

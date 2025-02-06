@@ -52,7 +52,7 @@ in
    ;;
    debian)
       debian_version=$(cat /etc/debian_version)
-      case $debian_version
+      case ${debian_version}
       in
           testing/unstable)
               # previous to Debian 4.0 testing/unstable was used
@@ -61,7 +61,7 @@ in
               ;;
           */sid)
               # sid versions don't have a number, so we decode by codename:
-              case $(expr "$debian_version" : '\([a-z]\{1,\}\)/')
+              case $(expr "${debian_version}" : '\([a-z]\{1,\}\)/')
               in
                   forky) echo 13.99 ;;
                   trixie) echo 12.99 ;;
@@ -77,7 +77,7 @@ in
               esac
               ;;
           *)
-              echo "$debian_version"
+              echo "${debian_version}"
               ;;
       esac
    ;;

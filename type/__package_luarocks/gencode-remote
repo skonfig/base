@@ -34,19 +34,19 @@ else
 fi
 
 # Leave if nothing is to be done
-[ "$state_is" = "$state_should" ] && exit 0
+[ "${state_is}" = "${state_should}" ] && exit 0
 
-case $state_should in
+case ${state_should} in
     present)
-        echo "luarocks install '$name'"
+        echo "luarocks install '${name}'"
         echo "installed" >> "${__messages_out:?}"
     ;;
     absent)
-        echo "luarocks remove '$name'"
+        echo "luarocks remove '${name}'"
         echo "removed" >> "${__messages_out:?}"
     ;;
     *)
-        echo "Unknown state: $state_should" >&2
+        echo "Unknown state: ${state_should}" >&2
         exit 1
     ;;
 esac

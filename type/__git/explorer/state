@@ -22,7 +22,7 @@
 
 destination="/${__object_id:?}/.git"
 
-if [ -d "$destination" ]; then
+if [ -d "${destination}" ]; then
    echo present
 else
    echo absent

@@ -36,11 +36,11 @@ in
 					# test for this message specifically beacuse on
 					# Solaris 11.x "can't open your crontab file" will
 					# also be printed.
-					cron_fail "${msg}" $err ;;
+					cron_fail "${msg}" ${err} ;;
 				(*"can't open your crontab file.")
 					cron_ok ;;
 				(*)
-					cron_fail "${msg}" $err ;;
+					cron_fail "${msg}" ${err} ;;
 			esac
 		}
 		;;
@@ -55,7 +55,7 @@ in
 					# BusyBox
 					cron_ok ;;
 				(*)
-					cron_fail "${msg}" $err ;;
+					cron_fail "${msg}" ${err} ;;
 			esac
 		}
 		;;

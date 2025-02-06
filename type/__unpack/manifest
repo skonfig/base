@@ -24,12 +24,12 @@ os=$(cat "${__global:?}/explorer/os")
 
 src="/${__object_id:?}"
 
-case $src in
+case ${src} in
     *.7z)
         __package p7zip
     ;;
     *.bz2|*.tbz2)
-        case $os in
+        case ${os} in
             freebsd)
                 # bzip2 is part of freebsd base system
             ;;
@@ -39,7 +39,7 @@ case $src in
         esac
     ;;
     *.lzma|*.xz|*.txz)
-        case $os in
+        case ${os} in
             debian|ubuntu|devuan)
                 __package xz-utils
             ;;
@@ -49,7 +49,7 @@ case $src in
         esac
     ;;
     *.rar)
-        case $os in
+        case ${os} in
             debian|ubuntu|devuan|alpine|freebsd)
                 __package unrar
             ;;

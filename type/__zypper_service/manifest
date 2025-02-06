@@ -33,7 +33,7 @@ state_should=$(cat "${__object:?}/parameter/state")
 
 exp_uri=$(cat "${__object:?}/explorer/service_uri")
 
-if [ "$uri" = "$exp_uri" ] ; then
+if [ "${uri}" = "${exp_uri}" ] ; then
     state_is="present"
 else
     state_is="absent"
@@ -41,7 +41,7 @@ fi
 
 
 # Exit if nothing is needed to be done
-[ "$state_is" = "$state_should" ] && exit 0
+[ "${state_is}" = "${state_should}" ] && exit 0
 
 # we need this list to remove ids, but we must do this in reverse order
 exp_repos=$(rev "${__object:?}/explorer/repo_ids")
@@ -49,7 +49,7 @@ exp_repos=$(rev "${__object:?}/explorer/repo_ids")
 # boolean parameter
 if [ -f "${__object:?}/parameter/remove-all-repos" ]; then
    # file exists -> True
-   for i in $exp_repos; do
+   for i in ${exp_repos}; do
      __zypper_repo "droprepo${i}" --state absent --repo_id "${i}"
    done 
 fi

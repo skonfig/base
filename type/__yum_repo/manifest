@@ -21,19 +21,19 @@
 os=$(cat "${__global:?}/explorer/os")
 state=$(cat "${__object:?}/parameter/state")
 
-case $os in
+case ${os} in
    scientific|centos)
       repo_name=${__object_id:?}
       export repo_name
       repo_file="/etc/yum.repos.d/${repo_name}.repo"
       "${__type:?}/files/repo.template" | \
-         __file "$repo_file" \
+         __file "${repo_file}" \
             --owner root --group root --mode 644 \
-            --state "$state" \
+            --state "${state}" \
             --source -
    ;;
    *)
-      echo "Your operating system ($os) is currently not supported by this type (${__type##*/})." >&2
+      echo "Your operating system (${os}) is currently not supported by this type (${__type##*/})." >&2
       echo "Please contribute an implementation for it if you can." >&2
       exit 1
    ;;

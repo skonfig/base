@@ -25,16 +25,16 @@ state_should=$(cat "${__object:?}/parameter/state")
 state_is=$(cat "${__object:?}/explorer/state")
 fire_onchange=''
 
-if [ "$state_is" = "$state_should" ]; then
+if [ "${state_is}" = "${state_should}" ]; then
     exit 0
 fi
 
 # here we check only if the states are valid,
 # emit messages and
 # let awk do the work ...
-case $state_should in
+case ${state_should} in
     absent)
-        case $state_is in
+        case ${state_is} in
             absent|nosuchfile)
                 # nothing to do
             ;;
@@ -43,13 +43,13 @@ case $state_should in
                 fire_onchange=1
             ;;
             *)
-                echo "Unknown explorer state: $state_is" >&2
+                echo "Unknown explorer state: ${state_is}" >&2
                 exit 1
             ;;
         esac
     ;;
     present)
-        case $state_is in
+        case ${state_is} in
             nosuchfile)
                 echo "create" >> "${__messages_out:?}"
                 fire_onchange=1
@@ -66,19 +66,19 @@ case $state_should in
                 # nothing to do
             ;;
             *)
-                echo "Unknown explorer state: $state_is" >&2
+                echo "Unknown explorer state: ${state_is}" >&2
                 exit 1
             ;;
         esac
     ;;
     *)
-        echo "Unknown state: $state_should" >&2
+        echo "Unknown state: ${state_should}" >&2
         exit 1
     ;;
 esac
 
 cat "${__type:?}/files/remote_script.sh"
 
-if [ -n "$fire_onchange" ]; then
+if [ -n "${fire_onchange}" ]; then
     cat "${__object:?}/parameter/onchange"
 fi

@@ -25,55 +25,55 @@ init=$(cat "${__global:?}/explorer/init")
 target_runlevel=$(cat "${__object:?}/parameter/target_runlevel")
 
 # Short circuit if nothing is to be done
-[ "$state_should" = "$state_is" ] && exit 0
+[ "${state_should}" = "${state_is}" ] && exit 0
 
 os=$(cat "${__global:?}/explorer/os")
 os_version=$(cat "${__global:?}/explorer/os_version")
 name=${__object_id:?}
 
-case $state_should in
+case ${state_should} in
     present)
-        if [ "$init" = 'systemd' ]; then
+        if [ "${init}" = 'systemd' ]; then
             # this handles ALL linux distros with systemd
             # e.g. archlinux, gentoo in some cases, new RHEL and SLES versions
-            echo "systemctl -q enable '$name'"
+            echo "systemctl -q enable '${name}'"
         else
-            case $os in
+            case ${os} in
                 debian)
-                    case $os_version in
+                    case ${os_version} in
                         [1-7]*)
-                            echo "update-rc.d '$name' defaults >/dev/null"
+                            echo "update-rc.d '${name}' defaults >/dev/null"
                         ;;
                         8*)
-                            echo "systemctl enable '$name'"
+                            echo "systemctl enable '${name}'"
                         ;;
                         *)
-                            echo "Unsupported version $os_version of $os" >&2
+                            echo "Unsupported version ${os_version} of ${os}" >&2
                             exit 1
                         ;;
                     esac
                 ;;
                 devuan)
-                    echo "update-rc.d '$name' defaults >/dev/null"
+                    echo "update-rc.d '${name}' defaults >/dev/null"
                 ;;
 
                 alpine|gentoo)
-                    echo "rc-update add '$name' '$target_runlevel'"
+                    echo "rc-update add '${name}' '${target_runlevel}'"
                 ;;
 
                 amazon|scientific|centos|almalinux|eurolinux|rocky|fedora|owl|redhat|suse)
-                    echo "chkconfig '$name' on"
+                    echo "chkconfig '${name}' on"
                 ;;
 
                 openwrt)
                     # 'enable' can be successful and still return a non-zero exit
                     # code, deal with it by checking for success ourselves in that
                     # case (the || ... part).
-                    echo "'/etc/init.d/$name' enable || [ -f /etc/rc.d/S??'$name' ]"
+                    echo "'/etc/init.d/${name}' enable || [ -f /etc/rc.d/S??'${name}' ]"
                 ;;
 
                 ubuntu)
-                    echo "update-rc.d '$name' defaults >/dev/null"
+                    echo "update-rc.d '${name}' defaults >/dev/null"
                 ;;
 
                 freebsd)
@@ -82,11 +82,11 @@ case $state_should in
 
                 openbsd)
                     # OpenBSD 5.7 and higher
-                    echo "rcctl enable '$name'"
+                    echo "rcctl enable '${name}'"
                 ;;
 
                 *)
-                   echo "Unsupported os: $os" >&2
+                   echo "Unsupported os: ${os}" >&2
                    exit 1
                 ;;
             esac
@@ -94,36 +94,36 @@ case $state_should in
     ;;
 
     absent)
-        if [ "$init" = 'systemd' ]; then
+        if [ "${init}" = 'systemd' ]; then
             # this handles ALL linux distros with systemd
             # e.g. archlinux, gentoo in some cases, new RHEL and SLES versions
-            echo "systemctl -q disable '$name'"
+            echo "systemctl -q disable '${name}'"
 
         else
-            case $os in
+            case ${os} in
                 debian|ubuntu|devuan)
-                    echo "update-rc.d -f '$name' remove"
+                    echo "update-rc.d -f '${name}' remove"
                 ;;
 
                 alpine|gentoo)
-                    echo "rc-update del '$name' '$target_runlevel'"
+                    echo "rc-update del '${name}' '${target_runlevel}'"
                 ;;
 
                 centos|fedora|owl|redhat|suse)
-                    echo "chkconfig '$name' off"
+                    echo "chkconfig '${name}' off"
                 ;;
 
                 openwrt)
-                    echo "'/etc/init.d/$name' disable"
+                    echo "'/etc/init.d/${name}' disable"
                     ;;
 
                 openbsd)
                     # OpenBSD 5.7 and higher
-                    echo "rcctl disable '$name'"
+                    echo "rcctl disable '${name}'"
                 ;;
 
                 *)
-                   echo "Unsupported os: $os" >&2
+                   echo "Unsupported os: ${os}" >&2
                    exit 1
                 ;;
             esac
@@ -131,7 +131,7 @@ case $state_should in
     ;;
 
     *)
-        echo "Unknown state: $state_should" >&2
+        printf 'Unknown state: %s\n' "${state_should}" >&2
         exit 1
     ;;
 esac
