@@ -48,7 +48,7 @@ contains_element() {
         if [ "${key}" = "${target}" ]; then
             MATCH=1
             return 0
-        fi  
+        fi
     done
     MATCH=0
 }
@@ -73,7 +73,7 @@ if [ "${file}" ]; then
         echo "ERROR: Unknown state: ${state}" >&2
         exit 0
     fi
-fi  
+fi
 
 if [ "${section}" = 'options' ]; then
 
@@ -93,7 +93,7 @@ eof
             require="__file/${sec_path}/${section}" __line "${key}_${value}" \
                 --file "${sec_path}/${section}" --line "${key}" --state absent
         fi
-        
+
     else
         contains_element "${key}" "${allowed_option_keys}"
 
@@ -105,7 +105,7 @@ eof
         fi
     fi
 
-else 
+else
         __file "${sec_path}/repo_${section}"\
             --state exists --mode 666 --source - << eof
 [${section}]
@@ -117,7 +117,7 @@ eof
         if [ ${MATCH} -eq 0 ]; then
             exit
         fi
-    
+
         require="__file/${sec_path}/repo_${section}" __key_value "${section}_${key}" \
                 --file "${sec_path}/repo_${section}" --key "${key}" --value "${value}" --delimiter ' = '
 

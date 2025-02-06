@@ -38,4 +38,3 @@ printf '%s' "$(echo "${PKG_OUTPUT}" \
    | sed 's/^\(.*\)-\([^-]*\)$/name:\1 ver:\2/g' \
    | grep "name:${name} ver:" \
    | sed 's/^.*ver:\(.*\)/\1/g')"
-

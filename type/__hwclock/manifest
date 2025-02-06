@@ -145,7 +145,7 @@ in
 				--delimiter '=' --exact_delimiter \
 				--value "$(${local_clock} && echo no || echo yes)"
 			unset CDIST_ORDER_DEPENDENCY
-		fi		  
+		fi
 		;;
 	(freebsd)
 		# cf. adjkerntz(8)

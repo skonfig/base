@@ -40,4 +40,3 @@ then
         # Checkpoint firewall or management (actually linux based)
         cat /etc/cp-release
 fi
-

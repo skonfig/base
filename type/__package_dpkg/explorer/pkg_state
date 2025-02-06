@@ -27,5 +27,3 @@ dpkg_status=$(dpkg-query --show --showformat='${db:Status-Abbrev} ${binary:Packa
 if echo "${dpkg_status}" | grep -q '^ii'; then
 	echo "${dpkg_status##* }"
 fi
-
-

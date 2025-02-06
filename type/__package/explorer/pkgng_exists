@@ -23,4 +23,3 @@
 if [ "$("${__explorer:?}/os")" = 'freebsd' ]; then
    command -v pkg
 fi
-

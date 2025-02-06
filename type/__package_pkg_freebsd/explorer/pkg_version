@@ -35,4 +35,3 @@ if [ ! "${PKG_OUTPUT}" = 'pkg_info: no packages installed' ]; then
 		| grep "name:${name} ver:" \
 		| sed 's/^.*ver:\(.*\)/\1/g')"
 fi
-

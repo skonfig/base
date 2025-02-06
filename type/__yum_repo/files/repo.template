@@ -11,7 +11,7 @@ single_value='name
 metalink
 mirrorlist
 gpgcakey
-gpgcheck 
+gpgcheck
 exclude
 includepkgs
 failovermethod

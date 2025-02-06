@@ -39,4 +39,3 @@ state_should=''
 __file "/var/cache/apt/archives/${package}" \
     --source "${package_path}" \
     --state  "${state}"
-

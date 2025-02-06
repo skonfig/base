@@ -38,4 +38,3 @@ apt_opts='-o Acquire::AllowReleaseInfoChange::Suite=true -o Acquire::AllowReleas
 if grep -q "^__file${destination}" "${__messages_in:?}"; then
    printf 'apt-get %s update || apt-get %s update\n' "${apt_opts}" "${apt_opts}"
 fi
-
