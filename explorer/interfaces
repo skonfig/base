@@ -29,4 +29,4 @@ elif command -v ifconfig >/dev/null
 then
 	ifconfig -a | sed -n -E 's/^(.*)(:[[:space:]]*flags=|Link encap).*/\1/p'
 fi \
- | sort -u
+| sort -u

@@ -20,9 +20,9 @@
 
 if [ -f "${__object:?}/parameter/name" ]
 then
-   name="${__object:?}/parameter/name"
+    name="${__object:?}/parameter/name"
 else
-   name=${__object_id:?}
+    name=${__object_id:?}
 fi
 
 state_should=$(cat "${__object:?}/parameter/state")
@@ -66,15 +66,15 @@ fi
 
 case ${state_should}
 in
-   (present)
+    (present)
         echo "emerge '${name}' &>/dev/null || exit 1"
         echo 'installed' >> "${__messages_out:?}"
         ;;
-   (absent)
+    (absent)
         echo "emerge -C '${name}' &>/dev/null || exit 1"
         echo 'removed' >> "${__messages_out:?}"
         ;;
-   (*)
+    (*)
         echo "Unknown state: ${state_should}" >&2
         exit 1
         ;;

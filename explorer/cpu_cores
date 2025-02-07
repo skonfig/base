@@ -22,8 +22,6 @@
 # Note that this number includes virtual SMT threads.
 #
 
-# FIXME: other system types (not linux ...)
-
 os=$("${__explorer:?}/os")
 case ${os}
 in

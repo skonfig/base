@@ -99,9 +99,9 @@ else
             ;;
 
         (*)
-           echo "Unsupported os: ${os}" >&2
-           exit 1
-           ;;
+            echo "Unsupported os: ${os}" >&2
+            exit 1
+            ;;
     esac
 fi
 

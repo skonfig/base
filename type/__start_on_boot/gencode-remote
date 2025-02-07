@@ -91,19 +91,19 @@ in
                     ;;
 
                 (*)
-                   echo "Unsupported os: ${os}" >&2
-                   exit 1
-                   ;;
+                    echo "Unsupported os: ${os}" >&2
+                    exit 1
+                    ;;
             esac
         fi
         ;;
+
     (absent)
         if [ "${init}" = 'systemd' ]
         then
             # this handles ALL linux distros with systemd
             # e.g. archlinux, gentoo in some cases, new RHEL and SLES versions
             echo "systemctl -q disable '${name}'"
-
         else
             case ${os}
             in
@@ -129,9 +129,9 @@ in
                     ;;
 
                 (*)
-                   echo "Unsupported os: ${os}" >&2
-                   exit 1
-                   ;;
+                    echo "Unsupported os: ${os}" >&2
+                    exit 1
+                    ;;
             esac
         fi
         ;;

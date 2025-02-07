@@ -35,15 +35,15 @@ shorten_property() {
     unset -v ret
     case $1
     in
-	(comment) ret='-c';;
-	(home) ret='-d';;
-	(gid) ret='-g';;
-	(groups) ret='-G';;
-	(password) ret='-p';;
-	(shell) ret='-s';;
-	(uid) ret='-u';;
-    (create-home) ret='-m';;
-    (system) ret='-r';;
+        (comment) ret='-c';;
+        (home) ret='-d';;
+        (gid) ret='-g';;
+        (groups) ret='-G';;
+        (password) ret='-p';;
+        (shell) ret='-s';;
+        (uid) ret='-u';;
+        (create-home) ret='-m';;
+        (system) ret='-r';;
     esac
     echo "${ret}"
 }

@@ -45,8 +45,8 @@ in
       cat /etc/arch-release
       ;;
    (checkpoint)
-       awk '{version=$NF; printf("%s\n", substr(version, 2))}' /etc/cp-release
-       ;;
+      awk '{version=$NF; printf("%s\n", substr(version, 2))}' /etc/cp-release
+      ;;
    (chimera)
       cat /etc/chimera-release
       ;;
@@ -54,31 +54,31 @@ in
       debian_version=$(cat /etc/debian_version)
       case ${debian_version}
       in
-          (testing/unstable)
-              # previous to Debian 4.0 testing/unstable was used
-              # cf. https://metadata.ftp-master.debian.org/changelogs/main/b/base-files/base-files_11_changelog
-              echo 3.99
-              ;;
-          (*/sid)
-              # sid versions don't have a number, so we decode by codename:
-              case $(expr "${debian_version}" : '\([a-z]\{1,\}\)/')
-              in
-                  (forky) echo 13.99 ;;
-                  (trixie) echo 12.99 ;;
-                  (bookworm) echo 11.99 ;;
-                  (bullseye) echo 10.99 ;;
-                  (buster) echo 9.99 ;;
-                  (stretch) echo 8.99 ;;
-                  (jessie) echo 7.99 ;;
-                  (wheezy) echo 6.99 ;;
-                  (squeeze) echo 5.99 ;;
-                  (lenny) echo 4.99 ;;
-                  (*) echo 99.99 ;;
-              esac
-              ;;
-          (*)
-              echo "${debian_version}"
-              ;;
+         (testing/unstable)
+            # previous to Debian 4.0 testing/unstable was used
+            # cf. https://metadata.ftp-master.debian.org/changelogs/main/b/base-files/base-files_11_changelog
+            echo 3.99
+            ;;
+         (*/sid)
+            # sid versions don't have a number, so we decode by codename:
+            case $(expr "${debian_version}" : '\([a-z]\{1,\}\)/')
+            in
+               (forky) echo 13.99 ;;
+               (trixie) echo 12.99 ;;
+               (bookworm) echo 11.99 ;;
+               (bullseye) echo 10.99 ;;
+               (buster) echo 9.99 ;;
+               (stretch) echo 8.99 ;;
+               (jessie) echo 7.99 ;;
+               (wheezy) echo 6.99 ;;
+               (squeeze) echo 5.99 ;;
+               (lenny) echo 4.99 ;;
+               (*) echo 99.99 ;;
+            esac
+            ;;
+         (*)
+            echo "${debian_version}"
+            ;;
       esac
       ;;
    (devuan)

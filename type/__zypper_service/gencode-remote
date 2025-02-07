@@ -26,16 +26,16 @@ zypper_def_opts=' -q --non-interactive --gpg-auto-import-keys '
 
 if [ -f "${__object:?}/parameter/service_desc" ]
 then
-   desc=$(cat "${__object:?}/parameter/service_desc")
+    desc=$(cat "${__object:?}/parameter/service_desc")
 else
-   desc=${__object_id:?}
+    desc=${__object_id:?}
 fi
 
 if [ -f "${__object:?}/parameter/uri" ]
 then
-   uri=$(cat "${__object:?}/parameter/uri")
+    uri=$(cat "${__object:?}/parameter/uri")
 else
-   uri=${__object_id:?}
+    uri=${__object_id:?}
 fi
 
 state_should=$(cat "${__object:?}/parameter/state")
@@ -57,15 +57,15 @@ fi
 # remove all other services if needed ...
 if [ -f "${__object:?}/parameter/remove-all-other-services" ]
 then
-   # file exists -> True
-   for i in ${exp_ids}
-   do
-     if [ "${i}" != "${exp_id}" ]
-     then
-       echo "zypper ${zypper_def_opts}  removeservice ${i} &>/dev/null"
-     fi
-   done
-   echo "zypper ${zypper_def_opts} refs &>/dev/null"
+    # file exists -> True
+    for i in ${exp_ids}
+    do
+        if [ "${i}" != "${exp_id}" ]
+        then
+            echo "zypper ${zypper_def_opts} removeservice ${i} &>/dev/null"
+        fi
+    done
+    echo "zypper ${zypper_def_opts} refs &>/dev/null"
 fi
 
 
@@ -74,18 +74,18 @@ fi
 
 case ${state_should}
 in
-   (present)
-         echo "zypper ${zypper_def_opts} addservice -t ${stype} ${uri} '${desc}'"
-         echo "zypper ${zypper_def_opts} refs"
-         echo "zypper ${zypper_def_opts} ref"
-         ;;
-   (absent)
-         echo "zypper ${zypper_def_opts} removeservice ${exp_id}"
-         echo "zypper ${zypper_def_opts} refs"
-         echo "zypper ${zypper_def_opts} ref"
-         ;;
-   (*)
-      echo "Unknown state: ${state_should}" >&2
-      exit 1
-      ;;
+    (present)
+        echo "zypper ${zypper_def_opts} addservice -t ${stype} ${uri} '${desc}'"
+        echo "zypper ${zypper_def_opts} refs"
+        echo "zypper ${zypper_def_opts} ref"
+        ;;
+    (absent)
+        echo "zypper ${zypper_def_opts} removeservice ${exp_id}"
+        echo "zypper ${zypper_def_opts} refs"
+        echo "zypper ${zypper_def_opts} ref"
+        ;;
+    (*)
+        echo "Unknown state: ${state_should}" >&2
+        exit 1
+        ;;
 esac

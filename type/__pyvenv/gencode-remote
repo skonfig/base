@@ -29,10 +29,10 @@ owner=$(cat "${__object:?}/parameter/owner")
 group=$(cat "${__object:?}/parameter/group")
 mode=$(cat "${__object:?}/parameter/mode")
 
-[  "${state_should}" = "${state_is}" ] && \
-[  "${owner}" = "${owner_is}" ] && \
-[  "${group}" = "${group_is}" ] && \
-[  -n "${mode}" ] && exit 0
+[ "${state_should}" = "${state_is}" ] && \
+[ "${owner}" = "${owner_is}" ] && \
+[ "${group}" = "${group_is}" ] && \
+[ -n "${mode}" ] && exit 0
 
 destination="/${__object_id:?}"
 venvparams=$(cat "${__object:?}/parameter/venvparams")
@@ -65,7 +65,6 @@ in
         ;;
     (absent)
         ;;
-
     (*)
         echo "Unknown state: ${state_should}" >&2
         exit 1

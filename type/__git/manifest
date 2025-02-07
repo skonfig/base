@@ -43,7 +43,6 @@ in
                 esac
                 ;;
         esac
-        :
         ;;
 
     (absent)

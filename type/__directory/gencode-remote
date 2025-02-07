@@ -143,12 +143,12 @@ in
       esac
       ;;
    (absent)
-        if [ "${type}" = 'directory' ]
-        then
-            echo "rm -rf '${destination}'"
-            echo remove >> "${__messages_out:?}"
-        fi
-        ;;
+      if [ "${type}" = 'directory' ]
+      then
+         echo "rm -rf '${destination}'"
+         echo remove >> "${__messages_out:?}"
+      fi
+      ;;
    (*)
       echo "Unknown state: ${state_should}" >&2
       exit 1

@@ -43,8 +43,8 @@ then
 fi
 
 if [ "${state_should}" = "${state_is}" ] || \
-	{ [ "${state_should}" = 'present' ] && [ "${state_is}" = 'matching' ] ;} || \
-	{ [ "${state_should}" = 'replace' ] && [ "${state_is}" = 'present' ] ;}
+   { [ "${state_should}" = 'present' ] && [ "${state_is}" = 'matching' ] ;} || \
+   { [ "${state_should}" = 'replace' ] && [ "${state_is}" = 'present' ] ;}
 then
    # If state matches already, or 'present' is used and regex matches
    # or 'replace' is used and the exact line is present, then there is

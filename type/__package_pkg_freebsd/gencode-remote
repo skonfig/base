@@ -60,8 +60,8 @@ rm_cmd='pkg_delete'
 cmd=''
 
 # Print the command to be executed
-#	Parms:	$1 -- mode, "remove" or "add"
-#		$2 -- the command to be echoed
+#	Params: $1 -- mode, 'remove' or 'add'
+#	        $2 -- the command to be echoed
 # FIXME: This is ugly.
 execcmd(){
 	# Set the PACKAGESITE if we're ADDing a new package

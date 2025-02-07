@@ -179,7 +179,6 @@ check_init() {
 	# Checks for various BSD inits...
 	test -x /sbin/init || return 1
 
-
 	case ${KERNEL_NAME}
 	in
 		(*BSD)

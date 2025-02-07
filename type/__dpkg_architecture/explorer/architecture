@@ -20,8 +20,4 @@
 # Prints the main architecture dpkg is configured to install packages for.
 #
 
-# Get the main architecture of this machine
-
-
-# print or die in the gencode-remote
 dpkg --print-architecture || :

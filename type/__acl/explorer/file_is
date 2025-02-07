@@ -25,10 +25,13 @@
 if [ -e "/${__object_id:?}" ]
 then
     if [ -d "/${__object_id:?}" ]
-    then echo directory
+    then
+        echo directory
     elif [ -f "/${__object_id:?}" ]
-    then echo regular
-    else echo other
+    then
+        echo regular
+    else
+        echo other
     fi
 else
     echo missing
