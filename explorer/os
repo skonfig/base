@@ -208,26 +208,26 @@ fi
 # assume there is no tr on the client -> do lower case ourselves
 case $(uname -s)
 in
-   Darwin)
+   (Darwin)
       echo macosx
       exit 0
-   ;;
-   NetBSD)
+      ;;
+   (NetBSD)
       echo netbsd
       exit 0
-   ;;
-   FreeBSD)
+      ;;
+   (FreeBSD)
       echo freebsd
       exit 0
-   ;;
-   OpenBSD)
+      ;;
+   (OpenBSD)
       echo openbsd
       exit 0
-   ;;
-   SunOS)
+      ;;
+   (SunOS)
       echo solaris
       exit 0
-   ;;
+      ;;
 esac
 
 

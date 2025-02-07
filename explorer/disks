@@ -25,17 +25,17 @@ uname_s=$(uname -s)
 
 case ${uname_s}
 in
-    FreeBSD)
+    (FreeBSD)
         sysctl -n kern.disks
-    ;;
-    OpenBSD)
+        ;;
+    (OpenBSD)
         sysctl -n hw.disknames | grep -Eo '[lsw]d[0-9]+'
-    ;;
-    NetBSD)
+        ;;
+    (NetBSD)
         PATH=$(getconf PATH)
         sysctl -n hw.disknames | awk -v RS=' ' '/^[lsw]d[0-9]+/'
-    ;;
-    Darwin)
+        ;;
+    (Darwin)
         diskutil list \
         | awk '
           /^\/dev\// {
@@ -48,8 +48,8 @@ in
               sub(/^\/dev\//, "", $1)
               print $1
           }'
-    ;;
-    Linux)
+        ;;
+    (Linux)
         # list of major device numbers toexclude:
         #  ram disks, floppies, cdroms
         # https://www.kernel.org/doc/Documentation/admin-guide/devices.txt
@@ -73,8 +73,8 @@ in
             echo "Don't know how to list disks on Linux without lsblk and sysfs." >&2
             echo 'If you can, please submit a patch.'>&2
         fi
-    ;;
-    SunOS)
+        ;;
+    (SunOS)
         # NOTE: format(1m) - disk partitioning and maintenance utility.
         #       When called with no arguments, it will print a list of disks it
         #       can find and prompt the user to select one.
@@ -84,10 +84,10 @@ in
               -e '1,/^AVAILABLE DISK/d' \
               -e 's/^ *[0-9]\{1,\}\. //p' \
         | cut -d ' ' -f 1
-    ;;
-    *)
+        ;;
+    (*)
         printf "Don't know how to list disks for %s operating system.\n" "${uname_s}" >&2
         printf 'If you can please submit a patch\n' >&2
-    ;;
+        ;;
 esac \
 | xargs

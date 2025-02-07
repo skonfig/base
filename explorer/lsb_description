@@ -23,18 +23,18 @@
 set +e
 case $("${__explorer:?}/os")
 in
-   checkpoint)
+   (checkpoint)
        cat /etc/cp-release
-   ;;
-   openwrt)
+       ;;
+   (openwrt)
       # shellcheck disable=SC1091
       (. /etc/openwrt_release && echo "${DISTRIB_DESCRIPTION}")
-   ;;
-   *)
+      ;;
+   (*)
       lsb_release=$(command -v lsb_release)
       if [ -x "${lsb_release}" ]
       then
          ${lsb_release} --short --description
       fi
-   ;;
+      ;;
 esac

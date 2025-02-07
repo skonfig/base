@@ -30,7 +30,7 @@ fi
 
 case ${state_should}
 in
-   present)
+   (present)
       if [ -f "${__object:?}/parameter/nofstab" ]
       then
          # mount manually
@@ -49,8 +49,8 @@ in
          # mount using existing fstab entry
          printf 'mount "%s"\n' "${path}"
       fi
-   ;;
-   absent)
+      ;;
+   (absent)
       printf 'umount "%s"\n' "${path}"
-   ;;
+      ;;
 esac

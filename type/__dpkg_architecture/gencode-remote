@@ -56,7 +56,7 @@ if [ "${state_is}" != "${state_should}" ]
 then
     case ${state_should}
     in
-        present)
+        (present)
             # print add code
             printf "dpkg --add-architecture '%s'\n" "${arch_wanted}"
             # updating the index to make the new architecture available
@@ -65,7 +65,7 @@ then
             echo added >> "${__messages_out:?}"
             ;;
 
-        absent)
+        (absent)
             if [ -n "${caution}" ]
             then
                 printf "can not remove the main arch '%s' of the system!\n" "${main_arch}" >&2
@@ -80,7 +80,7 @@ then
             echo removed >> "${__messages_out:?}"
             ;;
 
-        *)
+        (*)
             printf "state '%s' is unknown!\n" "${state_should}" >&2
             exit 1
             ;;

@@ -25,23 +25,23 @@ os=$(cat "${__global:?}/explorer/os")
 
 case ${os}
 in
-    archlinux|debian|ubuntu|devuan|alpine)
+    (archlinux|debian|ubuntu|devuan|alpine)
         __package tzdata
         export require='__package/tzdata'
-    ;;
-    suse)
+        ;;
+    (suse)
         __package timezone
         export require='__package/timezone'
-    ;;
-    freebsd|netbsd|openbsd)
+        ;;
+    (freebsd|netbsd|openbsd)
         # whitelist
         :
-    ;;
-    coreos)
+        ;;
+    (coreos)
         # whitelist
         :
-    ;;
-    scientific|centos)
+        ;;
+    (scientific|centos)
         __package tzdata --state present
         export require='__package/tzdata'
         __file /etc/sysconfig/clock \
@@ -52,13 +52,13 @@ in
                 --file /etc/sysconfig/clock \
                 --delimiter '=' \
                 --value "\"${timezone}\""
-    ;;
-    *)
+        ;;
+    (*)
         : "${__type:?}"  # make shellcheck happy
         echo "Your operating system (${os}) is currently not supported by this type (${__type##*/})." >&2
         echo 'Please contribute an implementation for it if you can.' >&2
         exit 1
-    ;;
+        ;;
 esac
 
 __link /etc/localtime \

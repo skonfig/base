@@ -77,7 +77,7 @@ set_mode() {
 
 case ${state_should}
 in
-   present|exists)
+   (present|exists)
       if [ "${type}" != 'directory' ]
       then
          set_attributes=1
@@ -120,8 +120,8 @@ in
             fi
          fi
       done
-   ;;
-   pre-exists)
+      ;;
+   (pre-exists)
       case ${type}
       in
          directory)
@@ -141,16 +141,16 @@ in
             exit 1
          ;;
       esac
-   ;;
-   absent)
+      ;;
+   (absent)
         if [ "${type}" = 'directory' ]
         then
             echo "rm -rf '${destination}'"
             echo remove >> "${__messages_out:?}"
         fi
-   ;;
-   *)
+        ;;
+   (*)
       echo "Unknown state: ${state_should}" >&2
       exit 1
-   ;;
+      ;;
 esac

@@ -62,16 +62,16 @@ fi
 
 case ${state_should}
 in
-    present)
+    (present)
         echo "yum ${opts} install '${install_name}'"
         echo 'installed' >> "${__messages_out:?}"
-    ;;
-    absent)
+        ;;
+    (absent)
         echo "yum ${opts} remove '${name}'"
         echo 'removed' >> "${__messages_out:?}"
-    ;;
-    *)
+        ;;
+    (*)
         echo "Unknown state: ${state_should}" >&2
         exit 1
-    ;;
+        ;;
 esac

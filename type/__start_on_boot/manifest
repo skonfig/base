@@ -30,7 +30,7 @@ os=$(cat "${__global:?}/explorer/os")
 
 case ${os}
 in
-    freebsd)
+	(freebsd)
 	if [ "${state_should}" = 'present' ]
 	then
 	    value='YES'
@@ -42,8 +42,8 @@ in
 	    --key "${name}_enable" \
 	    --value "\"${value}\"" \
 	    --delimiter '='
-    ;;
-    *)
+	;;
+	(*)
         : # handled in gencode-remote
-    ;;
+        ;;
 esac

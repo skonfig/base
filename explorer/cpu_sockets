@@ -26,11 +26,11 @@
 os=$("${__explorer:?}/os")
 case ${os}
 in
-    macosx)
+    (macosx)
         system_profiler SPHardwareDataType | grep 'Number of Processors' | awk -F': ' '{print $2}'
-    ;;
+        ;;
 
-    *)
+    (*)
     if [ -r /proc/cpuinfo ]
     then
         sockets=$(grep 'physical id' /proc/cpuinfo | sort -u | wc -l)

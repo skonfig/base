@@ -23,7 +23,7 @@ state=$(cat "${__object:?}/parameter/state")
 
 case ${os}
 in
-   scientific|centos)
+   (scientific|centos)
       repo_name=${__object_id:?}
       export repo_name
       repo_file="/etc/yum.repos.d/${repo_name}.repo"
@@ -32,10 +32,10 @@ in
             --owner root --group root --mode 644 \
             --state "${state}" \
             --source -
-   ;;
-   *)
+      ;;
+   (*)
       echo "Your operating system (${os}) is currently not supported by this type (${__type##*/})." >&2
       echo 'Please contribute an implementation for it if you can.' >&2
       exit 1
-   ;;
+      ;;
 esac

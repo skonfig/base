@@ -74,7 +74,7 @@ DONE
 quoted_file=$(quote "${file}")
 case ${state_should}
 in
-   present)
+   (present)
       if [ "${state_is}" = 'changed' ]
       then
          echo update >> "${__messages_out:?}"
@@ -88,9 +88,9 @@ cat >> ${quoted_file} << '${__type##*/}_DONE'
 $(cat "${block}")
 ${__type##*/}_DONE
 DONE
-   ;;
-   absent)
+      ;;
+   (absent)
       echo remove >> "${__messages_out:?}"
       remove_block
-   ;;
+      ;;
 esac

@@ -60,14 +60,14 @@ command -v stat >/dev/null 2>&1 || {
 
 case $("${__explorer:?}/os")
 in
-   freebsd|netbsd|openbsd|macosx)
+   (freebsd|netbsd|openbsd|macosx)
       stat -f 'type: %HT
 owner: %Du %Su
 group: %Dg %Sg
 mode: %Mp%03Lp %Sp
 ' "${destination}" | awk '/^type/ { print tolower($0); next } { print }'
       ;;
-   *)
+   (*)
       # NOTE: Do not use --printf here as it is not supported by BusyBox stat.
       # NOTE: BusyBox's stat might not support the "-c" option, in which case
       #       we fall through to the shell fallback.

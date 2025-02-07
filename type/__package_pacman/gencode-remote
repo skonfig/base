@@ -44,16 +44,16 @@ fi
 
 case ${state_should}
 in
-   present)
+   (present)
          echo "pacman --needed --noconfirm --noprogressbar -S '${name}'"
          echo 'installed' >> "${__messages_out:?}"
-   ;;
-   absent)
+         ;;
+   (absent)
          echo "pacman --noconfirm --noprogressbar -R '${name}'"
          echo 'removed' >> "${__messages_out:?}"
-   ;;
-   *)
+         ;;
+   (*)
       echo "Unknown state: ${state_should}" >&2
       exit 1
-   ;;
+      ;;
 esac

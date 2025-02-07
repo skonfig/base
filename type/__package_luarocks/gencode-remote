@@ -40,16 +40,16 @@ fi
 
 case ${state_should}
 in
-    present)
+    (present)
         echo "luarocks install '${name}'"
         echo 'installed' >> "${__messages_out:?}"
-    ;;
-    absent)
+        ;;
+    (absent)
         echo "luarocks remove '${name}'"
         echo 'removed' >> "${__messages_out:?}"
-    ;;
-    *)
+        ;;
+    (*)
         echo "Unknown state: ${state_should}" >&2
         exit 1
-    ;;
+        ;;
 esac

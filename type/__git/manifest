@@ -29,7 +29,7 @@ mode=$(cat "${__object:?}/parameter/mode")
 
 case ${state_should}
 in
-    present)
+    (present)
         source=$(cat "${__object:?}/parameter/source")
         case ${source}
         in
@@ -44,17 +44,17 @@ in
                 ;;
         esac
         :
-    ;;
+        ;;
 
-    absent)
+    (absent)
         __directory "${__object_id:?}" --state absent \
             --owner "${owner}" \
             --group "${group}" \
             --mode "${mode}"
-    ;;
+        ;;
 
-    *)
+    (*)
         printf 'Unknown state: %s\n' "${state_should}" >&2
         exit 1
-    ;;
+        ;;
 esac

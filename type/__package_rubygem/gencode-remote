@@ -38,16 +38,16 @@ fi
 
 case ${state_should}
 in
-    present)
+    (present)
         echo "gem install '${name}' --no-ri --no-rdoc"
         echo 'installed' >> "${__messages_out:?}"
-    ;;
-    absent)
+        ;;
+    (absent)
         echo "gem uninstall '${name}'"
         echo 'removed' >> "${__messages_out:?}"
-    ;;
-    *)
+        ;;
+    (*)
         echo "Unknown state: ${state_should}" >&2
         exit 1
-    ;;
+        ;;
 esac

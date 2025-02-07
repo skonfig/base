@@ -36,7 +36,7 @@ then
     type=$(cat "${__object:?}/parameter/type")
     case ${type}
     in
-        hard)
+        (hard)
             # Currently not worth the effor to change it, stat is not defined by POSIX
             # and different OSes has different implementations for it.
             # shellcheck disable=SC2012
@@ -46,7 +46,7 @@ then
                 echo hardlink
                 exit 0
             fi
-        ;;
+            ;;
     esac
     echo file
 elif [ -d "${destination}" ]

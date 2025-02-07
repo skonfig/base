@@ -35,15 +35,15 @@ shorten_property() {
     unset -v ret
     case $1
     in
-	comment) ret='-c';;
-	home) ret='-d';;
-	gid) ret='-g';;
-	groups) ret='-G';;
-	password) ret='-p';;
-	shell) ret='-s';;
-	uid) ret='-u';;
-    create-home) ret='-m';;
-    system) ret='-r';;
+	(comment) ret='-c';;
+	(home) ret='-d';;
+	(gid) ret='-g';;
+	(groups) ret='-G';;
+	(password) ret='-p';;
+	(shell) ret='-s';;
+	(uid) ret='-u';;
+    (create-home) ret='-m';;
+    (system) ret='-r';;
     esac
     echo "${ret}"
 }
@@ -113,7 +113,7 @@ then
 
           case ${property}
           in
-             gid)
+             (gid)
                 if echo "${new_value}" | grep -q '^[0-9][0-9]*$'
                 then
                    field=4
@@ -130,19 +130,19 @@ then
                       current_value=${new_value}
                    fi
                 fi
-             ;;
-             password)
+                ;;
+             (password)
                 field=2
                 file="${__object:?}/explorer/shadow"
-             ;;
-             comment) field=5 ;;
-             home)    field=6 ;;
-             shell)   field=7 ;;
-             uid)     field=3 ;;
-             create-home) continue;; # Does not apply to user modification
-             system) continue;; # Does not apply to user modification
-             state) continue;; # Does not apply to user modification
-             remove-home) continue;; # Does not apply to user modification
+                ;;
+             (comment) field=5 ;;
+             (home)    field=6 ;;
+             (shell)   field=7 ;;
+             (uid)     field=3 ;;
+             (create-home) continue;; # Does not apply to user modification
+             (system) continue;; # Does not apply to user modification
+             (state) continue;; # Does not apply to user modification
+             (remove-home) continue;; # Does not apply to user modification
           esac
 
           # If we haven't already set $current_value above, pull it from the

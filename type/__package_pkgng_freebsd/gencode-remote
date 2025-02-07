@@ -56,19 +56,19 @@ execcmd(){
 
    case $1
    in
-      add)
+      (add)
          _cmd="${add_cmd} $2"
          echo 'installed' >> "${__messages_out:?}"
          ;;
-      rm)
+      (rm)
          _cmd="${rm_cmd} $2"
          echo 'removed' >> "${__messages_out:?}"
          ;;
-      upg)
+      (upg)
          _cmd="${upg_cmd} $2"
          echo 'installed' >> "${__messages_out:?}"
          ;;
-      *)
+      (*)
          printf "Error. Don't understand command: %s" "$1" >&2
          exit 1
          ;;

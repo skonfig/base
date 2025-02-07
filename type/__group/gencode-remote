@@ -39,12 +39,12 @@ if [ "${state}" = 'present' ]
 then
    case ${os}
    in
-      freebsd)
+      (freebsd)
          supported_change_properties='gid'
-      ;;
-      *)
+         ;;
+      (*)
          supported_change_properties='gid password'
-      ;;
+         ;;
    esac
    if grep -q "^${name}:" "${__object:?}/explorer/group"
    then
@@ -57,12 +57,12 @@ then
             unset current_value
             case ${property}
             in
-               password)
+               (password)
                   current_value=$(awk -F: '{ print $2 }' "${__object:?}/explorer/gshadow")
-               ;;
-               gid)
+                  ;;
+               (gid)
                   current_value=$(awk -F: '{ print $3 }' "${__object:?}/explorer/group")
-               ;;
+                  ;;
             esac
             if [ "${new_value}" != "${current_value}" ]
             then

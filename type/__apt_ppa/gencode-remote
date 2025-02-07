@@ -30,10 +30,10 @@ fi
 
 case ${state_should}
 in
-   present)
+   (present)
       echo "add-apt-repository -y '${name}'"
-   ;;
-   absent)
+      ;;
+   (absent)
       echo "remove-apt-repository '${name}'"
-   ;;
+      ;;
 esac

@@ -57,7 +57,7 @@ _readlink() {
 
 case ${type}
 in
-   symbolic)
+   (symbolic)
       if [ -h "${destination}" ]
       then
          source_is=$(_readlink "${destination}")
@@ -71,8 +71,8 @@ in
       else
          echo absent
       fi
-   ;;
-   hard)
+      ;;
+   (hard)
       cd "${destination%/*}" || exit 1
       # check source relative to destination dir
       if [ ! -e "${source}" ]
@@ -99,9 +99,9 @@ in
       else
          echo absent
       fi
-   ;;
-   *)
+      ;;
+   (*)
       echo "Unknown type: ${type}" >&2
       exit 1
-   ;;
+      ;;
 esac

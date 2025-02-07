@@ -67,7 +67,7 @@ fi
 
 case ${state}
 in
-   present)
+   (present)
          if [ -z "${desc}" ] || [ -z "${uri}" ]
          then
              echo "parameter repo_desc and uri for ${state} needed" >&2
@@ -78,30 +78,30 @@ in
              # Repo not present, so we need to create it
              echo "zypper ${zypper_def_opts} addrepo '${uri}' '${desc}'"
          fi
-   ;;
-   absent)
+         ;;
+   (absent)
          if [ -n "${act_id}" ]
          then
              # Repo present (act_id not ""), so we ned to delete it
              echo "zypper ${zypper_def_opts} removerepo ${act_id}"
          fi
-   ;;
-   enabled)
+         ;;
+   (enabled)
          if [ -n "${act_id}" ] && [ "${repostate}" = 'disabled' ]
          then
              # Repo present (act_id not "") and repostate not enabled, so a enable call is needed
              echo "zypper ${zypper_def_opts} modifyrepo -e ${act_id}"
          fi
-   ;;
-   disabled)
+         ;;
+   (disabled)
          if [ -n "${act_id}" ] && [ "${repostate}" = 'enabled' ]
          then
              # Repo present (act_id not "") and repostate enabled, so a disable call is needed
              echo "zypper ${zypper_def_opts} modifyrepo -d ${act_id}"
          fi
-   ;;
-   *)
+         ;;
+   (*)
       echo "Unknown state: ${state}" >&2
       exit 1
-   ;;
+      ;;
 esac

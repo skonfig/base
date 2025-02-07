@@ -938,6 +938,7 @@ check_vm_os_specific() {
 				')
 				EOF
 			fi
+			;;
 	esac
 
 	# Try to guess hypervisor based on CPU model (sysctl hw.model if available)

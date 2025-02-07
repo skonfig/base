@@ -22,7 +22,7 @@ os=$(cat "${__global:?}/explorer/os")
 
 case ${os}
 in
-    freebsd)
+    (freebsd)
         # FreeBSD only updates /etc/motd on boot,
 	# as seen in /etc/rc.d/motd
 	echo 'uname -sri > /etc/motd'
@@ -31,9 +31,9 @@ in
 	# versions this ensures hosts have the expected config.
 	echo 'rm /etc/motd.template || :'
 	echo 'service motd start'
-    ;;
-    *)
+	;;
+    (*)
         # Other OS tend to treat /etc/motd statically
         exit 0
-    ;;
+        ;;
 esac

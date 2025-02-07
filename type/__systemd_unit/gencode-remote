@@ -66,26 +66,26 @@ fi
 
 case ${desired_enablement_state}
 in
-    '')
+    ('')
         # Do nothing
         :
-    ;;
-    enabled)
+        ;;
+    (enabled)
         echo "systemctl enable ${name}"
         echo 'enabled' >> "${__messages_out:?}"
-    ;;
-    disabled)
+        ;;
+    (disabled)
         echo "systemctl disable ${name}"
         echo 'disabled' >> "${__messages_out:?}"
-    ;;
-    masked)
+        ;;
+    (masked)
         # disable before masking to ensure symlinks in *.wants/ are cleaned up
         echo "systemctl disable ${name}"
         echo "systemctl mask ${name}"
         echo 'masked' >> "${__messages_out:?}"
-    ;;
-    *)
+        ;;
+    (*)
         echo "Unsupported unit status: ${desired_enablement_state}" >&2
         exit 1
-    ;;
+        ;;
 esac

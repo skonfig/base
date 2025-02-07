@@ -35,14 +35,14 @@ fi
 
 case ${state_should}
 in
-   present)
+   (present)
       uri=$(cat "${__object:?}/parameter/uri")
       printf 'curl -s -L "%s" | apt-key add -\n' "${uri}"
-   ;;
-   absent)
+      ;;
+   (absent)
       cat << DONE
 keyid=\$(apt-key list | grep -B1 "${name}" | awk '/pub/ { print \$2 }' | cut -d'/' -f 2)
 apt-key del \${keyid}
 DONE
-   ;;
+      ;;
 esac

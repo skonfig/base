@@ -48,7 +48,7 @@ mode=$(cat "${__object:?}/parameter/mode")
 
 case ${state_should}
 in
-    present)
+    (present)
         if [ "${state_should}" != "${state_is}" ]
         then
             echo git clone --quiet "${recursive}" "${shallow}" "${branch}" "${source}" "${destination}"
@@ -62,14 +62,14 @@ in
         then
             echo chmod -R "${mode}" "${destination}"
         fi
-    ;;
+        ;;
 
-    absent)
-        # Handled in manifest
-    ;;
+    (absent)
+        # handled in manifest
+        ;;
 
-    *)
+    (*)
         printf 'Unknown state: %s\n' "${state_should}" >&2
         exit 1
-    ;;
+        ;;
 esac

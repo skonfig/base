@@ -37,16 +37,16 @@ state_should=''
 
 case ${state}
 in
-    present)
+    (present)
         echo "dpkg --install /var/cache/apt/archives/${__object_id:?}"
         echo 'installed' >> "${__messages_out:?}"
         ;;
-    absent)
+    (absent)
         [ -f "${__object:?}/parameter/purge-if-absent" ] \
             && action='--purge' \
             || action='--remove'
         echo "dpkg ${action} ${__object_id%%_*}"
         echo "removed (${action})" >> "${__messages_out:?}"
         ;;
-    *)  echo "ERROR: unknown state '${state}'" >&2 ;;
+    (*)  echo "ERROR: unknown state '${state}'" >&2 ;;
 esac

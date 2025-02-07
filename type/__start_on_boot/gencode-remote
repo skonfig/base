@@ -33,7 +33,7 @@ name=${__object_id:?}
 
 case ${state_should}
 in
-    present)
+    (present)
         if [ "${init}" = 'systemd' ]
         then
             # this handles ALL linux distros with systemd
@@ -42,62 +42,62 @@ in
         else
             case ${os}
             in
-                debian)
+                (debian)
                     case ${os_version}
                     in
-                        [1-7]*)
+                        ([1-7]*)
                             echo "update-rc.d '${name}' defaults >/dev/null"
-                        ;;
-                        8*)
+                            ;;
+                        (8*)
                             echo "systemctl enable '${name}'"
-                        ;;
-                        *)
+                            ;;
+                        (*)
                             echo "Unsupported version ${os_version} of ${os}" >&2
                             exit 1
-                        ;;
+                            ;;
                     esac
-                ;;
-                devuan)
+                    ;;
+
+                (devuan)
                     echo "update-rc.d '${name}' defaults >/dev/null"
-                ;;
+                    ;;
 
-                alpine|gentoo)
+                (alpine|gentoo)
                     echo "rc-update add '${name}' '${target_runlevel}'"
-                ;;
+                    ;;
 
-                amazon|scientific|centos|almalinux|eurolinux|rocky|fedora|owl|redhat|suse)
+                (amazon|scientific|centos|almalinux|eurolinux|rocky|fedora|owl|redhat|suse)
                     echo "chkconfig '${name}' on"
-                ;;
+                    ;;
 
-                openwrt)
+                (openwrt)
                     # 'enable' can be successful and still return a non-zero exit
                     # code, deal with it by checking for success ourselves in that
                     # case (the || ... part).
                     echo "'/etc/init.d/${name}' enable || [ -f /etc/rc.d/S??'${name}' ]"
-                ;;
+                    ;;
 
-                ubuntu)
+                (ubuntu)
                     echo "update-rc.d '${name}' defaults >/dev/null"
-                ;;
+                    ;;
 
-                freebsd)
+                (freebsd)
                     :  # handled in manifest
-                ;;
+                    ;;
 
-                openbsd)
+                (openbsd)
                     # OpenBSD 5.7 and higher
                     echo "rcctl enable '${name}'"
-                ;;
+                    ;;
 
-                *)
+                (*)
                    echo "Unsupported os: ${os}" >&2
                    exit 1
-                ;;
+                   ;;
             esac
         fi
-    ;;
-
-    absent)
+        ;;
+    (absent)
         if [ "${init}" = 'systemd' ]
         then
             # this handles ALL linux distros with systemd
@@ -107,37 +107,37 @@ in
         else
             case ${os}
             in
-                debian|ubuntu|devuan)
+                (debian|ubuntu|devuan)
                     echo "update-rc.d -f '${name}' remove"
-                ;;
+                    ;;
 
-                alpine|gentoo)
+                (alpine|gentoo)
                     echo "rc-update del '${name}' '${target_runlevel}'"
-                ;;
+                    ;;
 
-                centos|fedora|owl|redhat|suse)
+                (centos|fedora|owl|redhat|suse)
                     echo "chkconfig '${name}' off"
-                ;;
+                    ;;
 
-                openwrt)
+                (openwrt)
                     echo "'/etc/init.d/${name}' disable"
                     ;;
 
-                openbsd)
+                (openbsd)
                     # OpenBSD 5.7 and higher
                     echo "rcctl disable '${name}'"
-                ;;
+                    ;;
 
-                *)
+                (*)
                    echo "Unsupported os: ${os}" >&2
                    exit 1
-                ;;
+                   ;;
             esac
         fi
-    ;;
+        ;;
 
-    *)
+    (*)
         printf 'Unknown state: %s\n' "${state_should}" >&2
         exit 1
-    ;;
+        ;;
 esac

@@ -37,7 +37,7 @@ cmd=''
 
 case ${src}
 in
-    *.tar|*.tgz|*.tar.*|*.txz|*.tbz2)
+    (*.tar|*.tgz|*.tar.*|*.txz|*.tbz2)
         cmd="mkdir -p '${dst}' && tar --directory='${dst}' --extract --file='${src}'"
 
         if [ -f "${__object:?}/parameter/tar-strip" ]
@@ -53,35 +53,35 @@ in
 
             cmd="${cmd} ${tar_extra_args}"
         fi
-    ;;
-    *.7z)
+        ;;
+    (*.7z)
         case ${os}
         in
-            centos|almalinux|eurolinux|rocky|fedora|redhat)
+            (centos|almalinux|eurolinux|rocky|fedora|redhat)
                 cmd='7za'
-            ;;
-            *)
+                ;;
+            (*)
                 cmd='7zr'
-            ;;
+                ;;
         esac
 
         cmd="${cmd} e -aoa -o'${dst}' '${src}'"
-    ;;
-    *.bz2)
+        ;;
+    (*.bz2)
         cmd="bunzip2 --stdout '${src}' > '${dst}'"
-    ;;
-    *.gz)
+        ;;
+    (*.gz)
         cmd="gunzip --stdout '${src}' > '${dst}'"
-    ;;
-    *.lzma|*.xz)
+        ;;
+    (*.lzma|*.xz)
         cmd="xz --uncompress --stdout '${src}' > '${dst}'"
-    ;;
-    *.rar)
+        ;;
+    (*.rar)
         cmd="unrar x -o+ '${src}' '${dst}/'"
-    ;;
-    *.zip)
+        ;;
+    (*.zip)
         cmd="unzip -o '${src}' -d '${dst}'"
-    ;;
+        ;;
 esac
 
 if [ -f "${__object:?}/parameter/backup-destination" ]

@@ -74,7 +74,7 @@ add=0
 remove=0
 case ${state_should}
 in
-   present|replace)
+   (present|replace)
       if [ "${state_is}" = 'wrongposition' ] || [ "${state_is}" = 'matching' ]
       then
          echo updated >> "${__messages_out:?}"
@@ -83,11 +83,11 @@ in
          echo added >> "${__messages_out:?}"
       fi
       add=1
-   ;;
-   absent)
+      ;;
+   (absent)
       echo removed >> "${__messages_out:?}"
       remove=1
-   ;;
+      ;;
 esac
 
 cat << DONE

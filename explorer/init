@@ -105,24 +105,24 @@ systemstarter"
 common_candidates_by_kernel() {
 	case ${KERNEL_NAME}
 	in
-		FreeBSD|NetBSD|OpenBSD)
+		(FreeBSD|NetBSD|OpenBSD)
 			echo init
 			;;
-		Linux)
+		(Linux)
 			echo systemd
 			echo sysvinit
 			echo upstart
 			echo openrc
 			;;
-		GNU)
+		(GNU)
 			echo sysvinit
 			echo hurd-init
 			;;
-		Darwin)
+		(Darwin)
 			echo launchd
 			echo systemstarter
 			;;
-		SunOS)
+		(SunOS)
 			echo smf
 			;;
 	esac
@@ -254,7 +254,7 @@ check_upstart() {
 	test -x "$(command -v initctl)" || return 1
 	case $(initctl version)
 	in
-		*'(upstart '*')')
+		(*'(upstart '*')')
 			if test -d /etc/init
 			then
 				# modern (DBus-based?) upstart >= 0.5
@@ -268,7 +268,7 @@ check_upstart() {
 				echo upstart
 			fi
 			;;
-		*)
+		(*)
 			return 1
 			;;
 	esac
@@ -369,6 +369,7 @@ guess_by_comm_name() {
 				echo "$1"
 				return 0
 			fi
+			;;
 	esac
 
 	return 1
@@ -439,6 +440,7 @@ find_init() {
 			echo "Don't know how to determine init." >&2
 			echo 'Please send a patch.' >&2
 			exit 1
+			;;
 	esac
 }
 

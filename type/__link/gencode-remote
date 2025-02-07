@@ -26,16 +26,16 @@ source=$(cat "${__object:?}/parameter/source")
 
 case ${type}
 in
-    symbolic)
+    (symbolic)
         lnopt='-s'
-    ;;
-    hard)
+        ;;
+    (hard)
         lnopt=''
-    ;;
-    *)
+        ;;
+    (*)
         echo "Unknown link type: ${type}" >&2
         exit 1
-    ;;
+        ;;
 esac
 
 state_is=$(cat "${__object:?}/explorer/state")
@@ -46,7 +46,7 @@ state_should=$(cat "${__object:?}/parameter/state")
 file_type=$(cat "${__object:?}/explorer/type")
 case ${state_should}
 in
-    present)
+    (present)
         if [ "${file_type}" = 'directory' ]
         then
             # our destination is currently a directory, delete it
@@ -65,17 +65,17 @@ in
         # create our link
         printf 'ln %s -f "%s" "%s"\n' "${lnopt}" "${source}" "${destination}"
         echo "created '${destination}'" >> "${__messages_out:?}"
-    ;;
-    absent)
+        ;;
+    (absent)
         # only delete if it is a sym/hard link
         if [ "${file_type}" = "symlink" ] || [ "${file_type}" = "hardlink" ]
         then
             printf 'rm -f "%s"\n' "${destination}"
             echo "removed '${destination}'" >> "${__messages_out:?}"
         fi
-    ;;
-    *)
+        ;;
+    (*)
         echo "Unknown state: ${state_should}" >&2
         exit 1
-    ;;
+        ;;
 esac

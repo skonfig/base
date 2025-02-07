@@ -38,7 +38,7 @@ then
 else
     case ${os}
     in
-        debian|openwrt|devuan)
+        (debian|openwrt|devuan)
             state='absent'
             for file in "/etc/rc${runlevel}.d/S"??"${name}"
             do
@@ -48,8 +48,8 @@ else
                     break
                 fi
             done
-        ;;
-        ubuntu)
+            ;;
+        (ubuntu)
             state='absent'
             for file in "/etc/rc${runlevel}.d/S"??"${name}"
             do
@@ -61,13 +61,13 @@ else
             done
 
             [ -f "/etc/init/${name}.conf" ] && state='present'
-        ;;
+           ;;
 
-        amazon|scientific|centos|almalinux|eurolinux|rocky|fedora|owl|redhat)
+        (amazon|scientific|centos|almalinux|eurolinux|rocky|fedora|owl|redhat)
             state=$(chkconfig --level "${runlevel}" "${name}" || echo absent)
             test -n "${state}" || state='present'
-        ;;
-        suse)
+            ;;
+        (suse)
             # check for target if set, usable for boot. services in runlevel B
             if [ "${target_runlevel}" != 'default' ]
             then
@@ -76,8 +76,8 @@ else
             # suses chkconfig has the same name, but works different ...
             state=$(chkconfig --check "${name}" "${runlevel}" || echo absent)
             test -n "${state}" || state='present'
-        ;;
-        gentoo|alpine)
+            ;;
+        (gentoo|alpine)
             state='absent'
             for d in /etc/runlevels/*
             do
@@ -87,21 +87,21 @@ else
                     break
                 fi
             done
-        ;;
-        freebsd)
+            ;;
+        (freebsd)
             state='absent'
             service -e | grep "/${name}$" && state='present'
-        ;;
-        openbsd)
+            ;;
+        (openbsd)
             state='absent'
             # OpenBSD 5.7 and higher
             rcctl ls on | grep "^${name}$" && state='present'
-        ;;
+            ;;
 
-        *)
+        (*)
            echo "Unsupported os: ${os}" >&2
            exit 1
-        ;;
+           ;;
     esac
 fi
 

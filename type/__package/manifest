@@ -32,10 +32,10 @@ else
    os=$(cat "${__global:?}/explorer/os")
    case ${os}
    in
-         amazon|scientific|centos|almalinux|eurolinux|rocky|fedora|redhat) type='yum' ;;
-         archlinux) type='pacman' ;;
-         debian|ubuntu|devuan) type='apt' ;;
-         freebsd)
+         (amazon|scientific|centos|almalinux|eurolinux|rocky|fedora|redhat) type='yum' ;;
+         (archlinux) type='pacman' ;;
+         (debian|ubuntu|devuan) type='apt' ;;
+         (freebsd)
             if [ -n "$(cat "${__object:?}/explorer/pkgng_exists")" ]
             then
                type='pkgng_freebsd'
@@ -43,15 +43,15 @@ else
                type='pkg_freebsd'
             fi
             ;;
-         gentoo) type='emerge' ;;
-         suse) type='zypper' ;;
-         openwrt) type='opkg' ;;
-         openbsd) type='pkg_openbsd' ;;
-         alpine|chimera) type='apk' ;;
-         *)
+         (gentoo) type='emerge' ;;
+         (suse) type='zypper' ;;
+         (openwrt) type='opkg' ;;
+         (openbsd) type='pkg_openbsd' ;;
+         (alpine|chimera) type='apk' ;;
+         (*)
             echo "Don't know how to manage packages on: ${os}" >&2
             exit 1
-         ;;
+            ;;
    esac
 fi
 

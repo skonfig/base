@@ -54,11 +54,11 @@ then
     # select what to do to get the $should state
     case ${should}
     in
-        running)
+        (running)
             if [ "${state}" = 'stopped' ]; then required_action='start'; fi
             ;;
 
-        stopped)
+        (stopped)
             if [ "${state}" = 'running' ]; then required_action='stop'; fi
             ;;
     esac
@@ -75,17 +75,16 @@ then
     # select the action to the required element
     case ${action}
     in
-        restart)
+        (restart)
             required_action='restart'
             ;;
-
-        reload)
+        (reload)
             required_action='reload'
             ;;
-
-        *)
+        (*)
             printf "action '%s' does not exist!" "${action}" >&2
             exit 2
+            ;;
     esac
 
     # Make a special check: only do this action if a dependency did something

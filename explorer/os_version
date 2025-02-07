@@ -37,51 +37,51 @@ rc_getvar() {
 
 case $("${__explorer:?}/os")
 in
-   amazon)
+   (amazon)
       cat /etc/system-release
-   ;;
-   archlinux)
+      ;;
+   (archlinux)
       # empty, but well...
       cat /etc/arch-release
-   ;;
-   checkpoint)
+      ;;
+   (checkpoint)
        awk '{version=$NF; printf("%s\n", substr(version, 2))}' /etc/cp-release
-   ;;
-   chimera)
+       ;;
+   (chimera)
       cat /etc/chimera-release
-   ;;
-   debian)
+      ;;
+   (debian)
       debian_version=$(cat /etc/debian_version)
       case ${debian_version}
       in
-          testing/unstable)
+          (testing/unstable)
               # previous to Debian 4.0 testing/unstable was used
               # cf. https://metadata.ftp-master.debian.org/changelogs/main/b/base-files/base-files_11_changelog
               echo 3.99
               ;;
-          */sid)
+          (*/sid)
               # sid versions don't have a number, so we decode by codename:
               case $(expr "${debian_version}" : '\([a-z]\{1,\}\)/')
               in
-                  forky) echo 13.99 ;;
-                  trixie) echo 12.99 ;;
-                  bookworm) echo 11.99 ;;
-                  bullseye) echo 10.99 ;;
-                  buster) echo 9.99 ;;
-                  stretch) echo 8.99 ;;
-                  jessie) echo 7.99 ;;
-                  wheezy) echo 6.99 ;;
-                  squeeze) echo 5.99 ;;
-                  lenny) echo 4.99 ;;
-                  *) echo 99.99 ;;
+                  (forky) echo 13.99 ;;
+                  (trixie) echo 12.99 ;;
+                  (bookworm) echo 11.99 ;;
+                  (bullseye) echo 10.99 ;;
+                  (buster) echo 9.99 ;;
+                  (stretch) echo 8.99 ;;
+                  (jessie) echo 7.99 ;;
+                  (wheezy) echo 6.99 ;;
+                  (squeeze) echo 5.99 ;;
+                  (lenny) echo 4.99 ;;
+                  (*) echo 99.99 ;;
               esac
               ;;
-          *)
+          (*)
               echo "${debian_version}"
               ;;
       esac
-   ;;
-   devuan)
+      ;;
+   (devuan)
       devuan_version=$(cat /etc/devuan_version)
       case ${devuan_version}
       in
@@ -97,7 +97,7 @@ in
                (beowulf) devuan_version=3 ;;
                (ascii) devuan_version=2 ;;
                (jessie) devuan_version=1 ;;
-               (*) exit 1
+               (*) exit 1 ;;
             esac
             devuan_suffix=$(expr "${devuan_codename}" : '[^/]*/\(.*\)$' || :)
             case ${devuan_suffix}
@@ -118,18 +118,18 @@ in
       esac
 
       echo "${devuan_version}"
-   ;;
-   fedora)
+      ;;
+   (fedora)
       cat /etc/fedora-release
-   ;;
-   gentoo)
+      ;;
+   (gentoo)
       cat /etc/gentoo-release
-   ;;
-   macosx)
+      ;;
+   (macosx)
       # NOTE: Legacy versions (< 10.3) do not support options
       sw_vers | awk -F ':[ \t]+' '$1 == "ProductVersion" { print $2 }'
-   ;;
-   freebsd)
+      ;;
+   (freebsd)
       # Apparently uname -r is not a reliable way to get the patch level.
       # See: https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=251743
       if command -v freebsd-version >/dev/null 2>&1
@@ -140,31 +140,31 @@ in
          # fallback to kernel release for FreeBSD < 10.0
          uname -r
       fi
-   ;;
-   *bsd|solaris)
+      ;;
+   (*bsd|solaris)
       uname -r
-   ;;
-   openwrt)
+      ;;
+   (openwrt)
       cat /etc/openwrt_version
-   ;;
-   owl)
+      ;;
+   (owl)
       cat /etc/owl-release
-   ;;
-   redhat|centos|almalinux|eurolinux|rocky|mitel|scientific)
+      ;;
+   (redhat|centos|almalinux|eurolinux|rocky|mitel|scientific)
       cat /etc/redhat-release
-   ;;
-   slackware)
+      ;;
+   (slackware)
       cat /etc/slackware-version
-   ;;
-   suse)
+      ;;
+   (suse)
       if [ -f /etc/os-release ]
       then
         cat /etc/os-release
       else
         cat /etc/SuSE-release
       fi
-   ;;
-   ubuntu|pop-os)
+      ;;
+   (ubuntu|pop-os)
       if command -v lsb_release >/dev/null 2>&1
       then
          lsb_release -sr
@@ -179,8 +179,8 @@ in
          # versions without /usr/lib/os-release.
          rc_getvar /etc/lsb-release DISTRIB_RELEASE
       fi
-   ;;
-   alpine)
+      ;;
+   (alpine)
        cat /etc/alpine-release
-   ;;
+       ;;
 esac

@@ -48,7 +48,7 @@ fi
 
 case ${state_should}
 in
-    present)
+    (present)
         if [ "${state_should}" != "${state_is}" ]
         then
             echo "${pyvenv} ${venvparams} ${destination}"
@@ -62,12 +62,12 @@ in
         then
             echo chmod -R "${mode}" "${destination}"
         fi
-    ;;
-    absent)
-    ;;
+        ;;
+    (absent)
+        ;;
 
-    *)
+    (*)
         echo "Unknown state: ${state_should}" >&2
         exit 1
-    ;;
+        ;;
 esac

@@ -27,24 +27,21 @@
 os=$("${__explorer:?}/os")
 case ${os}
 in
-    macosx)
+    (macosx)
         sysctl -n hw.physicalcpu
-    ;;
-
-    openbsd)
+        ;;
+    (openbsd)
         sysctl -n hw.ncpuonline
-    ;;
-
-    freebsd|netbsd)
+        ;;
+    (freebsd|netbsd)
         PATH=$(getconf PATH)
         sysctl -n hw.ncpu
-    ;;
-
-    *)
+        ;;
+    (*)
         if test -r /proc/cpuinfo
         then
             cores=$(grep -c -e '^processor[[:blank:]]*:' /proc/cpuinfo)
             test $((cores)) -ge 1 && echo $((cores)) || echo 1
         fi
-    ;;
+        ;;
 esac
