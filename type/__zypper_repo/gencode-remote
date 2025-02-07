@@ -50,16 +50,16 @@ state=$(cat "${__object:?}/parameter/state")
 repo_id=$(cat "${__object:?}/explorer/repo_id")
 
 act_id=''
-if grep -q "${id}" "${__object:?}/explorer/all_repo_ids"
+if grep -qxF "${id}" "${__object:?}/explorer/all_repo_ids"
 then
     act_id=${id}
-elif grep -q "${repo_id}" "${__object:?}/explorer/all_repo_ids"
+elif grep -qxF "${repo_id}" "${__object:?}/explorer/all_repo_ids"
 then
     act_id=${repo_id}
 fi
 
 repostate='disabled'
-if grep -q "${act_id}" "${__object:?}/explorer/enabled_repo_ids"
+if grep -qxF "${act_id}" "${__object:?}/explorer/enabled_repo_ids"
 then
     repostate='enabled'
 fi

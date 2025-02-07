@@ -20,4 +20,9 @@
 # Prints "true" if usermod(8) supports the -A option, "false" otherwise.
 #
 
-usermod --help | grep -q -- '-A group' && echo true || echo false
+if usermod --help | grep -qF -e '-A group'
+then
+	echo true
+else
+	echo false
+fi

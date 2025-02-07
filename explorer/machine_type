@@ -278,7 +278,7 @@ has_ct_cgroup() {
 }
 
 check_ct_cgroup() {
-	if grep -q -e ':/docker/' /proc/self/cgroup
+	if grep -q -F ':/docker/' /proc/self/cgroup
 	then
 		echo docker
 	elif grep -q -e ':/lxc/.*\.libvirt-lxc$' /proc/self/cgroup
@@ -881,11 +881,11 @@ check_vm_os_specific() {
 		(SunOS)
 			diag_conf=$(prtdiag | sed -n -e 's/.*Configuration: *//p' -e '/^$/q')
 			# NOTE: Don't use -e or -F in Solaris grep
-			if printf '%s\n' "${diag_conf}" | grep -q -i QEMU
+			if printf '%s\n' "${diag_conf}" | grep -qiF QEMU
 			then
 				echo qemu
 				return 0
-			elif printf '%s\n' "${diag_conf}" | grep -q -i VMware
+			elif printf '%s\n' "${diag_conf}" | grep -qiF VMware
 			then
 				echo vmware
 				return 0

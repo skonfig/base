@@ -34,6 +34,6 @@ then
 	printf '%s' "$(echo "${PKG_OUTPUT}" \
 		| awk '{print $1}' \
 		| sed 's/^\(.*\)-\([^-]*\)$/name:\1 ver:\2/g' \
-		| grep "name:${name} ver:" \
+		| grep -F "name:${name} ver:" \
 		| sed 's/^.*ver:\(.*\)/\1/g')"
 fi

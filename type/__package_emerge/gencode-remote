@@ -50,9 +50,9 @@ then
     exit 1
 else
     state_is='present'
-    if [ -n "${version}" ] && echo "${pkg_version}" | cut -d ' ' -f 2 | grep -q -x "${version}"
+    if [ -n "${version}" ] && echo "${pkg_version}" | cut -d ' ' -f 2 | grep -qxF "${version}"
     then
-        installed_version=$(echo "${pkg_version}" | cut -d ' ' -f 2 | grep -x "${version}")
+        installed_version=$(echo "${pkg_version}" | cut -d ' ' -f 2 | grep -xF "${version}")
     else
         installed_version=$(echo "${pkg_version}" | cut -d ' ' -f 2 | tail -n 1)
     fi

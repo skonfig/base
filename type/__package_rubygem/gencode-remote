@@ -27,7 +27,7 @@ fi
 
 state_should=$(cat "${__object:?}/parameter/state")
 
-if grep -q true "${__object:?}/explorer/pkg_status"
+if grep -qF 'true' "${__object:?}/explorer/pkg_status"
 then
     state_is='present'
 else

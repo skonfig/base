@@ -171,7 +171,7 @@ check_dinit() {
 check_hurd_init() (
 	init_exe=${1:-/hurd/init}
 	test -x "${init_exe}" || return 1
-	grep -q 'GNU Hurd' "${init_exe}" || return 1
+	grep -qF 'GNU Hurd' "${init_exe}" || return 1
 	echo hurd-init
 )
 
@@ -205,7 +205,7 @@ check_openrc() {
 check_procd() (
 	procd_path=${1:-/sbin/procd}
 	test -x "${procd_path}" || return 1
-	grep -q 'procd' "${procd_path}" || return 1
+	grep -qF 'procd' "${procd_path}" || return 1
 	echo procd
 )
 
