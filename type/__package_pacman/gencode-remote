@@ -18,10 +18,6 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-# Debug
-# exec >&2
-# set -x
-
 if [ -f "${__object:?}/parameter/name" ]
 then
     name="${__object:?}/parameter/name"

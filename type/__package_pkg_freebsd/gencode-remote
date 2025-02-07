@@ -39,10 +39,6 @@ assert ()                 #  If condition false,
 	}
 }
 
-# Debug
-#exec >&2
-#set -x
-
 if [ -f "${__object:?}/parameter/name" ]
 then
 	name=$(cat "${__object:?}/parameter/name")
@@ -136,5 +132,3 @@ else	# PKG *isn't* installed
 	fi
 fi
 
-# Debug
-#set +x

@@ -18,11 +18,6 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-# Debug
-#exec >&2
-#set -x
-
-
 if [ -f "${__object:?}/parameter/uri" ]
 then
    uri=$(cat "${__object:?}/parameter/uri")

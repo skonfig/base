@@ -18,10 +18,6 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-# Debug
-#exec >&2
-#set -x
-
 zypper_def_opts=' -q --non-interactive --gpg-auto-import-keys '
 
 if [ -f "${__object:?}/parameter/service_desc" ]
