@@ -101,7 +101,7 @@ in
         fi
         ;;
     (*)
-        echo "Unknown state: ${state}" >&2
+        printf 'Invalid --state: %s\n' "${state}" >&2
         exit 1
         ;;
 esac

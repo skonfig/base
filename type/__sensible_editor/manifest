@@ -78,6 +78,7 @@ in
 	(absent)
 		;;
 	(*)
+		printf 'Invalid --state: %s\n' "${state}" >&2
 		echo 'Only "present", "exists", and "absent" are allowed for --state' >&2
 		exit 1
 		;;

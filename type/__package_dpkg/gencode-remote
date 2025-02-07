@@ -48,5 +48,8 @@ in
         echo "dpkg ${action} ${__object_id%%_*}"
         echo "removed (${action})" >> "${__messages_out:?}"
         ;;
-    (*)  echo "ERROR: unknown state '${state}'" >&2 ;;
+    (*)
+        printf 'Invalid --state: %s\n' "${state}" >&2
+        exit 1
+        ;;
 esac

@@ -54,6 +54,6 @@ then
 
 else
 
-    echo "ERROR: Unknown state: ${state}" >&2
+    printf 'Invalid --state: %s\n' "${state}" >&2
 
 fi

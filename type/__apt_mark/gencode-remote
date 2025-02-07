@@ -55,7 +55,7 @@ in
         echo "apt-mark ${state_should} ${name} > /dev/null"
         ;;
     (*)
-        echo "Unknown state: ${state_should}" >&2
+        printf 'Invalid --state: %s\n' "${state_should}" >&2
         exit 1
         ;;
 esac

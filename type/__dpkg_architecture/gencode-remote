@@ -81,7 +81,7 @@ then
             ;;
 
         (*)
-            printf "state '%s' is unknown!\n" "${state_should}" >&2
+            printf 'Invalid --state: %s\n' "${state_should}" >&2
             exit 1
             ;;
     esac

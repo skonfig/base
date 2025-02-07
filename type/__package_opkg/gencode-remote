@@ -53,7 +53,7 @@ in
 		echo 'removed' >>"${__messages_out:?}"
 		;;
 	(*)
-		printf 'Unknown state: %s\n' "${state_should}" >&2
+		printf 'Invalid --state: %s\n' "${state_should}" >&2
 		exit 1
 		;;
 esac

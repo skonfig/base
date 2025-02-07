@@ -75,7 +75,7 @@ then
         exit 0
 
     else
-        echo "ERROR: Unknown state: ${state}" >&2
+        printf 'Invalid --state: %s\n' "${state}" >&2
         exit 0
     fi
 fi
@@ -140,7 +140,7 @@ eof
             --state absent
 
     else
-        echo "ERROR: Unknown state: ${state}" >&2
+        printf 'Invalid --state: %s\n' "${state}" >&2
     fi
 
 fi

@@ -85,7 +85,7 @@ in
         echo 'masked' >> "${__messages_out:?}"
         ;;
     (*)
-        echo "Unsupported unit status: ${desired_enablement_state}" >&2
+        printf 'Invalid --enablement-state: %s\n' "${desired_enablement_state}" >&2
         exit 1
         ;;
 esac

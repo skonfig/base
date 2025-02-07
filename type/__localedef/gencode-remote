@@ -26,7 +26,7 @@ state_is=$(cat "${__object:?}/explorer/state")
 state_should=$(cat "${__object:?}/parameter/state")
 
 test "${state_should}" = 'present' -o "${state_should}" = 'absent' || {
-	printf 'Invalid state: %s\n' "${state_should}" >&2
+	printf 'Invalid --state: %s\n' "${state_should}" >&2
 	exit 1
 }
 

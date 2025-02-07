@@ -33,7 +33,7 @@ in
         lnopt=''
         ;;
     (*)
-        echo "Unknown link type: ${type}" >&2
+        printf 'Invalid --type: %s\n' "${type}" >&2
         exit 1
         ;;
 esac
@@ -75,7 +75,7 @@ in
         fi
         ;;
     (*)
-        echo "Unknown state: ${state_should}" >&2
+        printf 'Invalid --state: %s\n' "${state_should}" >&2
         exit 1
         ;;
 esac

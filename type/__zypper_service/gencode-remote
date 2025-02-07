@@ -85,7 +85,7 @@ in
         echo "zypper ${zypper_def_opts} ref"
         ;;
     (*)
-        echo "Unknown state: ${state_should}" >&2
+        printf 'Invalid --state: %s\n' "${state_should}" >&2
         exit 1
         ;;
 esac
