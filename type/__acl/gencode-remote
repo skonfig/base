@@ -109,12 +109,13 @@ then
             continue
         fi
 
-        if echo "${os}" | grep -Fq 'freebsd'
-        then
-            remove=${acl}
-        else
-            remove=$(echo "${acl}" | sed 's/:...$//')
-        fi
+        case ${os}
+        in
+            (freebsd)
+               remove=${acl} ;;
+            (*)
+               remove=${acl%:???} ;;
+        esac
 
         echo "${setfacl_exec} -x \"${remove}\" \"${acl_path}\""
         echo "removed '${remove}'" >> "${__messages_out:?}"

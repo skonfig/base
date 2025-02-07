@@ -29,7 +29,7 @@ fi
 
 # Remove the @.. repo tag for finding out whether it is installed
 # f.i. pass@testing => pass
-name=$(echo "${name}" | sed 's/@.*//')
+name=${name%%@*}
 
 if [ -n "$(apk list -I "${name}")" ]
 then
