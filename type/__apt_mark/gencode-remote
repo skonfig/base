@@ -52,7 +52,7 @@ fi
 case ${state_should}
 in
     (hold|unhold)
-        echo "apt-mark ${state_should} ${name} > /dev/null"
+        echo "apt-mark ${state_should} ${name} >/dev/null"
         ;;
     (*)
         printf 'Invalid --state: %s\n' "${state_should}" >&2

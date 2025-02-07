@@ -31,6 +31,6 @@ fi
 case ${os}
 in
     (ubuntu|debian|devuan|coreos|alpine)
-        echo "echo \"${timezone_should}\" > /etc/timezone"
+        echo "echo \"${timezone_should}\" >/etc/timezone"
         ;;
 esac

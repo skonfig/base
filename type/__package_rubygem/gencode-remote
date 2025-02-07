@@ -40,11 +40,11 @@ case ${state_should}
 in
     (present)
         echo "gem install '${name}' --no-ri --no-rdoc"
-        echo 'installed' >> "${__messages_out:?}"
+        echo 'installed' >>"${__messages_out:?}"
         ;;
     (absent)
         echo "gem uninstall '${name}'"
-        echo 'removed' >> "${__messages_out:?}"
+        echo 'removed' >>"${__messages_out:?}"
         ;;
     (*)
         printf 'Invalid --state: %s\n' "${state_should}" >&2

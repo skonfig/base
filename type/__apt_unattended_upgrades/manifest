@@ -29,7 +29,7 @@ __file /etc/apt/apt.conf.d/20auto-upgrades \
     --owner root \
     --group root \
     --mode 644 \
-    --source - << EOF
+    --source - <<EOF
 APT::Periodic::Update-Package-Lists "1";
 APT::Periodic::Unattended-Upgrade "1";
 EOF
@@ -48,8 +48,7 @@ then
     while read -r l
     do
         o=$(printf '%s\nUnattended-Upgrade::%s "%s";\n' "${o}" "${l%%=*}" "${l#*=}")
-    done \
-        < "${__object:?}/parameter/option"
+    done <"${__object:?}/parameter/option"
 
     conf=$(printf '%s\n%s\n' "${conf}" "${o}")
 fi
@@ -61,8 +60,7 @@ then
     while read -r l
     do
         b=$(printf '%s\n"%s";\n' "${b}" "${l}")
-    done \
-        < "${__object:?}/parameter/blacklist"
+    done <"${__object:?}/parameter/blacklist"
 
     conf=$(printf '%s\n%s\n}\n' "${conf}" "${b}")
 fi

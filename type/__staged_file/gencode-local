@@ -71,16 +71,16 @@ fetch_and_prepare_file() {
    # shellcheck disable=SC2016
    printf 'cd "${tmpdir}"\n'
    # shellcheck disable=SC2059
-   printf "${fetch_command} > \"%s\"\\n" "${source}" "${source_file_name}"
+   printf "${fetch_command} >\"%s\"\\n" "${source}" "${source_file_name}"
    prepare_command=$(cat "${__object:?}/parameter/prepare-command")
    # shellcheck disable=SC2059
-   printf "${prepare_command} > \"%s\"\\n" "${source_file_name}" "${stage_file}"
+   printf "${prepare_command} >\"%s\"\\n" "${source_file_name}" "${stage_file}"
    printf 'cd - >/dev/null\n'
    # shellcheck disable=SC2016
    printf 'rm -rf "${tmpdir}"\n'
 }
 
-cat << DONE
+cat <<DONE
 verify_cksum() {
    cksum_is="\$(cksum "${stage_file}" | cut -d' ' -f1,2)"
    cksum_should=$(cut -d' ' -f1,2 "${__object:?}/parameter/cksum")
@@ -102,7 +102,7 @@ else
    printf '}\n'
 fi
 
-cat << DONE
+cat <<DONE
 verify_cksum || {
    echo "Failed to verify checksum for ${__object_name:?}" >&2
    exit 1

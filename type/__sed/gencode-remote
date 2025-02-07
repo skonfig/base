@@ -57,10 +57,8 @@ fi
 # shellcheck disable=SC2016
 echo 'tmp="${__object:?}/tempfile"'
 
-echo "${sed_cmd} -f - '${file}' > \"\${tmp}\" << EOF"
-
+echo "${sed_cmd} -f - '${file}' >\"\${tmp}\" <<EOF"
 echo "${script}"
-
 echo 'EOF'
 
 echo "cp \"\${tmp}\" '${file}'"
@@ -68,7 +66,7 @@ echo "cp \"\${tmp}\" '${file}'"
 # shellcheck disable=SC2016
 echo 'rm -f "${tmp}"'
 
-echo 'change' >> "${__messages_out:?}"
+echo 'change' >>"${__messages_out:?}"
 
 if [ -f "${__object:?}/parameter/onchange" ]
 then

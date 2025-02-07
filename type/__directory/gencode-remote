@@ -62,17 +62,17 @@ get_current_value() {
 
 set_group() {
     echo "chgrp ${recursive} '$1' '${destination}'"
-    echo "chgrp ${recursive} '$1'" >> "${__messages_out:?}"
+    echo "chgrp ${recursive} '$1'" >>"${__messages_out:?}"
 }
 
 set_owner() {
     echo "chown ${recursive} '$1' '${destination}'"
-    echo "chown ${recursive} '$1'" >> "${__messages_out:?}"
+    echo "chown ${recursive} '$1'" >>"${__messages_out:?}"
 }
 
 set_mode() {
     echo "chmod ${recursive} '$1' '${destination}'"
-    echo "chmod ${recursive} '$1'" >> "${__messages_out:?}"
+    echo "chmod ${recursive} '$1'" >>"${__messages_out:?}"
 }
 
 case ${state_should}
@@ -86,10 +86,10 @@ in
             # our destination is not a directory, remove whatever is there
             # and then create our directory and set all attributes
             echo "rm -f '${destination}'"
-            echo 'remove non directory' >> "${__messages_out:?}"
+            echo 'remove non directory' >>"${__messages_out:?}"
          fi
          echo "mkdir ${mkdiropt} '${destination}'"
-         echo 'create' >> "${__messages_out:?}"
+         echo 'create' >>"${__messages_out:?}"
       elif [ "${state_should}" = 'exists' ]
       then
          # The type is directory and --state exists. We are done and do not
@@ -146,7 +146,7 @@ in
       if [ "${type}" = 'directory' ]
       then
          echo "rm -rf '${destination}'"
-         echo remove >> "${__messages_out:?}"
+         echo remove >>"${__messages_out:?}"
       fi
       ;;
    (*)

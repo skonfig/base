@@ -66,11 +66,11 @@ case ${state_should}
 in
     (present)
         echo "yum ${opts} install '${install_name}'"
-        echo 'installed' >> "${__messages_out:?}"
+        echo 'installed' >>"${__messages_out:?}"
         ;;
     (absent)
         echo "yum ${opts} remove '${name}'"
-        echo 'removed' >> "${__messages_out:?}"
+        echo 'removed' >>"${__messages_out:?}"
         ;;
     (*)
         printf 'Invalid --state: %s\n' "${state_should}" >&2

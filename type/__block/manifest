@@ -25,11 +25,11 @@ text=$(cat "${__object:?}/parameter/text")
 mkdir "${__object:?}/files"
 # Generate text block for inclusion in file
 block="${__object:?}/files/block"
-echo "${prefix}" > "${block}"
+echo "${prefix}" >"${block}"
 if [ "${text}" = "-" ]
 then
-   cat "${__object:?}/stdin" >> "${block}"
+   cat "${__object:?}/stdin" >>"${block}"
 else
-   echo "${text}" >> "${block}"
+   echo "${text}" >>"${block}"
 fi
-echo "${suffix}" >> "${block}"
+echo "${suffix}" >>"${block}"

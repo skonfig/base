@@ -100,6 +100,6 @@ fi
 if [ -n "${required_action}" ]
 then
     # also print it as message
-    echo "${required_action}" >> "${__messages_out:?}"
+    echo "${required_action}" >>"${__messages_out:?}"
     echo "systemctl ${required_action} '${name}'"
 fi

@@ -77,20 +77,20 @@ in
    (present|replace)
       if [ "${state_is}" = 'wrongposition' ] || [ "${state_is}" = 'matching' ]
       then
-         echo updated >> "${__messages_out:?}"
+         echo updated >>"${__messages_out:?}"
          remove=1
       else
-         echo added >> "${__messages_out:?}"
+         echo added >>"${__messages_out:?}"
       fi
       add=1
       ;;
    (absent)
-      echo removed >> "${__messages_out:?}"
+      echo removed >>"${__messages_out:?}"
       remove=1
       ;;
 esac
 
-cat << DONE
+cat <<DONE
 tmpfile=\$(mktemp ${file}.skonfig.XXXXXX)
 # preserve ownership and permissions of existing file
 if [ -f "${file}" ]
@@ -142,7 +142,7 @@ END {
       print line
    }
 }
-' "${file}" > "\${tmpfile}"
+' "${file}" >"\${tmpfile}"
 mv -f "\${tmpfile}" "${file}"
 DONE
 

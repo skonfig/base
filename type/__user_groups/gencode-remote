@@ -25,7 +25,7 @@ os=$(cat "${__global:?}/explorer/os")
 
 mkdir "${__object:?}/files"
 # file has to be sorted for comparison with `comm`
-sort "${__object:?}/parameter/group" > "${__object:?}/files/group.sorted"
+sort "${__object:?}/parameter/group" >"${__object:?}/files/group.sorted"
 
 case ${state_should}
 in

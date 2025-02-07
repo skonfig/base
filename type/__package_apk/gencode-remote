@@ -35,11 +35,11 @@ case ${state_should}
 in
     (present)
         echo "apk add -q '${name}'"
-        echo 'installed' >> "${__messages_out:?}"
+        echo 'installed' >>"${__messages_out:?}"
         ;;
     (absent)
         echo "apk del -q '${name}'"
-        echo 'removed' >> "${__messages_out:?}"
+        echo 'removed' >>"${__messages_out:?}"
         ;;
     (*)
         printf 'Invalid --state: %s\n' "${state_should}" >&2

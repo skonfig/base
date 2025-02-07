@@ -68,13 +68,13 @@ in
         cmd="${cmd} e -aoa -o'${dst}' '${src}'"
         ;;
     (*.bz2)
-        cmd="bunzip2 --stdout '${src}' > '${dst}'"
+        cmd="bunzip2 --stdout '${src}' >'${dst}'"
         ;;
     (*.gz)
-        cmd="gunzip --stdout '${src}' > '${dst}'"
+        cmd="gunzip --stdout '${src}' >'${dst}'"
         ;;
     (*.lzma|*.xz)
-        cmd="xz --uncompress --stdout '${src}' > '${dst}'"
+        cmd="xz --uncompress --stdout '${src}' >'${dst}'"
         ;;
     (*.rar)
         cmd="unrar x -o+ '${src}' '${dst}/'"
@@ -101,7 +101,7 @@ else
     sum_file="${src}.cdist__unpack_sum"
 fi
 
-echo "cksum '${src}' | awk '{ print \$1\$2 }' > '${sum_file}'"
+echo "cksum '${src}' | awk '{ print \$1\$2 }' >'${sum_file}'"
 
 if [ ! -f "${__object:?}/parameter/preserve-archive" ]
 then

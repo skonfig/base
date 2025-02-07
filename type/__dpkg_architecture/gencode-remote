@@ -63,7 +63,7 @@ then
             # updating the index to make the new architecture available
             echo 'apt update'
 
-            echo added >> "${__messages_out:?}"
+            echo added >>"${__messages_out:?}"
             ;;
 
         (absent)
@@ -78,7 +78,7 @@ then
             # print remove code
             printf "dpkg --remove-architecture '%s'\n" "${arch_wanted}"
 
-            echo removed >> "${__messages_out:?}"
+            echo removed >>"${__messages_out:?}"
             ;;
 
         (*)

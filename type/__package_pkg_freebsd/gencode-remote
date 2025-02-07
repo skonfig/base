@@ -86,7 +86,7 @@ then
 		# Shouldn't be installed
 		cmd="${rm_cmd} ${name}${flavor:+-${flavor}}-${curr_version}"
 		execcmd 'remove' "${cmd}"
-		echo 'removed' >> "${__messages_out:?}"
+		echo 'removed' >>"${__messages_out:?}"
 		exit 0
 	else
 		# Should be installed
@@ -107,7 +107,7 @@ then
 				execcmd 'remove' "${cmd}"
 				cmd="${add_cmd} -r ${name}-${version}"
 				execcmd 'add' "${cmd}"
-				echo 'installed' >> "${__messages_out:?}"
+				echo 'installed' >>"${__messages_out:?}"
 			fi
 		else
 			# Don't care what version to use
@@ -127,7 +127,7 @@ else
 			cmd="${add_cmd} -r ${name}${flavor:+-${flavor}}${version:+-${version}}"
 
 			execcmd 'add' "${cmd}"
-			echo 'installed' >> "${__messages_out:?}"
+			echo 'installed' >>"${__messages_out:?}"
 			exit 0
 			;;
 	esac

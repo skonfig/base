@@ -20,4 +20,4 @@
 # Prints "0" if the systemctl command is available, "1" otherwise.
 #
 
-command -v systemctl > /dev/null 2>&1 && echo 0 || echo 1
+command -v systemctl >/dev/null 2>&1 && echo 0 || echo 1

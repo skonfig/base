@@ -67,7 +67,7 @@ then
             if [ "${new_value}" != "${current_value}" ]
             then
                set -- "$@" "$(shorten_property "${property}")" \'"${new_value}"\'
-               echo "change ${property} ${new_value} ${current_value}" >> "${__messages_out:?}"
+               echo "change ${property} ${new_value} ${current_value}" >>"${__messages_out:?}"
             fi
          fi
       done
@@ -80,7 +80,7 @@ then
             (*)
                echo groupmod "$@" "${name}" ;;
          esac
-         echo mod >> "${__messages_out:?}"
+         echo mod >>"${__messages_out:?}"
       fi
    else
       # create new
@@ -117,6 +117,6 @@ else
          (*)
             echo groupdel "${name}" ;;
       esac
-      echo remove >> "${__messages_out:?}"
+      echo remove >>"${__messages_out:?}"
    fi
 fi

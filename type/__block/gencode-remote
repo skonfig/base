@@ -47,7 +47,7 @@ then
 fi
 
 remove_block() {
-   cat << DONE
+   cat <<DONE
 tmpfile=\$(mktemp ${quoted_file}.skonfig.XXXXXX)
 # preserve ownership and permissions of existing file
 if [ -f ${quoted_file} ]
@@ -66,7 +66,7 @@ awk -v prefix=$(quote "${prefix}") -v suffix=$(quote "${suffix}") '
    } else {
       print
    }
-}' ${quoted_file} > "\${tmpfile}"
+}' ${quoted_file} >"\${tmpfile}"
 mv -f "\${tmpfile}" ${quoted_file}
 DONE
 }
@@ -77,20 +77,20 @@ in
    (present)
       if [ "${state_is}" = 'changed' ]
       then
-         echo update >> "${__messages_out:?}"
+         echo update >>"${__messages_out:?}"
          remove_block
       else
-         echo add >> "${__messages_out:?}"
+         echo add >>"${__messages_out:?}"
       fi
       : "${__type:?}"  # make shellcheck happy
-      cat << DONE
-cat >> ${quoted_file} << '${__type##*/}_DONE'
+      cat <<DONE
+cat >>${quoted_file} <<'${__type##*/}_DONE'
 $(cat "${block}")
 ${__type##*/}_DONE
 DONE
       ;;
    (absent)
-      echo remove >> "${__messages_out:?}"
+      echo remove >>"${__messages_out:?}"
       remove_block
       ;;
 esac

@@ -161,14 +161,14 @@ then
 
        if [ $# -gt 0 ]
        then
-          echo mod >> "${__messages_out:?}"
+          echo mod >>"${__messages_out:?}"
 
           do_user mod "${name}" "$@"
        else
           :
        fi
     else
-        echo add >> "${__messages_out:?}"
+        echo add >>"${__messages_out:?}"
         for property in *
         do
             [ "${property}" = 'state' ] && continue

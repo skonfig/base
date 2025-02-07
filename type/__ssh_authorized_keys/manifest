@@ -79,8 +79,8 @@ do
       set -- "$@" --comment "$(cat "${__object:?}/parameter/comment")"
    fi
    # Ensure __ssh_authorized_key does not read stdin
-   __ssh_authorized_key "$@" < /dev/null
-done < "${__object:?}/parameter/key"
+   __ssh_authorized_key "$@" </dev/null
+done <"${__object:?}/parameter/key"
 
 if [ -f "${__object:?}/parameter/remove-unknown" ] &&
     [ -s "${__object:?}/explorer/keys" ]
@@ -98,7 +98,6 @@ then
             --file "${file}" \
             --key "${key}" \
             --state absent \
-                < /dev/null
-    done \
-        < "${__object:?}/explorer/keys"
+        </dev/null
+    done <"${__object:?}/explorer/keys"
 fi

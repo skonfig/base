@@ -92,7 +92,7 @@ pkg_info -q -I 'inst:${pkgid}' | grep -q '^${name}-${version}.*${flavor}$' 2>/de
 	exit 1
 }
 EOF
-		echo 'installed' >> "${__messages_out:?}"
+		echo 'installed' >>"${__messages_out:?}"
 		;;
 
 	(absent)
@@ -113,7 +113,7 @@ then
 	exit 1
 fi
 EOF
-		echo 'removed' >> "${__messages_out:?}"
+		echo 'removed' >>"${__messages_out:?}"
 		;;
 	(*)
 		printf 'Invalid --state: %s\n' "${state_should}" >&2

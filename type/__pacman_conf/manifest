@@ -89,9 +89,9 @@ if test "${section}" = 'options'
 then
 
     __file "${sec_path}/${section}"\
-            --state exists --mode 666 --source - << eof
+            --state exists --mode 666 --source - <<EOF
 [${section}]
-eof
+EOF
     #check if key is valid
     #check for boolean value
     contains_element "${key}" "${boolean_option_keys}"

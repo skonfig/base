@@ -41,7 +41,7 @@ in
       then
          if grep -Eq "^__(file|download)${keyfile}" "${__messages_in:?}"
          then
-            echo "added '${keyid}'" >> "${__messages_out:?}"
+            echo "added '${keyid}'" >>"${__messages_out:?}"
          fi
          exit 0
       elif [ "${state_is}" = 'present' ]
@@ -55,7 +55,7 @@ in
          # can get stuck if keyserver is not responding.
          # exporting env var and not exit 1,
          # because we need to clean up and kill dirmngr.
-         cat << EOF
+         cat <<EOF
 
 gpgtmphome="\$(mktemp -d)"
 
@@ -66,7 +66,7 @@ if timeout 30s \\
 then
     gpg --homedir "\${gpgtmphome}" \\
         --export "${keyid}" \\
-        > "${keyfile}"
+        >"${keyfile}"
 else
     export GPG_GOT_STUCK=1
 fi
@@ -87,7 +87,7 @@ EOF
          echo "apt-key adv --keyserver \"${keyserver}\" --recv-keys \"${keyid}\""
       fi
 
-      echo "added '${keyid}'" >> "${__messages_out:?}"
+      echo "added '${keyid}'" >>"${__messages_out:?}"
       ;;
    (absent)
       # Removal for keys added from a keyserver without this flag
@@ -97,11 +97,11 @@ EOF
       then
          # fallback to deprecated apt-key
          echo "apt-key del \"${keyid}\""
-         echo "removed '${keyid}'" >> "${__messages_out:?}"
+         echo "removed '${keyid}'" >>"${__messages_out:?}"
       # Propagate messages if needed
       elif grep -Eq "^__file${keyfile}" "${__messages_in:?}"
       then
-         echo "removed '${keyid}'" >> "${__messages_out:?}"
+         echo "removed '${keyid}'" >>"${__messages_out:?}"
       fi
       ;;
 esac

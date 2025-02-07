@@ -25,7 +25,7 @@ state_should=$(cat "${__object:?}/parameter/state")
 
 incompatible_args()
 {
-	cat >> /dev/stderr <<-EOF
+	cat >>/dev/stderr <<-EOF
 	This type does not support --${1} and --${method} simultaneously.
 	EOF
 	exit 1
@@ -63,7 +63,7 @@ then
 	method='keyid'
 fi
 # Save this for later in gencode-remote
-echo "${method}" > "${__object:?}/key_method"
+echo "${method}" >"${__object:?}/key_method"
 
 # Required remotely (most likely already installed)
 __package dirmngr
@@ -82,7 +82,7 @@ else
 	if [ "${state_should}" = 'absent' ] && \
 		[ -f "${__object:?}/parameter/keyid" ]
 	then
-		cat >> /dev/stderr <<EOF
+		cat >&2 <<EOF
 You can't reliably remove by keyid without --use-deprecated-apt-key.
 This would very likely do something you do not intend.
 EOF
@@ -112,7 +112,7 @@ then
 		# Dearmor if necessary
 		if grep -Fq 'BEGIN PGP PUBLIC KEY BLOCK' '${keyfilecdist}'
 		then
-			gpg --dearmor < '${keyfilecdist}' > '${keyfile}'
+			gpg --dearmor <'${keyfilecdist}' >'${keyfile}'
 		else
 			cp '${keyfilecdist}' '${keyfile}'
 		fi
