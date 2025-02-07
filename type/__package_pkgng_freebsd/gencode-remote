@@ -42,7 +42,12 @@ fi
 repo=$(cat "${__object:?}/parameter/repo")
 state=$(cat "${__object:?}/parameter/state")
 curr_version=$(cat "${__object:?}/explorer/pkg_version")
-pkg_bootstrapped=$(cat "${__object:?}/explorer/pkg_bootstrapped")
+if test -s "${__object:?}/explorer/pkg_bootstrapped"
+then
+    pkg_bootstrapped=true
+else
+    pkg_bootstrapped=false
+fi
 add_cmd='pkg install -y'
 rm_cmd='pkg delete -y'
 upg_cmd='pkg upgrade -y'
@@ -74,7 +79,7 @@ execcmd(){
          ;;
    esac
 
-   if [ -z "${pkg_bootstrapped}" ]
+   if ! ${pkg_bootstrapped?}
    then
        echo 'ASSUME_ALWAYS_YES=yes pkg bootstrap >/dev/null 2>&1'
    fi

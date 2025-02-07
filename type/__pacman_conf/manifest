@@ -34,12 +34,11 @@ boolean_option_keys='UseSyslog Color UseDelta TotalDownload CheckSpace VerbosePk
 allowed_repo_keys='Include Server SigLevel Usage'
 
 #set global variables
-MATCH=0
+MATCH=false
 
 #function for check if array contain string
 contains_element() {
-
-    MATCH=0
+    MATCH=false
 
     target=$1
     shift
@@ -48,11 +47,11 @@ contains_element() {
     do
         if [ "${key}" = "${target}" ]
         then
-            MATCH=1
+            MATCH=true
             return 0
         fi
     done
-    MATCH=0
+    MATCH=false
 }
 
 if [ -n "${file}" ]
@@ -91,7 +90,7 @@ eof
     #check for boolean value
     contains_element "${key}" "${boolean_option_keys}"
 
-    if [ "${MATCH}" -eq 1 ]
+    if ${MATCH?}
     then
         if [ "${value}" = 'on' ]
         then
@@ -106,7 +105,7 @@ eof
     else
         contains_element "${key}" "${allowed_option_keys}"
 
-        if [ "${MATCH}" -eq 1 ]
+        if ${MATCH?}
         then
             require="__file/${sec_path}/${section}" __key_value "${section}_${key}" \
                     --file "${sec_path}/${section}" --key "${key}" --value "${value}" --delimiter ' = '
@@ -125,7 +124,7 @@ eof
 
         #check if key is valid
         contains_element "${key}" "${allowed_repo_keys}"
-        if [ ${MATCH} -eq 0 ]
+        if ! ${MATCH?}
         then
             exit
         fi

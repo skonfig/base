@@ -32,13 +32,14 @@ then
     exit 1
 fi
 
+caution=false
 
 # Check if requested architecture is the main one
 if [ "${arch_wanted}" = "${main_arch}" ]
 then
     # higher than present; we can not remove it
     state_is='present'
-    caution='yes'
+    caution=true
 
 # Check if the architecture not already used
 elif grep -qFx "${arch_wanted}" "${__object:?}/explorer/foreign-architectures"
@@ -66,7 +67,7 @@ then
             ;;
 
         (absent)
-            if [ -n "${caution}" ]
+            if ${caution?}
             then
                 printf "can not remove the main arch '%s' of the system!\n" "${main_arch}" >&2
                 exit 1
