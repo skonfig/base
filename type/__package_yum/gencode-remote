@@ -36,12 +36,14 @@ fi
 
 state_should=$(cat "${__object:?}/parameter/state")
 
-if grep -q -E '(scientific|centos|almalinux|eurolinux|rocky|redhat|amazon)' "${__global:?}/explorer/os"
-then
-    opts='-y --quiet'
-else
-    opts='--assumeyes --quiet'
-fi
+os=$(cat "${__global:?}/explorer/os")
+case ${os}
+in
+	(scientific|centos|almalinux|eurolinux|rocky|redhat|amazon)
+		opts='-y --quiet' ;;
+	(*)
+		opts='--assumeyes --quiet' ;;
+esac
 
 not_provided='^no package provides'
 not_installed='is not installed$'

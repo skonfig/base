@@ -42,7 +42,7 @@ then
     then
         acl_should=$(cat "${__object:?}/stdin")
     else
-        acl_should=$(grep -Ev '^#|^$' "${acl_source}")
+        acl_should=$(grep -v -e '^#' -e '^$' "${acl_source}")
     fi
 elif [ -f "${__object:?}/parameter/entry" ]
 then
@@ -56,7 +56,7 @@ fi
 # let's check if target has necessary users and groups, since mistyped or missing
 # users/groups in target is most common reason.
 echo "${acl_should}" \
-    | grep -Po '(user|group):[^:]+' \
+    | grep -o -e 'user:[^:]\{1,\}' -e 'group:[^:]\{1,\}' \
     | sort -u \
     | while read -r l
     do
@@ -76,12 +76,12 @@ then
 fi
 
 if [ "${file_is}" = 'regular' ] \
-    && echo "${acl_should}" | grep -Eq '^default:'
+    && echo "${acl_should}" | grep -q '^default:'
 then
     # only directories can have default ACLs,
     # but instead of error,
     # let's just remove default entries
-    acl_should=$(echo "${acl_should}" | grep -Ev '^default:')
+    acl_should=$(echo "${acl_should}" | grep -v '^default:')
 fi
 
 setfacl_exec='setfacl'
@@ -103,7 +103,7 @@ then
         # do not remove wanted ACL entries.
         # skip mask and other entries, because we can't actually remove them, but only change.
         # handle special case of "X" in perms field, see man setfacl.
-        if echo "${acl_should}" | sed 's/X$/x/' | grep -Eq "^${acl}" \
+        if echo "${acl_should}" | sed 's/X$/x/' | grep -q "^${acl}" \
             || echo "${acl}" | grep -Eq '^(default:)?(mask|other)'
         then
             continue
@@ -131,7 +131,7 @@ do
     fi
 
     if echo "${os}" | grep -Fq 'freebsd' \
-        && echo "${acl}" | grep -Eq '^default:'
+        && echo "${acl}" | grep -q '^default:'
     then
         echo "setting default ACL in ${os} is currently not supported" >&2
     else

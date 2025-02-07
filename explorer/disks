@@ -29,7 +29,7 @@ in
         sysctl -n kern.disks
         ;;
     (OpenBSD)
-        sysctl -n hw.disknames | grep -Eo '[lsw]d[0-9]+'
+        sysctl -n hw.disknames | grep -o '[lsw]d[0-9]\{1,\}'
         ;;
     (NetBSD)
         PATH=$(getconf PATH)

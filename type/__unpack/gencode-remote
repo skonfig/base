@@ -22,7 +22,7 @@
 
 quote() { printf '%s\n' "$*" | sed "s/'/'\\\\''/g;1s/^/'/;\$s/\$/'/"; }
 
-if grep -Eq '^(missing|match)$' "${__object:?}/explorer/state"
+if grep -q -x -e 'missing' -e 'match' "${__object:?}/explorer/state"
 then
     exit 0
 fi

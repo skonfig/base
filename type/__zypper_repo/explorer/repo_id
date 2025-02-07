@@ -27,4 +27,4 @@ else
    uri=${__object_id:?}
 fi
 # shellcheck disable=SC2005,SC2046
-echo $(zypper lr -u | grep -F "${uri}" | cut -d'|' -f 1 | grep -E '^[0-9]')
+echo $(zypper lr -u | grep -F "${uri}" | cut -d'|' -f 1 | grep '^[0-9]')

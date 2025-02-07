@@ -24,4 +24,4 @@
 # echo $(zypper lr -E | cut -d'|' -f 1 | grep -E '^[0-9]')
 #
 # shellcheck disable=SC2005,SC2046
-echo $(zypper lr |  grep -E '^[0-9]([^|]+\|){3,3} Yes' | cut -d'|' -f 1)
+echo $(zypper lr | grep '^[0-9]\([^|]*|\)\{3,3\} Yes' | cut -d'|' -f 1)

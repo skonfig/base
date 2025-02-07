@@ -30,4 +30,4 @@ fi
 # echo $(zypper ls -u -E | grep -E "\<${uri}\>" | cut -d'|' -f 1 )
 #
 # shellcheck disable=SC2005,SC2046
-echo $(zypper ls -u | grep -E '^([^|]+\|){3,3} Yes' | grep -E "\\<${uri}\\>" | cut -d'|' -f 1)
+echo $(zypper ls -u | grep '^\([^|]*|\)\{3,3\} Yes' | grep -E "\\<${uri}\\>" | cut -d'|' -f 1)

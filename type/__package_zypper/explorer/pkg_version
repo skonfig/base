@@ -38,10 +38,10 @@ fi
 case ${ptype}
 in
     (package)
-        zypper search --details --match-exact --installed-only --type "${ptype}" "${name}" | grep -E '^i' | cut -d " " -f 3,7 || :
+        zypper search --details --match-exact --installed-only --type "${ptype}" "${name}" | grep '^i' | cut -d " " -f 3,7 || :
         ;;
     (patch|pattern|product|srcpackage)
-        zypper search --match-exact --installed-only --type "${ptype}" "${name}" | grep -E '^i' | cut -d " " -f 3 || :
+        zypper search --match-exact --installed-only --type "${ptype}" "${name}" | grep '^i' | cut -d " " -f 3 || :
         ;;
     (*)
         echo 'unknown ptype in __package_zypper explorer' >&2
