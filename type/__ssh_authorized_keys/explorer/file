@@ -40,10 +40,10 @@ else
 		case ${owner}
 		in
 			([0-9][0-9]*)
-				owner_line=$(awk -F: "\$3 == \"${owner}\" { print }" /etc/passwd)
+				owner_line=$(awk -v owner="${owner}" -F: '$3 == owner' /etc/passwd)
 				;;
 			(*)
-				owner_line=$(awk -F: "\$1 == \"${owner}\" { print }" /etc/passwd)
+				owner_line=$(awk -v owner="${owner}" -F: '$1 == owner' /etc/passwd)
 				;;
 		esac
 	fi

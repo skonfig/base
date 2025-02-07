@@ -46,7 +46,7 @@ then
          supported_change_properties='gid password'
          ;;
    esac
-   if grep -q "^${name}:" "${__object:?}/explorer/group"
+   if cut -d: -f1 "${__object:?}/explorer/group" | grep -qxF "${name}"
    then
       # change existing
       for property in ${supported_change_properties}
@@ -106,7 +106,7 @@ then
    fi
 else
    # delete existing
-   if grep -q "^${name}:" "${__object:?}/explorer/group"
+   if cut -d: -f1 "${__object:?}/explorer/group" | grep -qxF "${name}"
    then
       if [ "${os}" = 'freebsd' ]
       then

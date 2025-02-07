@@ -33,9 +33,9 @@ name=${__object_id:?}
 if command -v getent >/dev/null
 then
 	getent group "${name}" || :
-elif [ -f /etc/group ]
+elif test -f /etc/group
 then
-	grep "^${name}:" /etc/group || :
+	awk -v name="${name}" -F: '$1 == name' /etc/group
 else
 	not_supported
 fi
