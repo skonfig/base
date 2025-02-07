@@ -50,7 +50,7 @@ _readlink() {
 			# resolve destination of symlinks pointing to a file
 			_ls_out=$(ls -l "$1")
 			echo "${_ls_out#*"$1 -> "}"
-			unset _ls_out
+			unset -v _ls_out
 		fi
 	fi
 }

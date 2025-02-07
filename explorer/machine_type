@@ -115,7 +115,7 @@ get_dmi_field() {
 		then
 			cat "${dmi_sysfs}/${_filename}"
 		fi
-		unset _filename
+		unset -v _filename
 	elif test "${uname_s}" = OpenBSD
 	then
 		# NOTE: something similar to system-manufacutrer and system-product-name

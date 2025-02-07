@@ -246,7 +246,7 @@ check_sysvinit() (
 	else
 		echo sysvinit
 	fi
-	unset stacked
+	unset -v stacked
 )
 
 check_upstart() {

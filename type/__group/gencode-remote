@@ -54,7 +54,7 @@ then
          if [ -f "${__object:?}/parameter/${property}" ]
          then
             new_value=$(cat "${__object:?}/parameter/${property}")
-            unset current_value
+            unset -v current_value
             case ${property}
             in
                (password)

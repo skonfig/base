@@ -56,7 +56,7 @@ get_current_value() {
          ;;
       esac
       awk '/'"${_name}"':/ { print $'${_index}' }' "${stat_file}"
-      unset _name _value _index
+      unset -v _name _value _index
    fi
 }
 

@@ -59,7 +59,7 @@ in
 				--key clock \
 				--delimiter '=' --exact_delimiter \
 				--value "\"$(${local_clock?} && echo local || echo UTC)\""
-			unset CDIST_ORDER_DEPENDENCY
+			unset -v CDIST_ORDER_DEPENDENCY
 		fi
 		;;
 	(centos|fedora|redhat|scientific)
@@ -101,7 +101,7 @@ in
 				--key UTC \
 				--delimiter '=' --exact_delimiter \
 				--value "$(${local_clock?} && echo false || echo true)"
-			unset CDIST_ORDER_DEPENDENCY
+			unset -v CDIST_ORDER_DEPENDENCY
 		fi
 		;;
 	(debian|devuan|ubuntu)
@@ -146,7 +146,7 @@ in
 				--key UTC \
 				--delimiter '=' --exact_delimiter \
 				--value "$(${local_clock?} && echo no || echo yes)"
-			unset CDIST_ORDER_DEPENDENCY
+			unset -v CDIST_ORDER_DEPENDENCY
 		fi
 		;;
 	(freebsd)
@@ -208,7 +208,7 @@ in
 			--delimiter '=' --exact_delimiter \
 			--key HARDWARECLOCK \
 			--value "\"$(${local_clock?} && echo localtime || echo UTC)\""
-		unset CDIST_ORDER_DEPENDENCY
+		unset -v CDIST_ORDER_DEPENDENCY
 		;;
 	(*)
 		if ! ${has_systemd_timedatectl?}

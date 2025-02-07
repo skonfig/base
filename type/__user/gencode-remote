@@ -61,7 +61,7 @@ quote_ifneeded() {
 			set -- "$@" "${_arg}"
 		fi
 	done
-	unset _arg
+	unset -v _arg
 
 	# NOTE: Use printf because POSIX echo interprets escape sequences
 	printf '%s' "$*"
@@ -96,7 +96,7 @@ do_user() {
 	# quote arguments if needed
 	quote_ifneeded "$@"; echo
 
-	unset _util_name _user_name
+	unset -v _util_name _user_name
 }
 
 if [ "${state}" = 'present' ]
@@ -107,7 +107,7 @@ then
        for property in *
        do
           new_value=$(cat "${property}")
-          unset current_value
+          unset -v current_value
 
           file="${__object:?}/explorer/passwd"
 
