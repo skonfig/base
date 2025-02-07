@@ -28,10 +28,7 @@ else
     path="/${__object_id:?}"
 fi
 
-if [ ! -d "${path}" ]
-then
-    exit 0
-fi
+test -d "${path}" || exit 0
 
 # deprecated
 if [ -f "${__object:?}/parameter/pattern" ] || [ -f "${__object:?}/parameter/exclude" ]

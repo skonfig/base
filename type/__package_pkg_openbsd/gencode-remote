@@ -84,18 +84,13 @@ in
 		cat <<EOF
 status=\$(pkg_add ${pkgopts} '${pkgid}' 2>&1 || :)
 
-if ! pkg_info -q -I 'inst:${pkgid}' | grep -q '^${name}-${version}.*${flavor}$' 2>/dev/null
-then
+pkg_info -q -I 'inst:${pkgid}' | grep -q '^${name}-${version}.*${flavor}$' 2>/dev/null || {
 	# We didn't find the package in the list of 'installed packages', so it failed.
 	# This is necessary because pkg_add doesn't return properly
 
-	if [ -z "\${status}" ]
-	then
-		status='Failed to add package, uncaught exception.'
-	fi
-	echo "Error: \${status}" >&2
+	printf 'Error: %s\n' "\${status:-Failed to add package, uncaught exception.}" >&2
 	exit 1
-fi
+}
 EOF
 		echo 'installed' >> "${__messages_out:?}"
 		;;

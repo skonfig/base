@@ -20,11 +20,10 @@
 # Retrieve the status of a package - parsed pkgng output.
 #
 
-if ! pkg -N >/dev/null 2>&1
-then
-   # Nothing to do if pkg is not bootstrapped
-   exit
-fi
+pkg -N >/dev/null 2>&1 || {
+   # nothing to do if pkg(8) is not bootstrapped
+   exit 0
+}
 
 if [ -f "${__object:?}/parameter/name" ]
 then

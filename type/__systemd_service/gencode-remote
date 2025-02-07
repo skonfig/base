@@ -92,7 +92,7 @@ then
     if [ -f "${__object:?}/parameter/if-required" ]
     then
         # exit here if there are no changes from the dependencies affected (nothing to do)
-        if ! grep -q -f "${__object:?}/require" "${__messages_in:?}"; then exit 0; fi
+        grep -q -f "${__object:?}/require" "${__messages_in:?}" || exit 0
     fi
 fi
 

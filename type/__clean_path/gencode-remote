@@ -20,10 +20,7 @@
 
 found="${__object:?}/explorer/find"
 
-if [ ! -s "${found}" ]
-then
-    exit 0
-fi
+test -s "${found}" || exit 0
 
 # shellcheck disable=SC2016
 echo '${__type:?}/explorer/find -depth -exec rm -rf {} +'

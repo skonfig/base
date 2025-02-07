@@ -39,10 +39,7 @@ for altdir in \
     /var/lib/dpkg/alternatives \
     /var/lib/alternatives
 do
-    if [ ! -f "${altdir}/${__object_id:?}" ]
-    then
-        continue
-    fi
+    test -f "${altdir}/${__object_id:?}" || continue
 
     link=$(awk 'NR==2' "${altdir}/${__object_id:?}")
 

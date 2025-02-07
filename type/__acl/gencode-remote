@@ -60,11 +60,10 @@ echo "${acl_should}" \
     | sort -u \
     | while read -r l
     do
-        if ! grep "${l}" -Fxq "${__object:?}/explorer/getent"
-        then
+        grep -qxF "${l}" "${__object:?}/explorer/getent" || {
             echo "no ${l}' in target" | sed "s/:/ '/" >&2
             exit 1
-        fi
+        }
     done
 
 if [ -f "${__object:?}/parameter/default" ]

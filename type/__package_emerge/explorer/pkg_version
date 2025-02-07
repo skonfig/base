@@ -20,11 +20,10 @@
 # Prints the currently installed version of a package.
 #
 
-if [ ! -x /usr/bin/equery ]
-then
+test -x /usr/bin/equery || {
     echo 'gentoolkit not installed!' 1>&2
     exit 1
-fi
+}
 
 if [ -f "${__object:?}/parameter/name" ]
 then
