@@ -29,7 +29,7 @@ state_is=$(cat "${__object:?}/explorer/state")
 method=$(cat "${__object:?}/key_method")
 
 keydir=$(cat "${__object:?}/parameter/keydir")
-keyfile="${keydir}/${__object_id:?}.gpg"
+keyfile="${keydir:?}/${__object_id:?}.gpg"
 
 case ${state_should}
 in

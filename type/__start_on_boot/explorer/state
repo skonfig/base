@@ -99,7 +99,7 @@ else
             ;;
 
         (*)
-            echo "Unsupported os: ${os}" >&2
+            printf 'Unsupported os: %s\n' "${os}" >&2
             exit 1
             ;;
     esac

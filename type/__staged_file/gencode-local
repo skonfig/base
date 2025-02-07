@@ -61,8 +61,7 @@ get_file() {
 
 fetch_file() {
    # shellcheck disable=SC2059
-   printf "${fetch_command}" "${source}"
-   printf ' > "%s"\n' "${stage_file}"
+   printf "${fetch_command} >%s\\n" "${source}" "\"${stage_file}\""
 }
 
 fetch_and_prepare_file() {

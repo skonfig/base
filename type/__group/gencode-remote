@@ -73,12 +73,13 @@ then
       done
       if [ $# -gt 0 ]
       then
-         if [ "${os}" = 'freebsd' ]
-         then
-            echo pw groupmod "$@" "${name}"
-         else
-            echo groupmod "$@" "${name}"
-         fi
+         case ${os}
+         in
+            (freebsd)
+               echo pw groupmod "$@" "${name}" ;;
+            (*)
+               echo groupmod "$@" "${name}" ;;
+         esac
          echo mod >> "${__messages_out:?}"
       fi
    else
@@ -97,23 +98,25 @@ then
             fi
          fi
       done
-      if [ "${os}" = 'freebsd' ]
-      then
-         echo pw groupadd "${name}" "$@"
-      else
-         echo groupadd "$@" "${name}"
-      fi
+      case ${os}
+      in
+         (freebsd)
+            echo pw groupadd "${name}" "$@" ;;
+         (*)
+            echo groupadd "$@" "${name}" ;;
+      esac
    fi
 else
    # delete existing
    if cut -d: -f1 "${__object:?}/explorer/group" | grep -qxF "${name}"
    then
-      if [ "${os}" = 'freebsd' ]
-      then
-         echo pw groupdel "${name}"
-      else
-         echo groupdel "${name}"
-      fi
+      case ${os}
+      in
+         (freebsd)
+            echo pw groupdel "${name}" ;;
+         (*)
+            echo groupdel "${name}" ;;
+      esac
       echo remove >> "${__messages_out:?}"
    fi
 fi

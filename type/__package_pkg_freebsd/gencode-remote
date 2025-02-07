@@ -1,6 +1,7 @@
 #!/bin/sh -e
 #
 # 2012 Jake Guffey (jake.guffey at eprotex.com)
+# 2025 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -18,8 +19,8 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-assert ()                 #  If condition false,
-{                         #+ exit from script with error message.
+assert() {
+	# If condition false, exit from script with error message.
 	E_PARAM_ERR=98
 	E_ASSERT_FAILED=99
 
@@ -78,25 +79,27 @@ execcmd(){
 }
 
 if [ -n "${curr_version}" ]
-then	# PKG *is* installed
+then
+	# PKG *is* installed
 	if [ "${state}" = 'absent' ]
-	then	# Shouldn't be installed
-		if [ -n "${flavor}" ]
-		then
-			cmd="${rm_cmd} ${name}-${flavor}-${curr_version}"
-		else
-			cmd="${rm_cmd} ${name}-${curr_version}"
-		fi
+	then
+		# Shouldn't be installed
+		cmd="${rm_cmd} ${name}${flavor:+-${flavor}}-${curr_version}"
 		execcmd 'remove' "${cmd}"
 		echo 'removed' >> "${__messages_out:?}"
 		exit 0
-	else	# Should be installed
+	else
+		# Should be installed
 		if [ -n "${version}" ]
-		then	# Want a specific version
+		then
+			# Want a specific version
 			if [ "${version}" = "${curr_version}" ]
-			then	# Current version is correct
+			then
+				# Current version is correct
 				exit 0
-			else	# Current version is wrong, fix
+			else
+				# Current version is wrong, fix
+
 				#updatepkg "${name}" "${version}"
 				# shellcheck disable=SC2039
 				assert "! ${version} = ${curr_version}" ${LINENO}
@@ -106,29 +109,26 @@ then	# PKG *is* installed
 				execcmd 'add' "${cmd}"
 				echo 'installed' >> "${__messages_out:?}"
 			fi
-		else	# Don't care what version to use
+		else
+			# Don't care what version to use
 			exit 0
 		fi
 	fi
-else	# PKG *isn't* installed
-	if [ "${state}" = 'absent' ]
-	then	# Shouldn't be installed
-		exit 0
-	elif [ "${state}" = 'present' ]
-	then	# Is not currently installed, should be
-		if [ -n "${flavor}" ]
-		then
-			cmd="${add_cmd} -r ${name}-${flavor}"
-		else
-			cmd="${add_cmd} -r ${name}"
-		fi
-		if [ -n "${version}" ]
-		then
-			cmd="${cmd}-${version}"
-		fi
-		execcmd 'add' "${cmd}"
-		echo 'installed' >> "${__messages_out:?}"
-		exit 0
-	fi
-fi
+else
+	# PKG *isn't* installed
+	case ${state}
+	in
+		(absent)
+			# Shouldn't be installed
+			exit 0
+			;;
+		(present)
+			# Is not currently installed, should be
+			cmd="${add_cmd} -r ${name}${flavor:+-${flavor}}${version:+-${version}}"
 
+			execcmd 'add' "${cmd}"
+			echo 'installed' >> "${__messages_out:?}"
+			exit 0
+			;;
+	esac
+fi

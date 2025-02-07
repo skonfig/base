@@ -46,7 +46,7 @@ in
                 fire_onchange=true
                 ;;
             (*)
-                echo "Unknown explorer state: ${state_is}" >&2
+                printf 'Unknown explorer state: %s\n' "${state_is}" >&2
                 exit 1
                 ;;
         esac
@@ -70,7 +70,7 @@ in
                 # nothing to do
                 ;;
             (*)
-                echo "Unknown explorer state: ${state_is}" >&2
+                printf 'Unknown explorer state: %s\n' "${state_is}" >&2
                 exit 1
                 ;;
         esac

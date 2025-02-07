@@ -42,7 +42,7 @@ then
 fi
 
 keydir=$(cat "${__object:?}/parameter/keydir")
-keyfile="${keydir}/${__object_id:?}.gpg"
+keyfile="${keydir:?}/${__object_id:?}.gpg"
 
 if [ -f "${keyfile}" ]
 then

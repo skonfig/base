@@ -55,7 +55,7 @@ get_current_value() {
             _index=3
          ;;
       esac
-      awk '/'"${_name}"':/ { print $'${_index}' }' "${stat_file}"
+      awk -v name="${_name}" '{ if (1 == index($0, name ":")) { print $'${_index}' } }' "${stat_file}"
       unset -v _name _value _index
    fi
 }

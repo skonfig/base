@@ -49,7 +49,7 @@ else
       (openbsd) type='pkg_openbsd' ;;
       (alpine|chimera) type='apk' ;;
       (*)
-         echo "Don't know how to manage packages on: ${os}" >&2
+         printf "Don't know how to manage packages on: %s\\n" "${os}" >&2
          exit 1
          ;;
    esac

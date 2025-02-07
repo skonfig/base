@@ -45,41 +45,47 @@ contains_element() {
 
     for key
     do
-        if [ "${key}" = "${target}" ]
-        then
-            MATCH=true
-            return 0
-        fi
+        case ${key}
+        in
+            ("${target}")
+                MATCH=true
+                return 0
+                ;;
+        esac
     done
-    MATCH=false
 }
 
-if [ -n "${file}" ]
+if test -n "${file}"
 then
-    __file "${sec_path}/plain_file_${file}"\
-        --state exists --mode 666
+    __file "${sec_path}/plain_file_${file}" \
+        --state exists \
+        --mode 666
 
-    if [ "${state}" = 'present' ]
-    then
-
-        require="__file/${sec_path}/plain_file_${file}" __key_value "${file}_${key}" \
-            --file "${sec_path}/plain_file_${file}" --key "${key}" --value "${value}" --delimiter ' = '
-
-        exit 0
-
-    elif [ "${state}" = 'absent' ]
-    then
-        require="__file/${sec_path}/plain_file_${file}" __key_value "${file}_${key}" \
+    case ${state}
+    in
+        (present)
+            require="__file/${sec_path}/plain_file_${file}" \
+            __key_value "${file}_${key}" \
+                --file "${sec_path}/plain_file_${file}" \
+                --delimiter ' = ' \
+                --key "${key}" \
+                --value "${value}"
+            exit 0
+            ;;
+        (absent)
+            require="__file/${sec_path}/plain_file_${file}" \
+            __key_value "${file}_${key}" \
                 --state absent
-        exit 0
-
-    else
-        printf 'Invalid --state: %s\n' "${state}" >&2
-        exit 0
-    fi
+            exit 0
+            ;;
+        (*)
+            printf 'Invalid --state: %s\n' "${state}" >&2
+            exit 0
+            ;;
+    esac
 fi
 
-if [ "${section}" = 'options' ]
+if test "${section}" = 'options'
 then
 
     __file "${sec_path}/${section}"\
@@ -92,54 +98,68 @@ eof
 
     if ${MATCH?}
     then
-        if [ "${value}" = 'on' ]
-        then
-            require="__file/${sec_path}/${section}" __line "${key}_${value}" \
-                --file "${sec_path}/${section}" --line "${key}"
-        elif [ "${value}" = 'off' ]
-        then
-            require="__file/${sec_path}/${section}" __line "${key}_${value}" \
-                --file "${sec_path}/${section}" --line "${key}" --state absent
-        fi
-
+        case ${value}
+        in
+            (on)
+                require="__file/${sec_path}/${section}" \
+                __line "${key}_${value}" \
+                    --file "${sec_path}/${section}" \
+                    --line "${key}"
+                ;;
+            (off)
+                require="__file/${sec_path}/${section}" \
+                __line "${key}_${value}" \
+                    --state absent \
+                    --file "${sec_path}/${section}" \
+                    --line "${key}"
+                ;;
+        esac
     else
         contains_element "${key}" "${allowed_option_keys}"
 
         if ${MATCH?}
         then
-            require="__file/${sec_path}/${section}" __key_value "${section}_${key}" \
-                    --file "${sec_path}/${section}" --key "${key}" --value "${value}" --delimiter ' = '
+            require="__file/${sec_path}/${section}" \
+            __key_value "${section}_${key}" \
+                --file "${sec_path}/${section}" \
+                --delimiter ' = ' \
+                --key "${key}" \
+                --value "${value}"
         else
             echo "Key: ${key} is not valid. Have a look at man pacman.conf" >&2
         fi
     fi
-
 else
-        __file "${sec_path}/repo_${section}"\
-            --state exists --mode 666 --source - << eof
+    __file "${sec_path}/repo_${section}" \
+        --state exists \
+        --mode 666 \
+        --source - <<EOF
 [${section}]
-eof
-    if [ "${state}" = 'present' ]
-    then
+EOF
 
-        #check if key is valid
-        contains_element "${key}" "${allowed_repo_keys}"
-        if ! ${MATCH?}
-        then
-            exit
-        fi
+    case ${state}
+    in
+        (present)
+            #check if key is valid
+            contains_element "${key}" "${allowed_repo_keys}"
 
-        require="__file/${sec_path}/repo_${section}" __key_value "${section}_${key}" \
-                --file "${sec_path}/repo_${section}" --key "${key}" --value "${value}" --delimiter ' = '
+            ${MATCH?} || exit
 
-    elif [ "${state}" = 'absent' ]
-    then
-
-        require="__file/${sec_path}/repo_${section}" __key_value "${section}_${key}" \
-            --state absent
-
-    else
-        printf 'Invalid --state: %s\n' "${state}" >&2
-    fi
-
+            require="__file/${sec_path}/repo_${section}" \
+            __key_value "${section}_${key}" \
+                --file "${sec_path}/repo_${section}" \
+                --delimiter ' = ' \
+                --key "${key}" \
+                --value "${value}"
+            ;;
+        (absent)
+            require="__file/${sec_path}/repo_${section}" \
+            __key_value "${section}_${key}" \
+                --state absent
+            ;;
+        (*)
+            printf 'Invalid --state: %s\n' "${state}" >&2
+            exit 1
+            ;;
+    esac
 fi

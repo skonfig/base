@@ -52,7 +52,7 @@ done
 if [ -z "${link}" ] && [ -z "${__cdist_dry_run+dry run}" ]
 then
     # NOTE: ignore error for dry-runs because a package providing the link
-    #       might be managed by another cdist object (which wasn't executed,
+    #       might be managed by another skonfig object (which wasn't executed,
     #       because dry run…).
     echo "unable to get link for ${__object_id:?}" >&2
     exit 1
