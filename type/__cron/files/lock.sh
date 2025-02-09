@@ -23,7 +23,7 @@
 __type_path=${__object%%"${__object_id}"*}
 readonly __type_path
 test -d "${__type_path}" || { echo 'Cannot determine __type_path' >&2; exit 1; }
-LOCKFILE="${__type_path%/*/*/*}/.cdist_crontab.lock"
+LOCKFILE="${__type_path%/*/*/*}/.skonfig_crontab.lock"
 readonly LOCKFILE
 
 if command -v shlock >/dev/null 2>&1
@@ -38,23 +38,36 @@ then
 	_unlock() {
 		# assert the current shell owns the lock
 		echo $$ | cmp -s "${LOCKFILE:?}" - || return 1
-		rm "${LOCKFILE:?}"
+		rm -f "${LOCKFILE:?}"
 	}
 elif command -v flock >/dev/null 2>&1 \
-	&& flock 2>&1 | grep -q ' \(-x\|-u\)'
+	&& flock 2>&1 | grep -qF -e ' -x' -e ' -u'
 then
 	# use flock on FD 9
 	# NOTE: old util-linux versions don't support the -x and -u arguments.
-	_lock() {
-		if test "$(uname -s)" = 'NetBSD'
-		then
-			# required for opening of FDs
-			set -o posix
-		fi
 
-		exec 9<>"${LOCKFILE:?}"
+	_lock() {
+		case $(uname -s)
+		in
+			(NetBSD)
+				# NOTE: Without -o posix NetBSD /bin/sh will not pass FDs > 2
+				#       opened using the exec built-in command to utilities
+				#       executed. The option needs to be set before the
+				#       file descriptor is opened. (cf. sh(1))
+				_oldset=$(set +o)
+				# shellcheck disable=SC3040
+				set -o posix
+				exec 9<>"${LOCKFILE:?}"
+				eval "${_oldset}"
+				unset -v _oldset
+				;;
+			(*)
+				exec 9<>"${LOCKFILE:?}"
+				;;
+		esac
+
 		flock -x 9
-		echo $$>&9
+		echo $$ >&9
 	}
 	_unlock() {
 		:>"${LOCKFILE:?}"
@@ -71,7 +84,7 @@ then
 		rm -f "${LOCKFILE}"
 	}
 else
-	# fallback to mkdir if flock is missing
+	# fallback to mkdir(1) "hack" if other tools are missing
 	_lock() {
 		until mkdir "${LOCKFILE:?}.dir" 2>/dev/null
 		do
@@ -89,7 +102,7 @@ else
 		if test -s "${LOCKFILE}.dir/pid"
 		then
 			test "$(cat "${LOCKFILE}.dir/pid")" = $$ || return 1
-			rm "${LOCKFILE:?}.dir/pid"
+			rm -f "${LOCKFILE:?}.dir/pid"
 		fi
 		rmdir "${LOCKFILE:?}.dir"
 	}
