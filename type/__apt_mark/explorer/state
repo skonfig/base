@@ -27,7 +27,7 @@ else
     name=${__object_id:?}
 fi
 
-if apt-mark showhold | grep -qxF "${name}"
+if apt-mark showhold | grep -qxF -e "${name}"
 then
 	echo hold
 else

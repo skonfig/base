@@ -62,7 +62,7 @@ gnu_normalize_codeset() {
 }
 
 locale_available() (
-	echo "${locales}" | grep -qxF "$1" || {
+	echo "${locales}" | grep -qxF -e "$1" || {
 		# glibc uses "normalized" locale names in archives.
 		# If a locale is stored in an archive, the normalized name will be
 		# printed by locale, so that needs to be checked, too.
@@ -70,7 +70,7 @@ locale_available() (
 			parse_locale "$1" _lang _codeset _modifier \
 			&& format_locale "${_lang:?}" "$(gnu_normalize_codeset "${_codeset?}")" \
 			   "${_modifier?}")
-		echo "${locales}" | grep -qxF "${localename}"
+		echo "${locales}" | grep -qxF -e "${localename}"
 	}
 )
 
@@ -88,7 +88,7 @@ else
 		while read -r _alias _localename
 		do
 			if test "${_localename}" = "${baselocale}" \
-				&& echo "${locales}" | grep -qxF "${_alias}"
+				&& echo "${locales}" | grep -qxF -e "${_alias}"
 			then
 				echo alias-present
 				exit 0

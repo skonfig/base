@@ -116,7 +116,7 @@ do
 					   do
 						   resolve_suite "${_ln}"
 					   done \
-					 | grep -qxF "$(resolve_suite "${target_release}")"
+					 | grep -qxF -e "$(resolve_suite "${target_release}")"
 			then
 				# state=wrong-release iff the currently installed version of the
 				# package is available in at least one of the configured APT

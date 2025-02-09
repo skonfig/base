@@ -36,7 +36,7 @@ fi
 
 name=${__object_id:?}
 
-if ! grep -Fxq "${path_should}" "${__object:?}/explorer/alternatives"
+if ! grep -qxF -e "${path_should}" "${__object:?}/explorer/alternatives"
 then
     if [ -f "${__object:?}/parameter/install" ]
     then

@@ -19,7 +19,7 @@
 #
 
 in_list() {
-	printf '%s\n' "$@" | { grep -qxF "$(read -r ndl; echo "${ndl}")"; }
+	printf '%s\n' "$@" | { grep -qxF -e "$(read -r ndl; echo "${ndl}")"; }
 }
 
 quote() {

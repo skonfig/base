@@ -102,7 +102,7 @@ do_user() {
 if [ "${state}" = 'present' ]
 then
     cd "${__object:?}/parameter"
-    if cut -d: -f1 "${__object:?}/explorer/passwd" | grep -qxF "${name}"
+    if cut -d: -f1 "${__object:?}/explorer/passwd" | grep -qxF -e "${name}"
     then
        for property in *
        do
@@ -186,7 +186,7 @@ then
     fi
 elif [ "${state}" = 'absent' ]
 then
-    if cut -d: -f1 "${__object:?}/explorer/passwd" | grep -qxF "${name}"
+    if cut -d: -f1 "${__object:?}/explorer/passwd" | grep -qxF -e "${name}"
     then
         #user exists, but state != present, so delete it
         set --

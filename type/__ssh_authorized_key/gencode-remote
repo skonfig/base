@@ -137,7 +137,7 @@ in
 				"$(printf '%s\n' "${entry_should}" | comm -13 - "${__object:?}/explorer/entry")"
 		fi
 
-		key_present_count=$(grep -c -x -F "${entry_should}" "${__object:?}/explorer/entry") || :
+		key_present_count=$(grep -c -x -F -e "${entry_should}" "${__object:?}/explorer/entry") || :
 		# NOTE: the key needs to be (re-)added iff it didn't occur exactly once in
 		#       the --file.  In case the same key occurs multiple times in --file,
 		#       all occurrences will have been removed by remove_lines() above.

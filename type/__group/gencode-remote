@@ -46,7 +46,7 @@ then
          supported_change_properties='gid password'
          ;;
    esac
-   if cut -d: -f1 "${__object:?}/explorer/group" | grep -qxF "${name}"
+   if cut -d: -f1 "${__object:?}/explorer/group" | grep -qxF -e "${name}"
    then
       # change existing
       for property in ${supported_change_properties}
@@ -108,7 +108,7 @@ then
    fi
 else
    # delete existing
-   if cut -d: -f1 "${__object:?}/explorer/group" | grep -qxF "${name}"
+   if cut -d: -f1 "${__object:?}/explorer/group" | grep -qxF -e "${name}"
    then
       case ${os}
       in

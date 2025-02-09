@@ -42,7 +42,7 @@ then
     caution=true
 
 # Check if the architecture not already used
-elif grep -qFx "${arch_wanted}" "${__object:?}/explorer/foreign-architectures"
+elif grep -qFx -e "${arch_wanted}" "${__object:?}/explorer/foreign-architectures"
 then
     state_is='present'
 

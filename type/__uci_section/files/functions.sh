@@ -21,7 +21,7 @@
 NL=$(printf '\n '); NL=${NL% }
 
 grep_line() {
-	{ shift; printf '%s\n' "$@"; } | grep -qxF "$1"
+	{ shift; printf '%s\n' "$@"; } | grep -qxF -e "$1"
 }
 
 print_errors() {

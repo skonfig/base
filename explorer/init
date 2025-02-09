@@ -182,7 +182,7 @@ check_init() {
 	case ${KERNEL_NAME}
 	in
 		(*BSD)
-			if grep -q -F "${KERNEL_NAME}" /sbin/init
+			if grep -qF -e "${KERNEL_NAME}" /sbin/init
 			then
 				echo init
 				return 0

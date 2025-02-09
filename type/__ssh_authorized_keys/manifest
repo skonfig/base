@@ -89,7 +89,7 @@ then
     do
         type_and_key=$(_type_and_key "${key}")
 
-        if grep -Fq "${type_and_key}" "${__object:?}/parameter/key"
+        if grep -qF -e "${type_and_key}" "${__object:?}/parameter/key"
         then
             continue
         fi
