@@ -20,19 +20,20 @@
 # Prints the version of the currently installed package.
 #
 
-if [ -f "$__object/parameter/name" ]; then
-   name="$(cat "$__object/parameter/name")"
+if [ -f "${__object:?}/parameter/name" ]
+then
+   name=$(cat "${__object:?}/parameter/name")
 else
-   name="$__object_id"
+   name=${__object_id:?}
 fi
 
 # Don't produce "no pkgs installed" output -- breaks things
 PKG_OUTPUT=$(pkg_info 2>&1)
-if [ ! "$PKG_OUTPUT" = "pkg_info: no packages installed" ]; then
-	printf "%s" "$(echo "$PKG_OUTPUT" \
+if [ ! "${PKG_OUTPUT}" = 'pkg_info: no packages installed' ]
+then
+	printf '%s' "$(echo "${PKG_OUTPUT}" \
 		| awk '{print $1}' \
 		| sed 's/^\(.*\)-\([^-]*\)$/name:\1 ver:\2/g' \
-		| grep "name:$name ver:" \
+		| grep -F "name:${name} ver:" \
 		| sed 's/^.*ver:\(.*\)/\1/g')"
 fi
-

@@ -37,7 +37,6 @@ then
 	cat /var/run/os-release
 elif test -f /etc/cp-release
 then
-        # Checkpoint firewall or management (actually linux based)
-        cat /etc/cp-release
+	# Checkpoint firewall or management (actually linux based)
+	cat /etc/cp-release
 fi
-

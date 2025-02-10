@@ -1,6 +1,7 @@
 #!/bin/sh -e
 #
 # 2012 Jake Guffey (jake.guffey at eprotex.com)
+# 2025 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -18,112 +19,116 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-assert ()                 #  If condition false,
-{                         #+ exit from script with error message.
+assert() {
+	# If condition false, exit from script with error message.
 	E_PARAM_ERR=98
 	E_ASSERT_FAILED=99
 
 	if [ -z "$2" ]          # Not enough parameters passed.
 	then
-		return $E_PARAM_ERR   # No damage done.
+		return ${E_PARAM_ERR}   # No damage done.
 	fi
 
 	lineno=$2
 
-	if [ ! "$1" ]
-	then
+	test -n "$1" || {
 		echo "Assertion failed:  \"$1\""
 		# shellcheck disable=SC2039
 		# shellcheck disable=SC3044
-		echo "File \"$0\", line $lineno, called by $(caller 0)"
-		exit $E_ASSERT_FAILED
-	fi
+		echo "File \"$0\", line ${lineno}, called by $(caller 0)"
+		exit ${E_ASSERT_FAILED}
+	}
 }
 
-# Debug
-#exec >&2
-#set -x
-
-if [ -f "$__object/parameter/name" ]; then
-	name="$(cat "$__object/parameter/name")"
+if [ -f "${__object:?}/parameter/name" ]
+then
+	name=$(cat "${__object:?}/parameter/name")
 else
-	name="$__object_id"
+	name=${__object_id:?}
 fi
 
-flavor="$(cat "$__object/parameter/flavor")"
-version="$(cat "$__object/parameter/version")"
-pkgsite="$(cat "$__object/parameter/pkgsite")"
-state="$(cat "$__object/parameter/state")"
-curr_version="$(cat "$__object/explorer/pkg_version")"
-add_cmd="pkg_add"
-rm_cmd="pkg_delete"
-cmd=""
+flavor=$(cat "${__object:?}/parameter/flavor")
+version=$(cat "${__object:?}/parameter/version")
+pkgsite=$(cat "${__object:?}/parameter/pkgsite")
+state=$(cat "${__object:?}/parameter/state")
+curr_version=$(cat "${__object:?}/explorer/pkg_version")
+add_cmd='pkg_add'
+rm_cmd='pkg_delete'
+cmd=''
 
 # Print the command to be executed
-#	Parms:	$1 -- mode, "remove" or "add"
-#		$2 -- the command to be echoed
+#	Params: $1 -- mode, 'remove' or 'add'
+#	        $2 -- the command to be echoed
 # FIXME: This is ugly.
 execcmd(){
 	# Set the PACKAGESITE if we're ADDing a new package
-	if [ "$1" = "add" ] && [ -n "$pkgsite" ]; then
+	if [ "$1" = 'add' ] && [ -n "${pkgsite}" ]
+	then
 		# Use http.../All/ if we know the exact version we want, use .../Latest/ otherwise
 		pkgsite="export PACKAGESITE=${pkgsite}"
-		[ -n "$version" ] && pkgsite="${pkgsite}/All/" || pkgsite="${pkgsite}/Latest/"
+		[ -n "${version}" ] && pkgsite="${pkgsite}/All/" || pkgsite="${pkgsite}/Latest/"
 		echo "${pkgsite}"
 	fi
 	echo "${2} 2>&- >&-"	# Silence the output of the command
 	echo "status=\$?"
-	echo "if [ \"\$status\" -ne \"0\" ]; then"
-	echo "	echo \"Error: ${cmd} exited nonzero with \$status\"'!' >&2"
+	echo "if [ \"\${status}\" -ne \"0\" ]"
+	echo "then"
+	echo "	echo \"Error: ${cmd} exited nonzero with \${status}\"'!' >&2"
 	echo "	exit 1"
 	echo "fi"
 }
 
-if [ -n "$curr_version" ]; then	# PKG *is* installed
-	if [ "$state" = "absent" ]; then	# Shouldn't be installed
-		if [ -n "$flavor" ]; then
-			cmd="${rm_cmd} ${name}-${flavor}-${curr_version}"
-		else
-			cmd="${rm_cmd} ${name}-${curr_version}"
-		fi
-		execcmd "remove" "${cmd}"
-		echo "removed" >> "$__messages_out"
+if [ -n "${curr_version}" ]
+then
+	# PKG *is* installed
+	if [ "${state}" = 'absent' ]
+	then
+		# Shouldn't be installed
+		cmd="${rm_cmd} ${name}${flavor:+-${flavor}}-${curr_version}"
+		execcmd 'remove' "${cmd}"
+		echo 'removed' >>"${__messages_out:?}"
 		exit 0
-	else	# Should be installed
-		if [ -n "$version" ]; then	# Want a specific version
-			if [ "$version" = "$curr_version" ]; then	# Current version is correct
+	else
+		# Should be installed
+		if [ -n "${version}" ]
+		then
+			# Want a specific version
+			if [ "${version}" = "${curr_version}" ]
+			then
+				# Current version is correct
 				exit 0
-			else	# Current version is wrong, fix
-				#updatepkg "$name" "$version"
+			else
+				# Current version is wrong, fix
+
+				#updatepkg "${name}" "${version}"
 				# shellcheck disable=SC2039
-				assert "! ${version} = ${curr_version}" $LINENO
+				assert "! ${version} = ${curr_version}" ${LINENO}
 				cmd="${rm_cmd} ${name}-${curr_version}"
-				execcmd "remove" "${cmd}"
+				execcmd 'remove' "${cmd}"
 				cmd="${add_cmd} -r ${name}-${version}"
-				execcmd "add" "${cmd}"
-				echo "installed" >> "$__messages_out"
+				execcmd 'add' "${cmd}"
+				echo 'installed' >>"${__messages_out:?}"
 			fi
-		else	# Don't care what version to use
+		else
+			# Don't care what version to use
 			exit 0
 		fi
 	fi
-else	# PKG *isn't* installed
-	if [ "$state" = "absent" ]; then	# Shouldn't be installed
-		exit 0
-	elif [ "$state" = "present" ]; then	# Is not currently installed, should be
-		if [ -n "$flavor" ]; then
-			cmd="${add_cmd} -r ${name}-${flavor}"
-		else
-			cmd="${add_cmd} -r ${name}"
-		fi
-		if [ -n "$version" ]; then
-			cmd="${cmd}-${version}"
-		fi
-		execcmd "add" "${cmd}"
-		echo "installed" >> "$__messages_out"
-		exit 0
-	fi
-fi
+else
+	# PKG *isn't* installed
+	case ${state}
+	in
+		(absent)
+			# Shouldn't be installed
+			exit 0
+			;;
+		(present)
+			# Is not currently installed, should be
+			cmd="${add_cmd} -r ${name}${flavor:+-${flavor}}${version:+-${version}}"
 
-# Debug
-#set +x
+			execcmd 'add' "${cmd}"
+			echo 'installed' >>"${__messages_out:?}"
+			exit 0
+			;;
+	esac
+fi

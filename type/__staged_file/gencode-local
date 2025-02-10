@@ -21,34 +21,38 @@
 
 #set -x
 
-destination="$__object_id"
-source="$(cat "$__object/parameter/source")"
-stage_dir="$(cat "$__object/parameter/stage-dir")"
-state="$(cat "$__object/parameter/state")"
-fetch_command="$(cat "$__object/parameter/fetch-command")"
+destination=${__object_id:?}
+source=$(cat "${__object:?}/parameter/source")
+stage_dir=$(cat "${__object:?}/parameter/stage-dir")
+state=$(cat "${__object:?}/parameter/state")
+fetch_command=$(cat "${__object:?}/parameter/fetch-command")
 stage_file="${stage_dir}/${destination}"
 stage_file_dir="${stage_file%/*}"
 source_file_name="${source##*/}"
 
-if [ "$state" = "absent" ]; then
+if [ "${state}" = 'absent' ]
+then
    # nothing to do
    exit 0
 fi
 
 #printf 'set -x\n'
 
-if [ ! -d "$stage_dir" ]; then
-   printf 'mkdir -p "%s"\n' "$stage_dir"
-   printf 'chmod 700 "%s"\n' "$stage_dir"
+if [ ! -d "${stage_dir}" ]
+then
+   printf 'mkdir -p "%s"\n' "${stage_dir}"
+   printf 'chmod 700 "%s"\n' "${stage_dir}"
 fi
 
-if [ ! -d "$stage_file_dir" ]; then
-   printf 'mkdir -p "%s"\n' "$stage_file_dir"
+if [ ! -d "${stage_file_dir}" ]
+then
+   printf 'mkdir -p "%s"\n' "${stage_file_dir}"
 fi
 
 
 get_file() {
-   if [ -f "$__object/parameter/prepare-command" ]; then
+   if [ -f "${__object:?}/parameter/prepare-command" ]
+   then
       fetch_and_prepare_file
    else
       fetch_file
@@ -57,30 +61,31 @@ get_file() {
 
 fetch_file() {
    # shellcheck disable=SC2059
-   printf "$fetch_command" "$source"
-   printf ' > "%s"\n' "$stage_file"
+   printf "${fetch_command} >%s\\n" "${source}" "\"${stage_file}\""
 }
 
 fetch_and_prepare_file() {
+   : "${__type:?}"  # make shellcheck happy
    # shellcheck disable=SC2016
    printf 'tmpdir="$(mktemp -d -p "/tmp" "%s")"\n' "${__type##*/}.XXXXXXXXXX"
    # shellcheck disable=SC2016
-   printf 'cd "$tmpdir"\n'
+   printf 'cd "${tmpdir}"\n'
    # shellcheck disable=SC2059
-   printf "$fetch_command > \"%s\"\\n" "$source" "$source_file_name"
-   prepare_command="$(cat "$__object/parameter/prepare-command")"
+   printf "${fetch_command} >\"%s\"\\n" "${source}" "${source_file_name}"
+   prepare_command=$(cat "${__object:?}/parameter/prepare-command")
    # shellcheck disable=SC2059
-   printf "$prepare_command > \"%s\"\\n" "$source_file_name" "$stage_file"
+   printf "${prepare_command} >\"%s\"\\n" "${source_file_name}" "${stage_file}"
    printf 'cd - >/dev/null\n'
    # shellcheck disable=SC2016
-   printf 'rm -rf "$tmpdir"\n'
+   printf 'rm -rf "${tmpdir}"\n'
 }
 
-cat << DONE
+cat <<DONE
 verify_cksum() {
-   cksum_is="\$(cksum "$stage_file" | cut -d' ' -f1,2)"
-   cksum_should="$(cut -d' ' -f1,2 "$__object/parameter/cksum")"
-   if [ "\$cksum_is" = "\$cksum_should" ]; then
+   cksum_is="\$(cksum "${stage_file}" | cut -d' ' -f1,2)"
+   cksum_should=$(cut -d' ' -f1,2 "${__object:?}/parameter/cksum")
+   if [ "\${cksum_is}" = "\${cksum_should}" ]
+   then
       return 0
    else
       return 1
@@ -88,7 +93,8 @@ verify_cksum() {
 }
 DONE
 
-if [ ! -f "$stage_file" ]; then
+if [ ! -f "${stage_file}" ]
+then
    get_file
 else
    printf 'verify_cksum || {\n'
@@ -96,9 +102,9 @@ else
    printf '}\n'
 fi
 
-cat << DONE
+cat <<DONE
 verify_cksum || {
-   echo "Failed to verify checksum for $__object_name" >&2
+   echo "Failed to verify checksum for ${__object_name:?}" >&2
    exit 1
 }
 DONE

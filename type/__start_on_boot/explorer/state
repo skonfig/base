@@ -21,83 +21,88 @@
 # Check whether the given name will be started on boot or not.
 #
 
-os=$("$__explorer/os")
-runlevel=$("$__explorer/runlevel")
-init=$("$__explorer/init")
-target_runlevel="$(cat "$__object/parameter/target_runlevel")"
-name="$__object_id"
+os=$("${__explorer:?}/os")
+runlevel=$("${__explorer:?}/runlevel")
+init=$("${__explorer:?}/init")
+target_runlevel=$(cat "${__object:?}/parameter/target_runlevel")
+name=${__object_id:?}
 
-if [ "$init" = 'systemd' ]; then
+if [ "${init}" = 'systemd' ]
+then
     # this handles ALL linux distros with systemd
     # e.g. archlinux, gentoo, new RHEL and SLES versions
-    state=$(systemctl is-enabled "$name" >/dev/null 2>&1 \
+    state=$(systemctl is-enabled "${name}" >/dev/null 2>&1 \
         && echo present \
         || echo absent)
 
 else
-    case "$os" in
-        debian|openwrt|devuan)
-            state="absent"
-            for file in "/etc/rc$runlevel.d/S"??"$name"
+    case ${os}
+    in
+        (debian|openwrt|devuan)
+            state='absent'
+            for file in "/etc/rc${runlevel}.d/S"??"${name}"
             do
-                if [ -f "$file" ]
+                if [ -f "${file}" ]
                 then
-                    state="present"
+                    state='present'
                     break
                 fi
             done
-        ;;
-        ubuntu)
-            state="absent"
-            for file in "/etc/rc$runlevel.d/S"??"$name"
+            ;;
+        (ubuntu)
+            state='absent'
+            for file in "/etc/rc${runlevel}.d/S"??"${name}"
             do
-                if [ -f "$file" ]
+                if [ -f "${file}" ]
                 then
-                    state="present"
+                    state='present'
                     break
                 fi
             done
 
-            [ -f "/etc/init/${name}.conf" ] && state="present"
-        ;;
+            [ -f "/etc/init/${name}.conf" ] && state='present'
+           ;;
 
-        amazon|scientific|centos|almalinux|eurolinux|rocky|fedora|owl|redhat)
-            state=$(chkconfig --level "$runlevel" "$name" || echo absent)
-            [ "$state" ] || state="present"
-        ;;
-        suse)
+        (amazon|scientific|centos|almalinux|eurolinux|rocky|fedora|owl|redhat)
+            state=$(chkconfig --level "${runlevel}" "${name}" || echo absent)
+            test -n "${state}" || state='present'
+            ;;
+        (suse)
             # check for target if set, usable for boot. services in runlevel B
-            if [ "$target_runlevel" != 'default' ]; then
-                runlevel="$target_runlevel"
+            if [ "${target_runlevel}" != 'default' ]
+            then
+                runlevel=${target_runlevel}
             fi
             # suses chkconfig has the same name, but works different ...
-            state=$(chkconfig --check "$name" "$runlevel" || echo absent)
-            [ "$state" ] || state="present"
-        ;;
-        gentoo|alpine)
-            state="absent"
-            for d in /etc/runlevels/*; do
-                if [ -e "${d}/${name}" ]; then
-                    state="present"
+            state=$(chkconfig --check "${name}" "${runlevel}" || echo absent)
+            test -n "${state}" || state='present'
+            ;;
+        (gentoo|alpine)
+            state='absent'
+            for d in /etc/runlevels/*
+            do
+                if [ -e "${d}/${name}" ]
+                then
+                    state='present'
                     break
                 fi
             done
-        ;;
-        freebsd)
-            state="absent"
-            service -e | grep "/$name$" && state="present"
-        ;;
-        openbsd)
+            ;;
+        (freebsd)
+            state='absent'
+            service -e | grep "/${name}$" && state='present'
+            ;;
+        (openbsd)
             state='absent'
             # OpenBSD 5.7 and higher
             rcctl ls on | grep "^${name}$" && state='present'
-        ;;
+            ;;
 
-        *)
-           echo "Unsupported os: $os" >&2
-           exit 1
-        ;;
+        (*)
+            printf 'Unsupported os: %s\n' "${os}" >&2
+            exit 1
+            ;;
     esac
 fi
 
-echo $state
+echo "${state}"

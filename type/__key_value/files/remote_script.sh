@@ -20,17 +20,18 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-key="$(cat "$__object/parameter/key" 2>/dev/null \
-   || echo "$__object_id")"
-state="$(cat "$__object/parameter/state")"
+key=$(cat "${__object:?}/parameter/key" 2>/dev/null \
+   || echo "${__object_id:?}")
+state=$(cat "${__object:?}/parameter/state")
 
-file="$(cat "$__object/parameter/file")"
+file=$(cat "${__object:?}/parameter/file")
 
-delimiter="$(cat "$__object/parameter/delimiter")"
-value="$(cat "$__object/parameter/value" 2>/dev/null \
-   || echo "__CDIST_NOTSET__")"
+delimiter=$(cat "${__object:?}/parameter/delimiter")
+value=$(cat "${__object:?}/parameter/value" 2>/dev/null \
+   || echo '__CDIST_NOTSET__')
 export key state delimiter value
-if [ -f "$__object/parameter/exact_delimiter" ]; then
+if [ -f "${__object:?}/parameter/exact_delimiter" ]
+then
     exact_delimiter=1
 else
     exact_delimiter=0
@@ -39,15 +40,16 @@ export exact_delimiter
 
 tmpfile=$(mktemp "${file}.skonfig.XXXXXX")
 # preserve ownership and permissions by copying existing file over tmpfile
-if [ -f "$file" ]; then
-    cp -p "$file" "$tmpfile"
+if [ -f "${file}" ]
+then
+    cp -p "${file}" "${tmpfile}"
 else
-    touch "$file"
+    touch "${file}"
 fi
 
 awk_bin=$(PATH=$(getconf PATH 2>/dev/null) && command -v awk || echo awk)
 
-"${awk_bin}" -f - "$file" >"$tmpfile" <<"AWK_EOF"
+"${awk_bin}" -f - "${file}" >"${tmpfile}" <<'AWK_EOF'
 BEGIN {
     # import variables in a secure way ..
     state=ENVIRON["state"]
@@ -126,4 +128,4 @@ END {
     }
 }
 AWK_EOF
-mv -f "$tmpfile" "$file"
+mv -f "${tmpfile}" "${file}"

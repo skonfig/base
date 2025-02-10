@@ -91,7 +91,6 @@ then
 
 			# Iterating through alternatives did not yield a result
 			editor_no_alternative "${editor}"
-			break
 		done
 		unset -v _e
 	fi
@@ -124,9 +123,6 @@ else
 		exit 0
 	else
 		die "The target doesn't list any editor alternatives. " \
-		    "Please specify an absolute path or populate the alternatives list."
+		    'Please specify an absolute path or populate the alternatives list.'
 	fi
 fi
-
-# The script should never reach this statement!
-exit 1

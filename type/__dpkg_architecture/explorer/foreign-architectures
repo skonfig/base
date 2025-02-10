@@ -21,8 +21,4 @@
 # allow packages to be installed for.
 #
 
-# Print all additional architectures
-
-
-# print or die in the gencode-remote
-dpkg --print-foreign-architectures || true
+dpkg --print-foreign-architectures || :

@@ -18,57 +18,64 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-if [ -f "$__object/parameter/name" ]; then
-   name="$__object/parameter/name"
+if [ -f "${__object:?}/parameter/name" ]
+then
+    name="${__object:?}/parameter/name"
 else
-   name="$__object_id"
+    name=${__object_id:?}
 fi
 
-state_should="$(cat "$__object/parameter/state")"
+state_should=$(cat "${__object:?}/parameter/state")
 
-version="$(cat "$__object/parameter/version")"
+version=$(cat "${__object:?}/parameter/version")
 
-if [ -n "$version" ]; then
-    name="=$name-$version"
+if [ -n "${version}" ]
+then
+    name="=${name}-${version}"
 fi
 
-pkg_version="$(cat "$__object/explorer/pkg_version")"
-if [ -z "$pkg_version" ]; then
-    state_is="absent"
-elif [ -z "$version" ] && [ "$(echo "$pkg_version" | wc -l)" -gt 1 ]; then
-    echo "Package name is not unique! The following packages are installed:" >&2
-    echo "$pkg_version" >&2
+pkg_version=$(cat "${__object:?}/explorer/pkg_version")
+if [ -z "${pkg_version}" ]
+then
+    state_is='absent'
+elif [ -z "${version}" ] && [ "$(echo "${pkg_version}" | wc -l)" -gt 1 ]
+then
+    echo 'Package name is not unique! The following packages are installed:' >&2
+    echo "${pkg_version}" >&2
     exit 1
-elif [ -n "$version" ] && [ "$(echo "$pkg_version" | cut -d " " -f 1 | sort | uniq | wc -l)" -gt 1 ]; then
-    echo "Package name is not unique! The following packages are installed:" >&2
-    echo "$pkg_version" >&2
+elif [ -n "${version}" ] && [ "$(echo "${pkg_version}" | cut -d ' ' -f 1 | sort | uniq | wc -l)" -gt 1 ]
+then
+    echo 'Package name is not unique! The following packages are installed:' >&2
+    echo "${pkg_version}" >&2
     exit 1
 else
-    state_is="present"
-    if [ -n "$version" ] && echo "$pkg_version" | cut -d " " -f 2 | grep -q -x "$version"; then
-        installed_version="$(echo "$pkg_version" | cut -d " " -f 2 | grep -x "$version")"
+    state_is='present'
+    if [ -n "${version}" ] && echo "${pkg_version}" | cut -d ' ' -f 2 | grep -qxF -e "${version}"
+    then
+        installed_version=$(echo "${pkg_version}" | cut -d ' ' -f 2 | grep -xF -e "${version}")
     else
-        installed_version="$(echo "$pkg_version" | cut -d " " -f 2 | tail -n 1)"
+        installed_version=$(echo "${pkg_version}" | cut -d ' ' -f 2 | tail -n 1)
     fi
 fi
 
 
 # Exit if nothing is needed to be done
-[ "$state_is" = "$state_should" ] && { [ -z "$version" ] || [ "$installed_version" = "$version" ]; } && exit 0
-[ "$state_should" = "absent" ] && [ -n "$version" ] && [ "$installed_version" != "$version" ] && exit 0
+[ "${state_is}" = "${state_should}" ] && { [ -z "${version}" ] || [ "${installed_version}" = "${version}" ]; } && exit 0
+[ "${state_should}" = 'absent' ] && [ -n "${version}" ] && [ "${installed_version}" != "${version}" ] && exit 0
 
 
-case "$state_should" in
-   present)
-        echo "emerge '$name' &>/dev/null || exit 1"
-        echo "installed" >> "$__messages_out"
+case ${state_should}
+in
+    (present)
+        echo "emerge '${name}' &>/dev/null || exit 1"
+        echo 'installed' >>"${__messages_out:?}"
         ;;
-   absent)
-        echo "emerge -C '$name' &>/dev/null || exit 1"
-        echo "removed" >> "$__messages_out"
+    (absent)
+        echo "emerge -C '${name}' &>/dev/null || exit 1"
+        echo 'removed' >>"${__messages_out:?}"
         ;;
-   *)
-        echo "Unknown state: $state_should" >&2
+    (*)
+        printf 'Invalid --state: %s\n' "${state_should}" >&2
         exit 1
         ;;
 esac

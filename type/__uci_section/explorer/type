@@ -23,4 +23,4 @@
 section=$("${__type_explorer:?}/match")
 test -n "${section}" || exit 0
 
-uci -s -N get "${section}" 2>/dev/null || true
+uci -s -N get "${section}" 2>/dev/null || :

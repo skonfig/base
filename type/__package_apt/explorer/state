@@ -43,7 +43,7 @@ fi
 state=$(cat "${__object:?}/parameter/state")
 
 # if present state is requested and $name is e.g. editor, check if any editor is installed instead
-if [ "$state" = 'present' ]
+if [ "${state}" = 'present' ]
 then
 	rprovides=$(apt-cache showpkg "${name}" | sed -e '1,/^Reverse Provides:/d' -e 's/ .*$//')
 fi
@@ -116,7 +116,7 @@ do
 					   do
 						   resolve_suite "${_ln}"
 					   done \
-					 | grep -qxF "$(resolve_suite "${target_release}")"
+					 | grep -qxF -e "$(resolve_suite "${target_release}")"
 			then
 				# state=wrong-release iff the currently installed version of the
 				# package is available in at least one of the configured APT

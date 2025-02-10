@@ -1,6 +1,7 @@
 #!/bin/sh -e
 #
 # 2014 Jake Guffey (jake.guffey at eprotex.com)
+# 2025 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -18,115 +19,108 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-# Debug
-#exec >&2
-#set -x
-
-if [ -f "$__object/parameter/name" ]; then
-   name="$(cat "$__object/parameter/name")"
+if test -f "${__object:?}/parameter/name"
+then
+   name=$(cat "${__object:?}/parameter/name")
 else
-   name="$__object_id"
+   name=${__object_id:?}
 fi
 
-flavor="$(cat "$__object/parameter/flavor")"
-version="$(cat "$__object/parameter/version")"
+flavor=$(cat "${__object:?}/parameter/flavor")
+version=$(cat "${__object:?}/parameter/version")
 
-if [ -f "$__object/parameter/upgrade" ]; then
-   upgrade="true"
+if test -f "${__object:?}/parameter/upgrade"
+then
+   upgrade='true'
 else
-   upgrade="false"
+   upgrade='false'
 fi
 
-repo="$(cat "$__object/parameter/repo")"
-state="$(cat "$__object/parameter/state")"
-curr_version="$(cat "$__object/explorer/pkg_version")"
-pkg_bootstrapped="$(cat "$__object/explorer/pkg_bootstrapped")"
-add_cmd="pkg install -y"
-rm_cmd="pkg delete -y"
-upg_cmd="pkg upgrade -y"
-cmd=""
+repo=$(cat "${__object:?}/parameter/repo")
+state=$(cat "${__object:?}/parameter/state")
+curr_version=$(cat "${__object:?}/explorer/pkg_version")
+if test -s "${__object:?}/explorer/pkg_bootstrapped"
+then
+    pkg_bootstrapped=true
+else
+    pkg_bootstrapped=false
+fi
+add_cmd='pkg install -y'
+rm_cmd='pkg delete -y'
+upg_cmd='pkg upgrade -y'
+cmd=''
 
 # Print the command to be executed
-# Parms: $1 -- mode, "rm", "add", or "upg"
-#        $2 -- the command to be echoed
+# Params: $1 -- mode, "rm", "add", or "upg"
+#         $2 -- the command to be echoed
 execcmd(){
-   _cmd=""
+   _cmd=''
 
-   case "$1" in
-      add)
+   case $1
+   in
+      (add)
          _cmd="${add_cmd} $2"
-         echo "installed" >> "$__messages_out"
+         echo 'installed' >>"${__messages_out:?}"
          ;;
-      rm)
+      (rm)
          _cmd="${rm_cmd} $2"
-         echo "removed" >> "$__messages_out"
+         echo 'removed' >>"${__messages_out:?}"
          ;;
-      upg)
+      (upg)
          _cmd="${upg_cmd} $2"
-         echo "installed" >> "$__messages_out"
+         echo 'installed' >>"${__messages_out:?}"
          ;;
-      *)
+      (*)
          printf "Error. Don't understand command: %s" "$1" >&2
          exit 1
          ;;
    esac
 
-   if [ -z "${pkg_bootstrapped}" ]; then
-       echo "ASSUME_ALWAYS_YES=yes pkg bootstrap >/dev/null 2>&1"
+   if ! ${pkg_bootstrapped?}
+   then
+       echo 'ASSUME_ALWAYS_YES=yes pkg bootstrap >/dev/null 2>&1'
    fi
 
-   echo "$_cmd >/dev/null 2>&1"   # Silence the output of the command
-   echo "status=\$?"
-   echo "if [ \"\$status\" -ne \"0\" ]; then"
-   echo "	echo \"Error: ${_cmd} exited nonzero with \$status\"'!' >&2"
+   echo "${_cmd} >/dev/null 2>&1 || {"   # Silence the output of the command
+   echo "	echo \"Error: ${_cmd} exited nonzero with \$?\"'!' >&2"
    echo "	exit 1"
-   echo "fi"
+   echo "}"
 }
 
-if [ -n "$curr_version" ]; then  # PKG *is* installed
-   if [ -n "$repo" ]; then
-      cmd="-r ${repo} ${name}"
-   else
-      cmd="${name}"
-   fi
-   if [ -n "$flavor" ]; then
-      cmd="${cmd}-${flavor}"
-   fi
-   # PKG is supposed to be removed
-   if [ "$state" = "absent" ]; then
-      execcmd "rm" "${cmd}"
-   # PKG is supposed to be installed to a particular version
-   elif [ -n "$version" ] && [ "$version" != "$curr_version" ]; then
-      if [ "$upgrade" = "true" ]; then
-         execcmd "upg" "${cmd}"
+if test -n "${curr_version}"
+then
+   # PKG *is* installed
+   cmd="${repo:+-r ${repo} }${name}${flavor:+-${flavor}}"
+
+   if test "${state}" = 'absent'
+   then
+      # PKG is supposed to be removed
+      execcmd rm "${cmd}"
+   elif test -n "${version}" && test "${version}" != "${curr_version}"
+   then
+      # PKG is supposed to be installed to a particular version
+      if ${upgrade?}
+      then
+         execcmd upg "${cmd}"
       else
-         printf 'Version %s is already installed and pkg-ng cannot upgrade directly to version %s.\nTo upgrade to the latest version, use the --upgrade flag.\n' "$curr_version" "$version" >&2
+         printf 'Version %s is already installed and pkg-ng cannot upgrade directly to version %s.\nTo upgrade to the latest version, use the --upgrade flag.\n' "${curr_version}" "${version}" >&2
          exit 1
       fi
-   # PKG is supposed to be installed to the latest version
    else
+      # PKG is supposed to be installed to the latest version
       :  # Do nothing.
    fi
-else  # PKG *isn't* installed
-   if [ "$state" = "absent" ]; then # Shouldn't be installed
-      exit 0
-   else  # Should be installed
-      if [ -n "$repo" ]; then
-         cmd="-r ${repo} ${name}"
-      else
-         cmd="${name}"
-      fi
-      if [ -n "$flavor" ]; then
-         cmd="${cmd}-${flavor}"
-      fi
-      if [ -n "$version" ]; then
-         cmd="${cmd}-${version}"
-      fi
+else
+   # PKG *isn't* installed
 
-      execcmd "add" "$cmd"
+   if test "${state}" = 'absent'
+   then
+      # Shouldn't be installed
+      exit 0
+   else
+      # Should be installed
+      cmd="${repo:+-r ${repo} }${name}${flavor:+-${flavor}}${version:+-${version}}"
+      execcmd add "${cmd}"
       exit 0
    fi
 fi
-
-# Debug
-#set +x

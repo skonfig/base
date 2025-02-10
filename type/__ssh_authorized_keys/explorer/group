@@ -21,28 +21,28 @@
 # Prints the group(5) entry of --owner’s primary group.
 #
 
-if [ -s "$__object/parameter/owner" ]
+if [ -s "${__object:?}/parameter/owner" ]
 then
-	owner=$(cat "$__object/parameter/owner")
+	owner=$(cat "${__object:?}/parameter/owner")
 else
-	owner="$__object_id"
+	owner=${__object_id:?}
 fi
 
 if command -v getent >/dev/null
 then
-	gid=$(getent passwd "$owner" | cut -d':' -f4)
-	getent group "$gid" || true
+	gid=$(getent passwd "${owner}" | cut -d':' -f4)
+	getent group "${gid}" || :
 else
 	# Fallback to local file scanning
-	case $owner
+	case ${owner}
 	in
-		[0-9][0-9]*)
-			gid=$(awk -F: "\$3 == \"${owner}\" { print \$4 }" /etc/passwd)
+		([0-9][0-9]*)
+			gid=$(awk -v owner="${owner}" -F: '$3 == owner { print $4 }' /etc/passwd)
 			;;
-		*)
-			gid=$(awk -F: "\$1 == \"${owner}\" { print \$4 }" /etc/passwd)
+		(*)
+			gid=$(awk -v owner="${owner}" -F: '$1 == owner { print $4 }' /etc/passwd)
 			;;
 	esac
 
-	awk -F: "\$3 == \"$gid\" { print }" /etc/group
+	awk -v gid="${gid}" -F: '$3 == gid' /etc/group
 fi

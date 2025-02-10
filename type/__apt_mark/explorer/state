@@ -20,13 +20,14 @@
 # Prints "hold" if the package specified by --name is held, "unhold" otherwise.
 #
 
-if [ -f "$__object/parameter/name" ]; then
-    name="$(cat "$__object/parameter/name")"
+if [ -f "${__object:?}/parameter/name" ]
+then
+    name=$(cat "${__object:?}/parameter/name")
 else
-    name="$__object_id"
+    name=${__object_id:?}
 fi
 
-if apt-mark showhold | grep -qxF "${name}"
+if apt-mark showhold | grep -qxF -e "${name}"
 then
 	echo hold
 else

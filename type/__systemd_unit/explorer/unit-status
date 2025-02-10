@@ -22,4 +22,4 @@
 # For possible values cf. man systemctl(1), search for "Unit ACTIVE states".
 #
 
-systemctl is-active "${__object_id}" || true
+systemctl is-active "${__object_id:?}" || :

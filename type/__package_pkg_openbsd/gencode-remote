@@ -20,96 +20,103 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-os_version=$(cat "${__global}/explorer/os_version")
-machine=$(cat "${__global}/explorer/machine")
+os_version=$(cat "${__global:?}/explorer/os_version")
+machine=$(cat "${__global:?}/explorer/machine")
 
-if [ -f "${__object}/parameter/version" ]; then
-	version=$(cat "${__object}/parameter/version")
+if [ -f "${__object:?}/parameter/version" ]
+then
+	version=$(cat "${__object:?}/parameter/version")
 fi
 
-if [ -f "${__object}/parameter/flavor" ]; then
-	flavor=$(cat "${__object}/parameter/flavor")
+if [ -f "${__object:?}/parameter/flavor" ]
+then
+	flavor=$(cat "${__object:?}/parameter/flavor")
 fi
 
 # Do not show progress bar
 pkgopts='-x'
 
-name="${__object_id}"
-if [ -f "${__object}/parameter/name" ]; then
-	name=$(cat "${__object}/parameter/name")
+name=${__object_id:?}
+if [ -f "${__object:?}/parameter/name" ]
+then
+	name=$(cat "${__object:?}/parameter/name")
 fi
 
-if [ -n "${version}" ] && [ -n "${flavor}" ]; then
+if [ -n "${version}" ] && [ -n "${flavor}" ]
+then
 	pkgid="${name}-${version}-${flavor}"
-elif [ -n "${version}" ]; then
+elif [ -n "${version}" ]
+then
 	pkgid="${name}-${version}"
-elif [ -f "${__object}/parameter/flavor" ]; then
+elif [ -f "${__object:?}/parameter/flavor" ]
+then
 	pkgid="${name}--${flavor}"
 else
-	pkgid="${name}"
+	pkgid=${name}
 fi
 
-state_should=$(cat "${__object}/parameter/state")
+state_should=$(cat "${__object:?}/parameter/state")
 
-if [ -f "${__object}/parameter/pkg_path" ]; then
-	pkg_path=$(cat "${__object}/parameter/pkg_path")
+if [ -f "${__object:?}/parameter/pkg_path" ]
+then
+	pkg_path=$(cat "${__object:?}/parameter/pkg_path")
 else
-	has_installurl=$(cat "${__object}/explorer/has_installurl")
-	if [ 'yes' != "${has_installurl}" ]; then
+	has_installurl=$(cat "${__object:?}/explorer/has_installurl")
+	if [ 'yes' != "${has_installurl}" ]
+	then
 		# There is no default PKG_PATH, try to provide one
 		pkg_path="ftp://ftp.openbsd.org/pub/OpenBSD/${os_version}/packages/${machine}/"
 	fi
 fi
 
-state_is=$(cat "${__object}/explorer/pkg_state")
+state_is=$(cat "${__object:?}/explorer/pkg_state")
 [ "${state_is}" = "${state_should}" ] && exit 0
 
-case "${state_should}" in
-	present)
-		if [ -n "${pkg_path}" ]; then
+case ${state_should}
+in
+	(present)
+		if [ -n "${pkg_path}" ]
+		then
 			echo "export PKG_PATH='${pkg_path}'"
 		fi
 
 		# Use this because pkg_add doesn't properly handle errors
 		cat <<EOF
-status=\$(pkg_add ${pkgopts} '${pkgid}' 2>&1 || true)
+status=\$(pkg_add ${pkgopts} '${pkgid}' 2>&1 || :)
 
-if ! pkg_info -q -I 'inst:${pkgid}' | grep -q '^${name}-${version}.*${flavor}$' 2>/dev/null
-then
+pkg_info -q -I 'inst:${pkgid}' | grep -q '^${name}-${version}.*${flavor}$' 2>/dev/null || {
 	# We didn't find the package in the list of 'installed packages', so it failed.
 	# This is necessary because pkg_add doesn't return properly
 
-	if [ -z "\${status}" ]; then
-		status='Failed to add package, uncaught exception.'
-	fi
-	echo "Error: \${status}" >&2
+	printf 'Error: %s\n' "\${status:-Failed to add package, uncaught exception.}" >&2
 	exit 1
-fi
+}
 EOF
-		echo 'installed' >> "${__messages_out}"
+		echo 'installed' >>"${__messages_out:?}"
 		;;
 
-	absent)
+	(absent)
 		# Use this because pkg_delete doesn't properly handle errors
 		cat <<EOF
-status=\$(pkg_delete ${pkgopts} '${pkgid}' 2>&1 || true)
+status=\$(pkg_delete ${pkgopts} '${pkgid}' 2>&1 || :)
 
 if pkg_info -q -I 'inst:${pkgid}' | grep -q '^${name}-${version}.*${flavor}' 2>/dev/null
 then
 	# We found the package in the list of 'installed packages'.
 	# This would indicate that pkg_delete failed, send the output of pkg_delete
 
-	if [ -z "\${status}" ]; then
+	if [ -z "\${status}" ]
+	then
 		status='Failed to remove package, uncaught exception.'
 	fi
 	echo "Error: \${status}" >&2
 	exit 1
 fi
 EOF
-		echo 'removed' >> "${__messages_out}"
+		echo 'removed' >>"${__messages_out:?}"
 		;;
-	*)
-		echo "Unknown state: ${state_should}" >&2
+	(*)
+		printf 'Invalid --state: %s\n' "${state_should}" >&2
 		exit 1
 		;;
 esac

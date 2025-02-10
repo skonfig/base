@@ -19,39 +19,41 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-value_should="$(cat "$__object/parameter/value")"
-value_is="$(cat "$__object/explorer/value")"
+value_should=$(cat "${__object:?}/parameter/value")
+value_is=$(cat "${__object:?}/explorer/value")
 
-if [ "$value_should" = "$value_is" ]; then
+if [ "${value_should}" = "${value_is}" ]
+then
    # Nothing to do
    exit 0
 fi
 
-os=$(cat "$__global/explorer/os")
-case "$os" in
+os=$(cat "${__global:?}/explorer/os")
+case ${os}
+in
    # Linux
-   redhat|centos|almalinux|eurolinux|rocky|ubuntu|debian|devuan|archlinux|gentoo|coreos)
+   (redhat|centos|almalinux|eurolinux|rocky|ubuntu|debian|devuan|archlinux|gentoo|coreos)
       flag='-w'
       ;;
    # BusyBox
-   alpine|openwrt)
+   (alpine|openwrt)
       flag='-w'
       ;;
-   macosx)
+   (macosx)
       # NOTE: Older versions of Mac OS X require the -w option.
       #       Even though the flag is not mentioned in new man pages anymore,
       #       it still works.
       flag='-w'
       ;;
-   netbsd)
+   (netbsd)
       # shellcheck disable=SC2016
       echo 'PATH=$(getconf PATH)'
       flag='-w'
       ;;
-   freebsd|openbsd)
+   (freebsd|openbsd)
       flag=''
-   ;;
+      ;;
 esac
 
 # set the current runtime value
-printf 'sysctl %s %s="%s"\n' "$flag" "$__object_id" "$value_should"
+printf 'sysctl %s %s="%s"\n' "${flag}" "${__object_id:?}" "${value_should}"

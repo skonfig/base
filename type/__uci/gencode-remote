@@ -38,7 +38,7 @@ in
 		fi
 
 		# Determine type
-		type=$(cat "${__object:?}/parameter/type" 2>/dev/null || true)
+		type=$(cat "${__object:?}/parameter/type" 2>/dev/null || :)
 		case ${type}
 		in
 			(option|list)

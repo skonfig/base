@@ -19,34 +19,37 @@
 #
 
 
-if [ -f "$__object/parameter/name" ]; then
-    name="$(cat "$__object/parameter/name")"
+if [ -f "${__object:?}/parameter/name" ]
+then
+    name=$(cat "${__object:?}/parameter/name")
 else
-    name="$__object_id"
+    name=${__object_id:?}
 fi
 
-state_should="$(cat "$__object/parameter/state")"
+state_should=$(cat "${__object:?}/parameter/state")
 
-if grep -q "(installed)" "$__object/explorer/pkg_status"; then
-    state_is="present"
+if grep -qF '(installed)' "${__object:?}/explorer/pkg_status"
+then
+    state_is='present'
 else
-    state_is="absent"
+    state_is='absent'
 fi
 
 # Leave if nothing is to be done
-[ "$state_is" = "$state_should" ] && exit 0
+[ "${state_is}" = "${state_should}" ] && exit 0
 
-case "$state_should" in
-    present)
-        echo "luarocks install '$name'"
-        echo "installed" >> "$__messages_out"
-    ;;
-    absent)
-        echo "luarocks remove '$name'"
-        echo "removed" >> "$__messages_out"
-    ;;
-    *)
-        echo "Unknown state: $state_should" >&2
+case ${state_should}
+in
+    (present)
+        echo "luarocks install '${name}'"
+        echo 'installed' >>"${__messages_out:?}"
+        ;;
+    (absent)
+        echo "luarocks remove '${name}'"
+        echo 'removed' >>"${__messages_out:?}"
+        ;;
+    (*)
+        printf 'Invalid --state: %s\n' "${state_should}" >&2
         exit 1
-    ;;
+        ;;
 esac

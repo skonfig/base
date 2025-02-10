@@ -19,24 +19,26 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-owner="$__object_id"
-state="$(cat "$__object/parameter/state")"
+owner=${__object_id:?}
+state=$(cat "${__object:?}/parameter/state")
 
-group="$(cut -d':' -f 1 "$__object/explorer/group")"
-if [ -z "$group" ]; then
-    echo "Failed to get owners group from explorer." >&2
+group=$(cut -d':' -f 1 "${__object:?}/explorer/group")
+if [ -z "${group}" ]
+then
+    echo 'Failed to get owners group from explorer.' >&2
     exit 1
 fi
 
-home="$(cut -d':' -f 6 "$__object/explorer/passwd")"
-if [ -z "$home" ]; then
-   echo "Failed to get home directory from explorer." >&2
+home=$(cut -d':' -f 6 "${__object:?}/explorer/passwd")
+if [ -z "${home}" ]
+then
+   echo 'Failed to get home directory from explorer.' >&2
    exit 1
 fi
 ssh_directory="${home}/.ssh"
 
 # Ensure that the directory in which the authorized_keys shall be exists and
 # has the right permissions.
-__directory "$ssh_directory" \
-    --state "$state" \
-    --owner "$owner" --group "$group" --mode 0700
+__directory "${ssh_directory}" \
+    --state "${state}" \
+    --owner "${owner}" --group "${group}" --mode 0700

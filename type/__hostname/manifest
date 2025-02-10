@@ -50,7 +50,7 @@ fi
 
 if test -n "${max_len}" && test "$(printf '%s' "${name_should}" | wc -c)" -gt "${max_len}"
 then
-    printf "Host name too long. Up to %u characters allowed.\n" "${max_len}" >&2
+    printf 'Host name too long. Up to %u characters allowed.\n' "${max_len}" >&2
     exit 1
 fi
 
@@ -74,7 +74,7 @@ in
             #     --file /etc/rc.conf \
             #     --delimiter '=' --exact_delimiter \
             #     --key 'HOSTNAME' \
-            #     --value "\"$name_should\""
+            #     --value "\"${name_should}\""
         fi
         ;;
     (centos|fedora|redhat|scientific)
@@ -102,7 +102,7 @@ in
                 --key 'hostname' \
                 --value "\"${name_should}\""
         else
-            set_hostname_systemd "$name_should"
+            set_hostname_systemd "${name_should}"
         fi
         ;;
     (freebsd)
@@ -187,8 +187,9 @@ in
         then
             set_hostname_systemd "${name_should}"
         else
+            : "${__type:?}"  # make shellcheck happy
             echo "Your operating system (${os}) is currently not supported by this type (${__type##*/})." >&2
-            echo "Please contribute an implementation for it if you can." >&2
+            echo 'Please contribute an implementation for it if you can.' >&2
             exit 1
         fi
         ;;

@@ -22,6 +22,7 @@
 
 set +e
 executable=$(command -v runlevel)
-if [ -x "$executable" ]; then
-   "$executable" | awk '{ print $2 }'
+if [ -x "${executable}" ]
+then
+   "${executable}" | awk '{ print $2 }'
 fi

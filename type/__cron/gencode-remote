@@ -100,7 +100,7 @@ in
 esac
 
 # assert that $entry only has one line to avoid fucking up the crontab
-test $(count_lines "${entry-}") -le 1 || {
+test "$(count_lines "${entry-}")" -le 1 || {
 	echo 'crontab entries must contain exactly one line.' >&2
 	exit 1
 }
@@ -108,9 +108,9 @@ test $(count_lines "${entry-}") -le 1 || {
 # print commands necessary to execute other commands, first
 prepare_cmds
 
-# NOTE: We need to lock against parallel execution with __cron because
-#       both types modify the same "file" and crontab(1) does not
-#       synchronization of its own.
+# NOTE: We need to lock against parallel execution with __cron_env because
+#       both types modify the same "file" and crontab(1) does no
+#       synchronization on its own.
 sed -e '/^#/d' -e '/^$/d' "${__type:?}/files/lock.sh"
 
 printf '%s | %s | %s\n' \

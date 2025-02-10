@@ -22,29 +22,31 @@
 # or installation procedures depend on concrete OS and/or OS
 # version/distribution.
 
-state_should="$(cat "$__object/parameter/state")"
-owner="$(cat "$__object/parameter/owner")"
-group="$(cat "$__object/parameter/group")"
-mode="$(cat "$__object/parameter/mode")"
+state_should=$(cat "${__object:?}/parameter/state")
+owner=$(cat "${__object:?}/parameter/owner")
+group=$(cat "${__object:?}/parameter/group")
+mode=$(cat "${__object:?}/parameter/mode")
 
-case "$state_should" in
-    present)
-        case "$( cat "$__global/explorer/os" )" in
-            debian|ubuntu)
+case ${state_should}
+in
+    (present)
+        case $(cat "${__global:?}/explorer/os")
+        in
+            (debian|ubuntu)
                 __package python3-venv
-            ;;
+                ;;
         esac
-    ;;
+        ;;
 
-    absent)
-        __directory "$__object_id" --state absent \
-            --owner "$owner" \
-            --group "$group" \
-            --mode "$mode"
-    ;;
+    (absent)
+        __directory "${__object_id:?}" --state absent \
+            --owner "${owner}" \
+            --group "${group}" \
+            --mode "${mode}"
+        ;;
 
-    *)
-        echo "Unknown state: $state_should" >&2
+    (*)
+        printf 'Invalid --state: %s\n' "${state_should}" >&2
         exit 1
-    ;;
+        ;;
 esac

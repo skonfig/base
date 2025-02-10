@@ -20,4 +20,4 @@
 # Check whether system has systemd's hostnamectl(1) installed.
 #
 
-command -v hostnamectl 2>/dev/null || true
+command -v hostnamectl 2>/dev/null || :

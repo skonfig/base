@@ -19,16 +19,18 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-timezone_is=$(cat "$__object/explorer/timezone_is")
-timezone_should=$(cat "$__object/parameter/tz")
-os=$(cat "$__global/explorer/os")
+timezone_is=$(cat "${__object:?}/explorer/timezone_is")
+timezone_should=$(cat "${__object:?}/parameter/tz")
+os=$(cat "${__global:?}/explorer/os")
 
-if [ "$timezone_is" = "$timezone_should" ]; then
+if [ "${timezone_is}" = "${timezone_should}" ]
+then
     exit 0
 fi
 
-case "$os" in
-   ubuntu|debian|devuan|coreos|alpine)
-      echo "echo \"$timezone_should\" > /etc/timezone"
-   ;;
+case ${os}
+in
+    (ubuntu|debian|devuan|coreos|alpine)
+        echo "echo \"${timezone_should}\" >/etc/timezone"
+        ;;
 esac

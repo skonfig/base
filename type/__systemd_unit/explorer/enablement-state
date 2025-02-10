@@ -22,4 +22,4 @@
 # For possible output values cf. man systemctl(1).
 #
 
-systemctl is-enabled "${__object_id}" 2>/dev/null || true
+systemctl is-enabled "${__object_id:?}" 2>/dev/null || :

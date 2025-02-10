@@ -44,7 +44,7 @@ esac
 case ${os}
 in
 	(alpine|gentoo)
-		if ! $has_systemd_timedatectl
+		if ! ${has_systemd_timedatectl?}
 		then
 			# NOTE: Gentoo also supports systemd, in which case /etc/conf.d is
 			#       not used. So we check for systemd presence here and only
@@ -58,8 +58,8 @@ in
 				--file /etc/conf.d/hwclock \
 				--key clock \
 				--delimiter '=' --exact_delimiter \
-				--value "\"$($local_clock && echo local || echo UTC)\""
-			unset CDIST_ORDER_DEPENDENCY
+				--value "\"$(${local_clock?} && echo local || echo UTC)\""
+			unset -v CDIST_ORDER_DEPENDENCY
 		fi
 		;;
 	(centos|fedora|redhat|scientific)
@@ -100,8 +100,8 @@ in
 				--file /etc/sysconfig/clock \
 				--key UTC \
 				--delimiter '=' --exact_delimiter \
-				--value "$($local_clock && echo false || echo true)"
-			unset CDIST_ORDER_DEPENDENCY
+				--value "$(${local_clock?} && echo false || echo true)"
+			unset -v CDIST_ORDER_DEPENDENCY
 		fi
 		;;
 	(debian|devuan|ubuntu)
@@ -117,6 +117,8 @@ in
 				then
 					update_rcS=true
 				else
+					: "${__type:?}"  # make shellcheck happy
+
 					# Debian 2.2 should be supportable using rcS.
 					# Debian 2.1 uses the ancient GMT key.
 					# Debian 1.3 does not have rcS.
@@ -143,14 +145,14 @@ in
 				--file /etc/default/rcS \
 				--key UTC \
 				--delimiter '=' --exact_delimiter \
-				--value "$($local_clock && echo no || echo yes)"
-			unset CDIST_ORDER_DEPENDENCY
-		fi		  
+				--value "$(${local_clock?} && echo no || echo yes)"
+			unset -v CDIST_ORDER_DEPENDENCY
+		fi
 		;;
 	(freebsd)
 		# cf. adjkerntz(8)
 		__file /etc/wall_cmos_clock \
-			--state "$($local_clock && echo present || echo absent)" \
+			--state "$(${local_clock?} && echo present || echo absent)" \
 			--owner root --group wheel --mode 0444
 		;;
 	(netbsd)
@@ -159,7 +161,7 @@ in
 			--file /etc/rc.conf \
 			--key rtclocaltime \
 			--delimiter '=' --exact_delimiter \
-			--value "$($local_clock && echo YES || echo NO)"
+			--value "$(${local_clock?} && echo YES || echo NO)"
 		;;
 	(slackware)
 		__file /etc/hardwareclock --owner root --group root --mode 0644 \
@@ -169,7 +171,7 @@ in
 		# Tells how the hardware clock time is stored.
 		# This file is managed by cdist.
 
-		$($local_clock && echo localtime || echo UTC)
+		$(${local_clock?} && echo localtime || echo UTC)
 		EOF
 		;;
 	(suse)
@@ -193,7 +195,7 @@ in
 				--file /etc/sysconfig/clock \
 				--delimiter '=' --exact_delimiter \
 				--key HWCLOCK \
-				--value "$($local_clock && echo '"--localtime"' || echo '"-u"')"
+				--value "$(${local_clock?} && echo '"--localtime"' || echo '"-u"')"
 		fi
 		;;
 	(void)
@@ -205,14 +207,15 @@ in
 			--file /etc/rc.conf \
 			--delimiter '=' --exact_delimiter \
 			--key HARDWARECLOCK \
-			--value "\"$($local_clock && echo localtime || echo UTC)\""
-		unset CDIST_ORDER_DEPENDENCY
+			--value "\"$(${local_clock?} && echo localtime || echo UTC)\""
+		unset -v CDIST_ORDER_DEPENDENCY
 		;;
 	(*)
-		if ! $has_systemd_timedatectl
+		if ! ${has_systemd_timedatectl?}
 		then
-			printf "Your operating system (%s) is currently not supported by this type (%s)\n" "$os" "${__type##*/}" >&2
-			printf "Please contribute an implementation for it if you can.\n" >&2
+			: "${__type:?}"  # make shellcheck happy
+			printf 'Your operating system (%s) is currently not supported by this type (%s)\n' "${os}" "${__type##*/}" >&2
+			printf 'Please contribute an implementation for it if you can.\n' >&2
 			exit 1
 		fi
 		;;

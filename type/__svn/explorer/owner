@@ -35,7 +35,7 @@ owner_uid=$(ls -ldn "${destination}" | awk '{ print $3 }')
 # NOTE: +1 because $((notanum)) prints 0.
 if test $((owner_uid + 1)) -ge 0
 then
-	owner_should=$(cat "${__object:?}/parameter/owner" 2>/dev/null || true)
+	owner_should=$(cat "${__object:?}/parameter/owner" 2>/dev/null || :)
 
 	if expr "${owner_should}" : '[0-9]*$' >/dev/null
 	then

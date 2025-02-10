@@ -56,12 +56,12 @@ in
 		if test -f "${__object:?}/parameter/owner"
 		then
 			owner_should=$(cat "${__object:?}/parameter/owner")
-			owner_is=$(get_current_value owner "${owner_should}")
+			owner_is=$(get_current_value "${stat_file:?}" owner "${owner_should}")
 
 			if test -f "${__object:?}/parameter/group"
 			then
 				group_should=$(cat "${__object:?}/parameter/group")
-				group_is=$(get_current_value group "${group_should}")
+				group_is=$(get_current_value "${stat_file:?}" group "${group_should}")
 
 				if ${set_attributes?} || test "${group_is}" != "${group_should}"
 				then
@@ -91,7 +91,7 @@ in
 		elif test -f "${__object:?}/parameter/group"
 		then
 			group_should=$(cat "${__object:?}/parameter/group")
-			group_is=$(get_current_value group "${group_should}")
+			group_is=$(get_current_value "${stat_file:?}" group "${group_should}")
 
 			if ${set_attributes?} || test "${group_should}" != "${group_is}"
 			then
@@ -107,7 +107,7 @@ in
 		if test -f "${__object:?}/parameter/mode"
 		then
 			mode_should=$(cat "${__object:?}/parameter/mode")
-			mode_is=$(get_current_value mode "${mode_should}")
+			mode_is=$(get_current_value "${stat_file:?}" mode "${mode_should}")
 
 			# Convert to four-digit octal number (printf interprets
 			# strings with leading 0s as octal!)

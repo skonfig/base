@@ -18,20 +18,18 @@
 # You should have received a copy of the GNU General Public License
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 
-found="$__object/explorer/find"
+found="${__object:?}/explorer/find"
 
-if [ ! -s "$found" ]
-then
-    exit 0
-fi
+test -s "${found}" || exit 0
 
+# shellcheck disable=SC2016
 echo '${__type:?}/explorer/find -depth -exec rm -rf {} +'
 
-ln -sf "$found" "$__messages_out"
+ln -sf "${found}" "${__messages_out:?}"
 
-onchange="$__object/parameter/onchange"
+onchange="${__object:?}/parameter/onchange"
 
-if [ -f "$onchange" ]
+if [ -f "${onchange}" ]
 then
-    cat "$onchange"
+    cat "${onchange}"
 fi

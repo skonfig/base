@@ -21,7 +21,7 @@
 # Prints "present" if the path specified by --path exists, "absent" otherwise.
 #
 
-if [ -f "$( cat "${__object:?}/parameter/path" )" ]
+if [ -f "$(cat "${__object:?}/parameter/path")" ]
 then
     echo 'present'
 else

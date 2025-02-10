@@ -19,7 +19,7 @@
 #
 
 in_list() {
-	printf '%s\n' "$@" | { grep -qxF "$(read -r ndl; echo "${ndl}")"; }
+	printf '%s\n' "$@" | { grep -qxF -e "$(read -r ndl; echo "${ndl}")"; }
 }
 
 quote() {
@@ -53,7 +53,7 @@ uci_validate_name() {
 
 uci_validate_tuple() (
 	tok=${1:?}
-	case $tok
+	case ${tok}
 	in
 		(*.*.*)
 			# check option

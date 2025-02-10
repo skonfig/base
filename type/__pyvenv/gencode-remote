@@ -19,51 +19,54 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-state_is="$(cat "$__object/explorer/state")"
-owner_is="$(cat "$__object/explorer/owner")"
-group_is="$(cat "$__object/explorer/group")"
+state_is=$(cat "${__object:?}/explorer/state")
+owner_is=$(cat "${__object:?}/explorer/owner")
+group_is=$(cat "${__object:?}/explorer/group")
 
-state_should="$(cat "$__object/parameter/state")"
+state_should=$(cat "${__object:?}/parameter/state")
 
-owner="$(cat "$__object/parameter/owner")"
-group="$(cat "$__object/parameter/group")"
-mode="$(cat "$__object/parameter/mode")"
+owner=$(cat "${__object:?}/parameter/owner")
+group=$(cat "${__object:?}/parameter/group")
+mode=$(cat "${__object:?}/parameter/mode")
 
-[  "$state_should" = "$state_is" ] && \
-[  "$owner" = "$owner_is" ] && \
-[  "$group" = "$group_is" ] && \
-[  -n "$mode" ] && exit 0
+[ "${state_should}" = "${state_is}" ] && \
+[ "${owner}" = "${owner_is}" ] && \
+[ "${group}" = "${group_is}" ] && \
+[ -n "${mode}" ] && exit 0
 
-destination="/$__object_id"
-venvparams="$(cat "$__object/parameter/venvparams")"
-pyvenvparam="$__object/parameter/pyvenv"
-interpreter="$(cat "$__object/parameter/interpreter")"
+destination="/${__object_id:?}"
+venvparams=$(cat "${__object:?}/parameter/venvparams")
+pyvenvparam="${__object:?}/parameter/pyvenv"
+interpreter=$(cat "${__object:?}/parameter/interpreter")
 
-if [ -f "$pyvenvparam" ]
+if [ -f "${pyvenvparam}" ]
 then
-    pyvenv=$(cat "$pyvenvparam")
+    pyvenv=$(cat "${pyvenvparam}")
 else
-    pyvenv="$interpreter -m venv"
+    pyvenv="${interpreter} -m venv"
 fi
 
-case $state_should in
-    present)
-        if [ "$state_should" != "$state_is" ]; then
-            echo "$pyvenv $venvparams $destination"
+case ${state_should}
+in
+    (present)
+        if [ "${state_should}" != "${state_is}" ]
+        then
+            echo "${pyvenv} ${venvparams} ${destination}"
         fi
-        if { [ -n "$owner" ] && [ "$owner_is" != "$owner" ]; } || \
-           { [ -n "$group" ] && [ "$group_is" != "$group" ]; }; then
-            echo chown -R "${owner}:${group}" "$destination"
+        if { [ -n "${owner}" ] && [ "${owner_is}" != "${owner}" ]; } || \
+           { [ -n "${group}" ] && [ "${group_is}" != "${group}" ]; }
+        then
+            echo chown -R "${owner}:${group}" "${destination}"
         fi
-        if [ -n "$mode" ]; then
-            echo chmod -R "$mode" "$destination"
+        if [ -n "${mode}" ]
+        then
+            echo chmod -R "${mode}" "${destination}"
         fi
-    ;;
-    absent)
-    ;;
-
-    *)
-        echo "Unknown state: $state_should" >&2
+        ;;
+    (absent)
+        ;;
+    (*)
+        printf 'Invalid --state: %s\n' "${state_should}" >&2
         exit 1
-    ;;
+        ;;
 esac

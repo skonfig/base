@@ -22,11 +22,11 @@
 #
 # The exit status is:
 #
-# 	0	if everything went well
-#	1	if something went wrong
-#	2	no public key was found in the key file
-# 	3	if the key could not be validated
-# 	4	if multiple keys were found in the key file
+#   0  if everything went well
+#   1  if something went wrong
+#   2  no public key was found in the key file
+#   3  if the key could not be validated
+#   4  if multiple keys were found in the key file
 
 BEGIN {
 	if (!ENVIRON["__object"]) { exit (e=1) }

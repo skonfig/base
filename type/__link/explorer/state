@@ -41,6 +41,7 @@ _readlink() {
 		readlink "$1"
 	else
 		# resort to parsing the output of ls(1)
+		# shellcheck disable=SC2010
 		if ls -Ldl "$1" | grep -q '^d'
 		then
 			# resolve destination of symlinks pointing to a directory
@@ -48,19 +49,21 @@ _readlink() {
 		else
 			# resolve destination of symlinks pointing to a file
 			_ls_out=$(ls -l "$1")
-			echo "${_ls_out#*$1 -> }"
-			unset _ls_out
+			echo "${_ls_out#*"$1 -> "}"
+			unset -v _ls_out
 		fi
 	fi
 }
 
 case ${type}
 in
-   symbolic)
-      if [ -h "$destination" ]; then
+   (symbolic)
+      if [ -h "${destination}" ]
+      then
          source_is=$(_readlink "${destination}")
          # ignore trailing slashes for comparison
-         if [ "${source_is%/}" = "${source%/}" ]; then
+         if [ "${source_is%/}" = "${source%/}" ]
+         then
             echo present
          else
             echo wrongsource
@@ -68,15 +71,17 @@ in
       else
          echo absent
       fi
-   ;;
-   hard)
+      ;;
+   (hard)
       cd "${destination%/*}" || exit 1
       # check source relative to destination dir
-      if [ ! -e "${source}" ]; then
+      if [ ! -e "${source}" ]
+      then
          echo sourcemissing
          exit 0
       fi
-      if [ ! -e "${destination}" ]; then
+      if [ ! -e "${destination}" ]
+      then
          echo absent
          exit 0
       fi
@@ -88,14 +93,15 @@ in
       # and different OSes has different implementations for it.
       # shellcheck disable=SC2012
       source_inode=$(ls -i "${source}" | awk '{print $1}')
-      if [ "${destination_inode}" -eq "${source_inode}" ]; then
+      if [ "${destination_inode}" -eq "${source_inode}" ]
+      then
          echo present
       else
          echo absent
       fi
-   ;;
-   *)
+      ;;
+   (*)
       echo "Unknown type: ${type}" >&2
       exit 1
-   ;;
+      ;;
 esac

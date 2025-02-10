@@ -42,7 +42,7 @@ sshd_conn_spec=$(
 	then
 		_match_file="${__object:?}/parameter/match"
 	else
-		_match_file='/dev/null'
+		_match_file=/dev/null
 	fi
 
 	for _kw in \
@@ -141,7 +141,7 @@ if printf '%s\n' "${value_is}" | {
 		esac
 	}
 then
-	if default_value "${option_name}" | grep -q -x -F "${value_is}"
+	if default_value "${option_name}" | grep -q -x -F -e "${value_is}"
 	then
 		# Might produce false positives for default values.
 		# TODO: Manual checking should be done, but for simplicity, this case is

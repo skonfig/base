@@ -19,29 +19,32 @@
 #
 
 # Select motd source
-if [ -f "$__object/parameter/source" ]; then
-   source="$(cat "$__object/parameter/source")"
-    if [ "$source" = "-" ]; then
-        source="${__object}/stdin"
-    fi
+if [ -f "${__object:?}/parameter/source" ]
+then
+   source=$(cat "${__object:?}/parameter/source")
+   if [ "${source}" = '-' ]
+   then
+      source="${__object:?}/stdin"
+   fi
 else
-   source="$__type/files/motd"
+   source="${__type:?}/files/motd"
 fi
 
-os=$(cat "$__global/explorer/os")
+os=$(cat "${__global:?}/explorer/os")
 
 
-case "$os" in
-   freebsd)
+case ${os}
+in
+   (freebsd)
       # FreeBSD uses motd.template to prepend system information on boot
       # (this actually only applies starting with version 13,
       #  but we fix that for whatever version in gencode-remote)
       destination=/etc/motd.template
-   ;;
-   *)
+      ;;
+   (*)
       # Most UNIX systems, including other Linux and OpenBSD just use /etc/motd
       destination=/etc/motd
-   ;;
+      ;;
 esac
 
-__file "$destination" --source "$source" --mode 0644
+__file "${destination}" --source "${source}" --mode 0644

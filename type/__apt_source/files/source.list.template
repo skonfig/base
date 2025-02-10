@@ -1,6 +1,8 @@
 #!/bin/sh -eu
 
-entry="$uri $distribution $component"
+: "${__type:?}" "${options:?}"  # make shellcheck happy
+
+entry="${uri:?} ${distribution:?} ${component:?}"
 options="${forcedarch-} ${signed_by-}"
 options=${options## }; options=${options%% } # Trim spaces from either end
 
@@ -9,9 +11,10 @@ cat << DONE
 # Do not change. Changes will be overwritten.
 #
 
-# $name
-deb ${options:+[${options}] }$entry
+# ${name:?}
+deb ${options:+[${options}] }${entry}
 DONE
-if [ -f "$__object/parameter/include-src" ]; then
-   echo "deb-src ${signed_by:+[${signed_by}] }$entry"
+if [ -f "${__object:?}/parameter/include-src" ]
+then
+   echo "deb-src ${signed_by:+[${signed_by}] }${entry}"
 fi

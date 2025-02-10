@@ -22,20 +22,20 @@
 #
 
 not_supported() {
-	echo "Your operating system ($("$__explorer/os")) is currently not supported." >&2
-	echo "Cannot extract group information." >&2
-	echo "Please contribute an implementation for it if you can." >&2
+	echo "Your operating system ($("${__explorer:?}/os")) is currently not supported." >&2
+	echo 'Cannot extract group information.' >&2
+	echo 'Please contribute an implementation for it if you can.' >&2
 	exit 1
 }
 
-name=$__object_id
+name=${__object_id:?}
 
 if command -v getent >/dev/null
 then
-	getent group "$name" || true
-elif [ -f /etc/group ]
+	getent group "${name}" || :
+elif test -f /etc/group
 then
-	grep "^${name}:" /etc/group || true
+	awk -v name="${name}" -F: '$1 == name' /etc/group
 else
 	not_supported
 fi

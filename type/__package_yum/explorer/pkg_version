@@ -20,10 +20,11 @@
 # Retrieve the status of a package.
 #
 
-if [ -f "$__object/parameter/name" ]; then
-   name="$(cat "$__object/parameter/name")"
+if [ -f "${__object:?}/parameter/name" ]
+then
+   name=$(cat "${__object:?}/parameter/name")
 else
-   name="$__object_id"
+   name=${__object_id:?}
 fi
 
-rpm -q "$name" 2>/dev/null || rpm -q --whatprovides "$name" 2>/dev/null || true
+rpm -q "${name}" 2>/dev/null || rpm -q --whatprovides "${name}" 2>/dev/null || :

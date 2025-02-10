@@ -38,9 +38,10 @@ in
 		__file /etc/apt/apt.conf.d/99-no-recommends --state absent
 		;;
 	(*)
+		: "${__type:?}"  # make shellcheck happy
 		cat >&2 <<EOF
 The developer of this type (${__type##*/}) did not think your operating system
-($os) would have any use for it. If you think otherwise please submit a patch.
+(${os}) would have any use for it. If you think otherwise please submit a patch.
 EOF
 		exit 1
 		;;

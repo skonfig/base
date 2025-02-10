@@ -115,7 +115,7 @@ get_dmi_field() {
 		then
 			cat "${dmi_sysfs}/${_filename}"
 		fi
-		unset _filename
+		unset -v _filename
 	elif test "${uname_s}" = OpenBSD
 	then
 		# NOTE: something similar to system-manufacutrer and system-product-name
@@ -201,7 +201,7 @@ check_chroot_procfs() (
 				read -r _ _ _ _ hmntpnt _ <<-EOF
 				$(grep -e "^$((mntid)) " /proc/1/mountinfo)
 				EOF
-				printf '%s\n' "${hmntpnt%${cmntpnt}}"
+				printf '%s\n' "${hmntpnt%"${cmntpnt}"}"
 			done </proc/self/mountinfo \
 			| sort -u \
 			| head -n 1  # just take the first...
@@ -278,7 +278,7 @@ has_ct_cgroup() {
 }
 
 check_ct_cgroup() {
-	if grep -q -e ':/docker/' /proc/self/cgroup
+	if grep -q -F ':/docker/' /proc/self/cgroup
 	then
 		echo docker
 	elif grep -q -e ':/lxc/.*\.libvirt-lxc$' /proc/self/cgroup
@@ -881,11 +881,11 @@ check_vm_os_specific() {
 		(SunOS)
 			diag_conf=$(prtdiag | sed -n -e 's/.*Configuration: *//p' -e '/^$/q')
 			# NOTE: Don't use -e or -F in Solaris grep
-			if printf '%s\n' "${diag_conf}" | grep -q -i QEMU
+			if printf '%s\n' "${diag_conf}" | grep -qiF QEMU
 			then
 				echo qemu
 				return 0
-			elif printf '%s\n' "${diag_conf}" | grep -q -i VMware
+			elif printf '%s\n' "${diag_conf}" | grep -qiF VMware
 			then
 				echo vmware
 				return 0
@@ -938,6 +938,7 @@ check_vm_os_specific() {
 				')
 				EOF
 			fi
+			;;
 	esac
 
 	# Try to guess hypervisor based on CPU model (sysctl hw.model if available)

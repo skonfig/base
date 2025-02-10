@@ -20,12 +20,13 @@
 # Get the current state of the APT key.
 #
 
-if [ -f "$__object/parameter/name" ]; then
-   name="$(cat "$__object/parameter/name")"
+if [ -f "${__object:?}/parameter/name" ]
+then
+   name=$(cat "${__object:?}/parameter/name")
 else
-   name="$__object_id"
+   name=${__object_id:?}
 fi
 
-apt-key list 2> /dev/null | grep -Fqe "$name" \
+apt-key list 2>/dev/null | grep -Fqe "${name}" \
    && echo present \
    || echo absent

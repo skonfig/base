@@ -31,10 +31,11 @@
 
 
 # get name of the service
-if [ -f "$__object/parameter/name" ]; then
-    name="$(cat "$__object/parameter/name")"
+if [ -f "${__object:?}/parameter/name" ]
+then
+    name=$(cat "${__object:?}/parameter/name")
 else
-    name="$__object_id"
+    name=${__object_id:?}
 fi
 
 # The explorer must check before if the service exist, because 'systemctl is-active'
@@ -44,7 +45,7 @@ fi
 
 # check if the service exist, else exit without output (also if systemd doesn't exist)
 # do not exit here with an error code, will be done in the gencode-remote script
-systemctl cat "$name" > /dev/null 2>&1 || exit 0
+systemctl cat "${name}" >/dev/null 2>&1 || exit 0
 
 # print if the service is running or not
-systemctl is-active -q "$name" && printf "running" || printf "stopped"
+systemctl is-active -q "${name}" && printf 'running' || printf 'stopped'

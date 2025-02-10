@@ -113,6 +113,7 @@ in
 		;;
 esac
 
+: "${__type:?}"  # make shellcheck happy
 __file "/etc/apt/preferences.d/${__object_id:?}" \
 	--owner 0 --group 0 --mode 0644 \
 	--state "${state}" \

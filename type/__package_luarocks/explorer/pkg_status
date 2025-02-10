@@ -20,11 +20,12 @@
 # Retrieve the status of a rock
 #
 
-if [ -f "$__object/parameter/name" ]; then
-   name="$(cat "$__object/parameter/name")"
+if [ -f "${__object:?}/parameter/name" ]
+then
+   name=$(cat "${__object:?}/parameter/name")
 else
-   name="$__object_id"
+   name=${__object_id:?}
 fi
 
 # Accept luarocks failing if package is not known/installed
-luarocks list "$name" | grep -E -A1 "^$name$" || exit 0
+luarocks list "${name}" | grep -xF -A1 "${name}" || exit 0

@@ -20,10 +20,10 @@
 
 for p in file directory
 do
-    [ ! -f "$__object/parameter/$p" ] && continue
+    [ ! -f "${__object:?}/parameter/${p}" ] && continue
 
-    "__$p" "/$__object_id" \
-        --owner "$( awk -F: '{print $1}' "$__object/parameter/$p" )" \
-        --group "$( awk -F: '{print $2}' "$__object/parameter/$p" )" \
-        --mode  "$( awk -F: '{print $3}' "$__object/parameter/$p" )"
+    "__${p}" "/${__object_id:?}" \
+        --owner "$(awk -F: '{print $1}' "${__object:?}/parameter/${p}")" \
+        --group "$(awk -F: '{print $2}' "${__object:?}/parameter/${p}")" \
+        --mode  "$(awk -F: '{print $3}' "${__object:?}/parameter/${p}")"
 done

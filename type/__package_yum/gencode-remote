@@ -18,54 +18,62 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-if [ -f "$__object/parameter/name" ]; then
-   name="$(cat "$__object/parameter/name")"
+if [ -f "${__object:?}/parameter/name" ]
+then
+    name=$(cat "${__object:?}/parameter/name")
 else
-   name="$__object_id"
+    name=${__object_id:?}
 fi
 
 # Support installing from an URL
-if [ -f "$__object/parameter/url" ]; then
-   install_name="$(cat "$__object/parameter/url")"
+if [ -f "${__object:?}/parameter/url" ]
+then
+   install_name=$(cat "${__object:?}/parameter/url")
 else
-   install_name="$name"
+   install_name=${name}
 fi
 
 
-state_should="$(cat "$__object/parameter/state")"
+state_should=$(cat "${__object:?}/parameter/state")
 
-if grep -q -E "(scientific|centos|almalinux|eurolinux|rocky|redhat|amazon)" "$__global/explorer/os"; then
-    opts="-y --quiet"
-else
-    opts="--assumeyes --quiet"
-fi
+os=$(cat "${__global:?}/explorer/os")
+case ${os}
+in
+	(scientific|centos|almalinux|eurolinux|rocky|redhat|amazon)
+		opts='-y --quiet' ;;
+	(*)
+		opts='--assumeyes --quiet' ;;
+esac
 
-not_provided="^no package provides"
+not_provided='^no package provides'
 not_installed='is not installed$'
 
-if grep -q "$not_provided" "$__object/explorer/pkg_version"; then
-    if grep -q "$not_installed" "$__object/explorer/pkg_version"; then
-        state_is="absent"
+if grep -q "${not_provided}" "${__object:?}/explorer/pkg_version"
+then
+    if grep -q "${not_installed}" "${__object:?}/explorer/pkg_version"
+    then
+        state_is='absent'
     else
-        state_is="present"
+        state_is='present'
     fi
 else
-    state_is="present"
+    state_is='present'
 fi
 
-[ "$state_is" = "$state_should" ] && exit 0
+[ "${state_is}" = "${state_should}" ] && exit 0
 
-case "$state_should" in
-    present)
-        echo "yum $opts install '$install_name'"
-        echo "installed" >> "$__messages_out"
-    ;;
-    absent)
-        echo "yum $opts remove '$name'"
-        echo "removed" >> "$__messages_out"
-    ;;
-    *)
-        echo "Unknown state: $state_should" >&2
+case ${state_should}
+in
+    (present)
+        echo "yum ${opts} install '${install_name}'"
+        echo 'installed' >>"${__messages_out:?}"
+        ;;
+    (absent)
+        echo "yum ${opts} remove '${name}'"
+        echo 'removed' >>"${__messages_out:?}"
+        ;;
+    (*)
+        printf 'Invalid --state: %s\n' "${state_should}" >&2
         exit 1
-    ;;
+        ;;
 esac

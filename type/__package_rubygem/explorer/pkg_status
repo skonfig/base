@@ -20,11 +20,12 @@
 # Retrieve the status of a rubygem
 #
 
-if [ -f "$__object/parameter/name" ]; then
-   name="$(cat "$__object/parameter/name")"
+if [ -f "${__object:?}/parameter/name" ]
+then
+   name=$(cat "${__object:?}/parameter/name")
 else
-   name="$__object_id"
+   name=${__object_id:?}
 fi
 
 # Except gem failing, if package is not known / installed
-gem list -i "$name" 2>/dev/null || exit 0
+gem list -i "${name}" 2>/dev/null || exit 0

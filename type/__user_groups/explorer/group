@@ -20,6 +20,6 @@
 # Prints the name of all groups --user is a member of.
 #
 
-user="$(cat "$__object/parameter/user" 2>/dev/null || echo "$__object_id")"
+user=$(cat "${__object:?}/parameter/user" 2>/dev/null || echo "${__object_id:?}")
 
-(id -G -n "$user" | tr ' ' '\n' | sort) 2>/dev/null || true
+(id -G -n "${user}" | tr ' ' '\n' | sort) 2>/dev/null || :

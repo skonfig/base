@@ -25,7 +25,7 @@ path_is=$(
     LC_ALL=C update-alternatives --display "${__object_id?}" 2>/dev/null \
     | awk '/link currently points to/ { print $5 }')
 
-if [ -z "$path_is" ] && [ -z "${__cdist_dry_run+dry run}" ]
+if [ -z "${path_is}" ] && [ -z "${__cdist_dry_run+dry run}" ]
 then
     # NOTE: ignore error for dry-runs because a package providing the
     #       alternative might be managed by another cdist object (which
@@ -34,4 +34,4 @@ then
     exit 1
 fi
 
-echo "$path_is"
+echo "${path_is}"

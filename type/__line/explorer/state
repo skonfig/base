@@ -31,30 +31,34 @@
 #     No line matching --regex or --line was found in the file.
 #
 
-if [ -f "$__object/parameter/file" ]; then
-   file=$(cat "$__object/parameter/file")
+if [ -f "${__object:?}/parameter/file" ]
+then
+   file=$(cat "${__object:?}/parameter/file")
 else
-   file="/$__object_id"
+   file="/${__object_id:?}"
 fi
 
-[ -f "$file" ] || exit 0
+[ -f "${file}" ] || exit 0
 
-if [ -f "$__object/parameter/before" ]; then
-   position="before"
-elif [ -f "$__object/parameter/after" ]; then
-   position="after"
+if [ -f "${__object:?}/parameter/before" ]
+then
+   position='before'
+elif [ -f "${__object:?}/parameter/after" ]
+then
+   position='after'
 else
    # By default we append to the end of the file.
-   position="end"
+   position='end'
 fi
 
-if [ -f "$__object/parameter/regex" ]; then
-   needle="regex"
+if [ -f "${__object:?}/parameter/regex" ]
+then
+   needle='regex'
 else
-   needle="line"
+   needle='line'
 fi
 
-awk -v position="$position" -v needle="$needle" '
+awk -v position="${position}" -v needle="${needle}" '
 function _find(_text, _pattern) {
    if (needle == "regex") {
       return match(_text, _pattern)
@@ -77,7 +81,7 @@ BEGIN {
          getline
          if (_find($0, pattern)) {
             found_line++
-	    if (index($0, line) == 1) { correct_line++ }
+         if (index($0, line) == 1) { correct_line++ }
             correct_pos = 1
             exit 0
          }
@@ -116,4 +120,4 @@ END {
       print "absent"
    }
 }
-' "$file"
+' "${file}"

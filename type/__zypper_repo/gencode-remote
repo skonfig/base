@@ -18,78 +18,86 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-# Debug
-#exec >&2
-#set -x
+zypper_def_opts=' -q --non-interactive --gpg-auto-import-keys '
 
-zypper_def_opts=" -q --non-interactive --gpg-auto-import-keys "
-
-if [ -f "$__object/parameter/repo_desc" ]; then
-   desc="$(cat "$__object/parameter/repo_desc")"
+if [ -f "${__object:?}/parameter/repo_desc" ]
+then
+    desc=$(cat "${__object:?}/parameter/repo_desc")
 else
-   desc="$__object_id"
+    desc=${__object_id:?}
 fi
 
-if [ -f "$__object/parameter/uri" ]; then
-   uri="$(cat "$__object/parameter/uri")"
+if [ -f "${__object:?}/parameter/uri" ]
+then
+    uri=$(cat "${__object:?}/parameter/uri")
 else
-   uri="$__object_id"
+    uri=${__object_id:?}
 fi
 
-if [ -f "$__object/parameter/repo_id" ]; then
-   id="$(cat "$__object/parameter/repo_id")"
+if [ -f "${__object:?}/parameter/repo_id" ]
+then
+    id=$(cat "${__object:?}/parameter/repo_id")
 else
-   id="$__object_id"
+    id=${__object_id:?}
 fi
 
-state="$(cat "$__object/parameter/state")"
+state=$(cat "${__object:?}/parameter/state")
 
-repo_id="$(cat "$__object/explorer/repo_id")"
+repo_id=$(cat "${__object:?}/explorer/repo_id")
 
-act_id=""
-if grep -q "$id" "$__object/explorer/all_repo_ids"; then
-    act_id="$id"
-elif grep -q "$repo_id" "$__object/explorer/all_repo_ids"; then
-    act_id="$repo_id" 
+act_id=''
+if grep -qxF -e "${id}" "${__object:?}/explorer/all_repo_ids"
+then
+    act_id=${id}
+elif grep -qxF -e "${repo_id}" "${__object:?}/explorer/all_repo_ids"
+then
+    act_id=${repo_id}
 fi
 
-repostate="disabled"
-if grep -q "$act_id" "$__object/explorer/enabled_repo_ids"; then
-    repostate="enabled"
+repostate='disabled'
+if grep -qxF -e "${act_id}" "${__object:?}/explorer/enabled_repo_ids"
+then
+    repostate='enabled'
 fi
 
 
-case "$state" in
-   present)
-         if [ -z "$desc" ] || [ -z "$uri" ]; then
-             echo "parameter repo_desc and uri for $state needed" >&2
-             exit 4
-         fi
-         if [ -z "$repo_id" ]; then
-             # Repo not present, so we need to create it 
-             echo "zypper $zypper_def_opts addrepo '$uri' '$desc'"
-         fi
-   ;;
-   absent)
-         if [ -n "$act_id" ]; then
-             # Repo present (act_id not ""), so we ned to delete it
-             echo "zypper $zypper_def_opts removerepo $act_id"
-         fi
-   ;;
-   enabled)
-         if [ -n "$act_id" ] && [ "$repostate" = "disabled" ]; then
-             # Repo present (act_id not "") and repostate not enabled, so a enable call is needed
-             echo "zypper $zypper_def_opts modifyrepo -e $act_id"
-         fi
-   ;;
-   disabled)
-         if [ -n "$act_id" ] && [ "$repostate" = "enabled" ]; then
-             # Repo present (act_id not "") and repostate enabled, so a disable call is needed
-             echo "zypper $zypper_def_opts modifyrepo -d $act_id"
-         fi
-   ;;
-   *)
-      echo "Unknown state: $state" >&2
-      exit 1
-   ;;
+case ${state}
+in
+    (present)
+        if [ -z "${desc}" ] || [ -z "${uri}" ]
+        then
+            echo "parameter repo_desc and uri for ${state} needed" >&2
+            exit 4
+        fi
+        if [ -z "${repo_id}" ]
+        then
+            # Repo not present, so we need to create it
+            echo "zypper ${zypper_def_opts} addrepo '${uri}' '${desc}'"
+        fi
+        ;;
+    (absent)
+        if [ -n "${act_id}" ]
+        then
+            # Repo present (act_id not ""), so we ned to delete it
+            echo "zypper ${zypper_def_opts} removerepo ${act_id}"
+        fi
+        ;;
+    (enabled)
+        if [ -n "${act_id}" ] && [ "${repostate}" = 'disabled' ]
+        then
+            # Repo present (act_id not "") and repostate not enabled, so a enable call is needed
+            echo "zypper ${zypper_def_opts} modifyrepo -e ${act_id}"
+        fi
+        ;;
+    (disabled)
+        if [ -n "${act_id}" ] && [ "${repostate}" = 'enabled' ]
+        then
+            # Repo present (act_id not "") and repostate enabled, so a disable call is needed
+            echo "zypper ${zypper_def_opts} modifyrepo -d ${act_id}"
+        fi
+        ;;
+    (*)
+        printf 'Invalid --state: %s\n' "${state}" >&2
+        exit 1
+        ;;
 esac

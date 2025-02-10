@@ -63,5 +63,6 @@ rollback() {
 }
 
 uci_apply() {
+	# shellcheck disable=SC2015
 	uci batch 2>&1 | check_errors && commit || rollback
 }

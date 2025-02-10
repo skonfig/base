@@ -20,16 +20,17 @@
 # Prints the currently installed version of a package.
 #
 
-if [ ! -x /usr/bin/equery ]; then
-    echo "gentoolkit not installed!" 1>&2
+test -x /usr/bin/equery || {
+    echo 'gentoolkit not installed!' 1>&2
     exit 1
-fi
+}
 
-if [ -f "$__object/parameter/name" ]; then
-   name="$(cat "$__object/parameter/name")"
+if [ -f "${__object:?}/parameter/name" ]
+then
+   name=$(cat "${__object:?}/parameter/name")
 else
-   name="$__object_id"
+   name=${__object_id:?}
 fi
 
 # shellcheck disable=SC2016
-equery -q l -F '$cp $fullversion' "$name" || true
+equery -q l -F '${cp} ${fullversion}' "${name}" || :

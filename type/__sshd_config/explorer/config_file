@@ -33,7 +33,7 @@ version_ge() {
 	printf '%s\n' "$1" "$2" \
 	| sort -t '.' -n -k 1,1 -k 2,2 -k 3,3 \
 	| head -1 \
-	| grep -qxF "$2"
+	| grep -qxF -e "$2"
 }
 
 if test -s "${__object:?}/parameter/file"

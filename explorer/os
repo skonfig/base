@@ -28,7 +28,8 @@
 # further up, except in cases where correct detection depends on a specific
 # order.
 
-if [ -f /etc/cdist-preos ]; then
+if [ -f /etc/cdist-preos ]
+then
    echo cdist-preos
    exit 0
 fi
@@ -36,24 +37,28 @@ fi
 
 ### Debian and derivatives
 
-if grep -q ^DISTRIB_ID=Ubuntu /etc/lsb-release 2>/dev/null; then
+if grep -q ^DISTRIB_ID=Ubuntu /etc/lsb-release 2>/dev/null
+then
    echo ubuntu
    exit 0
 fi
 
 # check before Debian because Pop!_OS also has /etc/debian_version
-if [ -f /etc/pop-os/os-release ]; then
+if [ -f /etc/pop-os/os-release ]
+then
    echo pop-os
    exit 0
 fi
 
 # devuan ascii has both devuan_version and debian_version, so we need to check devuan_version first!
-if [ -f /etc/devuan_version ]; then
+if [ -f /etc/devuan_version ]
+then
    echo devuan
    exit 0
 fi
 
-if [ -f /etc/debian_version ]; then
+if [ -f /etc/debian_version ]
+then
    echo debian
    exit 0
 fi
@@ -61,60 +66,72 @@ fi
 
 ### RedHat and derivatives
 
-if [ -f /etc/fedora-release ]; then
-    echo fedora
-    exit 0
+if [ -f /etc/fedora-release ]
+then
+   echo fedora
+   exit 0
 fi
 
-if [ -f /etc/almalinux-release ]; then
-    echo almalinux
-    exit 0
+if [ -f /etc/almalinux-release ]
+then
+   echo almalinux
+   exit 0
 fi
 
-if [ -f /etc/rocky-release ]; then
-    echo rocky
-    exit 0
+if [ -f /etc/rocky-release ]
+then
+   echo rocky
+   exit 0
 fi
 
 # NOTE: check for centos-release after checking for AlmaLinux/Rocky Linux,
 #       because these two also have a centos-release file.
-if [ -f /etc/centos-release ]; then
-    echo centos
-    exit 0
+if [ -f /etc/centos-release ]
+then
+   echo centos
+   exit 0
 fi
 
-if [ -f /etc/redhat-release ]; then
-   if grep -q '^CentOS ' /etc/redhat-release; then
-       echo centos
-       exit 0
+if [ -f /etc/redhat-release ]
+then
+   if grep -q '^CentOS ' /etc/redhat-release
+   then
+      echo centos
+      exit 0
    fi
 
-   if grep -q '^Fedora ' /etc/redhat-release; then
+   if grep -q '^Fedora ' /etc/redhat-release
+   then
       echo fedora
       exit 0
    fi
 
-   if grep -q '^AlmaLinux ' /etc/redhat-release; then
+   if grep -q '^AlmaLinux ' /etc/redhat-release
+   then
       echo almalinux
       exit 0
    fi
 
-   if grep -q '^Rocky Linux ' /etc/redhat-release; then
+   if grep -q '^Rocky Linux ' /etc/redhat-release
+   then
       echo rocky
       exit 0
    fi
 
-   if grep -q '^EuroLinux ' /etc/redhat-release; then
-       echo eurolinux
-       exit 0
+   if grep -q '^EuroLinux ' /etc/redhat-release
+   then
+      echo eurolinux
+      exit 0
    fi
 
-   if grep -q ^Scientific /etc/redhat-release; then
-       echo scientific
-       exit 0
+   if grep -q ^Scientific /etc/redhat-release
+   then
+      echo scientific
+      exit 0
    fi
 
-   if grep -q ^Mitel /etc/redhat-release; then
+   if grep -q ^Mitel /etc/redhat-release
+   then
       echo mitel
       exit 0
    fi
@@ -126,12 +143,14 @@ fi
 
 ### Slackware and SuSE
 
-if [ -f /etc/SuSE-release ]; then
+if [ -f /etc/SuSE-release ]
+then
    echo suse
    exit 0
 fi
 
-if [ -f /etc/slackware-version ]; then
+if [ -f /etc/slackware-version ]
+then
    echo slackware
    exit 0
 fi
@@ -139,41 +158,48 @@ fi
 
 ### other Linux distributions
 
-if [ -f /etc/gentoo-release ]; then
+if [ -f /etc/gentoo-release ]
+then
    echo gentoo
    exit 0
 fi
 
-if [ -f /etc/openwrt_version ]; then
-    echo openwrt
-    exit 0
+if [ -f /etc/openwrt_version ]
+then
+ echo openwrt
+ exit 0
 fi
 
-if [ -f /etc/owl-release ]; then
+if [ -f /etc/owl-release ]
+then
    echo owl
    exit 0
 fi
 
-if [ -f /etc/chimera-release ]; then
+if [ -f /etc/chimera-release ]
+then
    echo chimera
    exit 0
 fi
 
-if grep -q ^Amazon /etc/system-release 2>/dev/null; then
+if grep -q ^Amazon /etc/system-release 2>/dev/null
+then
    echo amazon
    exit 0
 fi
 
-if [ -f /etc/arch-release ]; then
+if [ -f /etc/arch-release ]
+then
    echo archlinux
    exit 0
 fi
 
 # Appliances
 
-if grep -q '^Check Point Gaia' /etc/cp-release 2>/dev/null; then
-    echo checkpoint
-    exit 0
+if grep -q '^Check Point Gaia' /etc/cp-release 2>/dev/null
+then
+   echo checkpoint
+   exit 0
 fi
 
 
@@ -182,34 +208,35 @@ fi
 # assume there is no tr on the client -> do lower case ourselves
 case $(uname -s)
 in
-   Darwin)
+   (Darwin)
       echo macosx
       exit 0
-   ;;
-   NetBSD)
+      ;;
+   (NetBSD)
       echo netbsd
       exit 0
-   ;;
-   FreeBSD)
+      ;;
+   (FreeBSD)
       echo freebsd
       exit 0
-   ;;
-   OpenBSD)
+      ;;
+   (OpenBSD)
       echo openbsd
       exit 0
-   ;;
-   SunOS)
+      ;;
+   (SunOS)
       echo solaris
       exit 0
-   ;;
+      ;;
 esac
 
 
 ### other Linux distributions (fall back to /etc/os-release)
 
-if [ -f /etc/os-release ]; then
+if [ -f /etc/os-release ]
+then
    # after sles15, suse don't provide an /etc/SuSE-release anymore, but there is almost no difference between sles and opensuse leap, so call it suse
-   # shellcheck disable=SC1091
+   # shellcheck source=/dev/null
    if (. /etc/os-release && echo "${ID_LIKE}" | grep -q '\(^\|\ \)suse\($\|\ \)')
    then
       echo suse
@@ -222,5 +249,5 @@ if [ -f /etc/os-release ]; then
    exit 0
 fi
 
-echo "Unknown OS" >&2
+echo 'Unknown OS' >&2
 exit 1
