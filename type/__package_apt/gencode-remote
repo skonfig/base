@@ -73,7 +73,8 @@ aptget='DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes -o Dpkg::Options::=
 case ${state_should}
 in
     (present)
-        if test -n "${version_should}" -a "${version_should}" != "${version_is}"
+        if test -n "${version_should}" \
+           && test "${version_should}" != "${version_is}"
         then
             # other version should be installed
             name="${name}=${version_should}"
@@ -151,7 +152,10 @@ EOF
         ;;
     (absent)
         if test "${state_is}" != 'absent' \
-        || test -f "${__object:?}/parameter/purge-if-absent" -a "${config_state}" != 'purged'
+           || {
+               test -f "${__object:?}/parameter/purge-if-absent" \
+               && test "${config_state}" != 'purged'
+           }
         then
             echo "${aptget} remove ${purgeparam} '${name_is}'"
             echo 'removed' >>"${__messages_out:?}"

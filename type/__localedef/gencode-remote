@@ -1,7 +1,7 @@
 #!/bin/sh -e
 #
 # 2013-2019 Nico Schottelius (nico-cdist at schottelius.org)
-# 2020 Dennis Camera (dennis.camera at riiengineering.ch)
+# 2020,2025 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -25,17 +25,20 @@
 state_is=$(cat "${__object:?}/explorer/state")
 state_should=$(cat "${__object:?}/parameter/state")
 
-test "${state_should}" = 'present' -o "${state_should}" = 'absent' || {
-	printf 'Invalid --state: %s\n' "${state_should}" >&2
-	exit 1
-}
-
-# NOTE: If state explorer fails (e.g. locale(1) missing), the following check
-#       will always fail and let definition/removal run.
-if test "${state_is}" = "${state_should}"
-then
-	exit 0
-fi
+case ${state_should}
+in
+	("${state_is}")
+		# NOTE: If state explorer fails (e.g. locale(1) missing), the following check
+		#       will always fail and let definition/removal run.
+		exit 0
+		;;
+	(present|absent)
+		;;
+	(*)
+		printf 'Invalid --state: %s\n' "${state_should}" >&2
+		exit 1
+		;;
+esac
 
 locale=${__object_id:?}
 os=$(cat "${__global:?}/explorer/os")

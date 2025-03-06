@@ -1,6 +1,6 @@
 #!/bin/sh -e
 #
-# 2019 Dennis Camera (dennis.camera at riiengineering.ch)
+# 2019,2025 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -24,7 +24,10 @@ command -v getconf >/dev/null || exit 0
 
 val=$(getconf HOST_NAME_MAX 2>/dev/null) || exit 0
 
-if test -n "${val}" -a "${val}" != 'undefined'
-then
-	echo "${val}"
-fi
+case ${val}
+in
+	(undefined)
+		;;
+	(?*)
+		echo "${val}" ;;
+esac

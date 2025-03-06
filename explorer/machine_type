@@ -1,6 +1,6 @@
 #!/bin/sh -e
 #
-# 2021,2023 Dennis Camera (dennis.camera at riiengineering.ch)
+# 2021,2023,2025 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -59,7 +59,8 @@ files_notsame() {
 		read -r _  # skip header line
 		read -r fs1 _ _ _ _ mp1
 		read -r fs2 _ _ _ _ mp2
-		test "${fs1}" = "${fs2}" -a "${mp1}" = "${mp2}" || return 0
+		test "${fs1}" = "${fs2}" || return 0
+		test "${mp1}" = "${mp2}" || return 0
 	} &&
 	ls -1Ldi "$1" "$2" 2>/dev/null | {
 		read -r ino1 _
@@ -172,7 +173,7 @@ check_chroot_procfs() (
 	then
 		is_chroot=true
 	fi
-	if test -e /proc/1/mountinfo -a -e /proc/self/mountinfo
+	if test -e /proc/1/mountinfo && test -e /proc/self/mountinfo
 	then
 		has_mountinfo=true
 		cmp -s /proc/1/mountinfo /proc/self/mountinfo || is_chroot=true
@@ -235,7 +236,7 @@ check_ct_systemd() (
 )
 
 has_ct_pid_1() {
-	test -r /run/systemd/container -o -r /proc/1/environ
+	test -r /run/systemd/container || test -r /proc/1/environ
 }
 
 translate_container_name() {
@@ -293,15 +294,17 @@ check_ct_cgroup() {
 }
 
 check_ct_files() {
-	if test -e /.dockerenv -o -e /run/.dockerenv -o -e /.dockerinit
+	if test -e /.dockerenv || test -e /run/.dockerenv || test -e /.dockerinit
 	then
 		echo docker
 	elif test -f /run/.containerenv
 	then
 		# https://github.com/containers/podman/issues/3586#issuecomment-661918679
 		echo podman
-	elif test -d /proc/vz -a ! -d /proc/bc -a -f /proc/user_beancounters \
-		|| test -d /.cpt_hardlink_dir_*/
+	elif { test -d /proc/vz \
+			&& ! test -d /proc/bc \
+			&& test -f /proc/user_beancounters
+		} || test -d /.cpt_hardlink_dir_*/
 	then
 		# Virtuozzo / OpenVZ
 		#
@@ -484,7 +487,7 @@ check_vm_arch_specific() {
 
 			if test -e /dev/mdesc
 			then
-				if test -d /sys/class/vlds/ctrl -a -d /sys/class/vlds/sp
+				if test -d /sys/class/vlds/ctrl && test -d /sys/class/vlds/sp
 				then
 					# control LDom
 					return 1
@@ -522,7 +525,7 @@ check_vm_arch_specific() {
 			fi
 			;;
 		(ia64)
-			if test -d /sys/bus/xen -a ! -d /sys/bus/xen-backend
+			if test -d /sys/bus/xen && ! test -d /sys/bus/xen-backend
 			then
 				# PV-on-HVM drivers installed in a Xen guest
 				echo xen-hvm
@@ -720,7 +723,7 @@ check_vm_hyp_specific() {
 		return 0
 	elif test -d /proc/xen
 	then
-		test -r /proc/xen/capabilities &&
+		test -r /proc/xen/capabilities || return 1
 		if grep -q -F 'control_d' /proc/xen/capabilities 2>/dev/null
 		then
 			# Xen dom0

@@ -2,7 +2,7 @@
 #
 # 2012 Steven Armstrong (steven-cdist at armstrong.cc)
 # 2014 Nico Schottelius (nico-cdist at schottelius.org)
-# 2019 Dennis Camera (dennis.camera at riiengineering.ch)
+# 2019,2025 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -48,7 +48,7 @@ else
     esac
 fi
 
-if test -n "${max_len}" && test "$(printf '%s' "${name_should}" | wc -c)" -gt "${max_len}"
+if test -n "${max_len}" && test "${#name_should}" -gt "${max_len}"
 then
     printf 'Host name too long. Up to %u characters allowed.\n' "${max_len}" >&2
     exit 1
@@ -171,7 +171,7 @@ in
         # not work correctly on openSUSE 12.x which provides
         # hostnamectl but not /etc/hostname.
 
-        if test -n "${has_hostnamectl}" -a "${os_major}" -gt 12
+        if test -n "${has_hostnamectl}" && test "${os_major}" -gt 12
         then
             hostname_file=/etc/hostname
         else

@@ -25,7 +25,7 @@ destination="/${__object_id:?}"
 
 read -r state_should <"${__object:?}/parameter/state"
 
-if test -f "${destination}" -a "${state_should}" = 'present'
+if test -f "${destination}" && test "${state_should}" = 'present'
 then
 	# only calculate cksum if --state present, because it is ignored for other
 	# --states

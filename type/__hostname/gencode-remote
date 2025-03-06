@@ -2,7 +2,7 @@
 #
 # 2014-2017 Steven Armstrong (steven-cdist at armstrong.cc)
 # 2014 Nico Schottelius (nico-cdist at schottelius.org)
-# 2019 Dennis Camera (dennis.camera at riiengineering.ch)
+# 2019,2025 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -94,9 +94,9 @@ in
             # exit with non-zero when it fails (e.g. hostname too long,
             # D-Bus failure, etc.).
 
-            echo "hostnamectl set-hostname \"\$(cat /etc/hostname)\""
-            echo "test \"\$(hostname)\" = \"\$(cat /etc/hostname)\"" \
-                 " || hostname -F /etc/hostname"
+            # shellcheck disable=SC2016
+            echo 'hostnamectl set-hostname "$(cat /etc/hostname)"'
+            echo 'hostname -F /etc/hostname'
         else
             printf "echo 'Unsupported OS: %s' >&2\n" "${os}"
             printf 'exit 1\n'
