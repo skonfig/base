@@ -164,7 +164,7 @@ check_busybox_init() (
 check_dinit() {
 	init_exe=${1:-/sbin/dinit}
 	test -x "${init_exe}" || return 1
-	test -S /run/dinitctl -o -S /var/run/dinitctl || return 1
+	test -S /run/dinitctl || test -S /var/run/dinitctl || return 1
 	echo dinit
 }
 
