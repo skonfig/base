@@ -66,9 +66,14 @@ then
         --group root \
         --mode 755
 
-    export require="__directory/${unitfile_dir}"
+    legacy_unitfile="${unitfile_dir}/cdist.conf"
 
-    unitfile="${unitfile_dir}/cdist.conf"
+    __file "${legacy_unitfile}" \
+        --state absent
+
+    export require="__directory/${unitfile_dir} __file${legacy_unitfile}"
+
+    unitfile="${unitfile_dir}/override.conf"
 else
     unitfile="${unitfile_dir}/${name}"
 fi
