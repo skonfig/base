@@ -46,7 +46,8 @@ fi
 
 if [ -f "${__object:?}/parameter/restart" ]
 then
-    if [ "${desired_enablement_state}" = 'masked' ]
+    if [ "${desired_enablement_state}" = 'masked' ] \
+        || [ "${desired_enablement_state}" = 'disabled' ]
     then
         if [ "${unit_status}" = 'active' ]
         then
