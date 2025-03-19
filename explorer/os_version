@@ -1,7 +1,7 @@
 #!/bin/sh -e
 #
 # 2010-2011 Nico Schottelius (nico-cdist at schottelius.org)
-# 2020-2023 Dennis Camera (dennis.camera at riiengineering.ch)
+# 2020-2023,2025 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -27,16 +27,20 @@
 rc_getvar() {
    awk -F= -v varname="$2" '
       function unquote(s) {
-         if (s ~ /^".*"$/ || s ~ /^'\''.*'\''$/)
+         if (s ~ /^".*"$/ || s ~ /^'\''.*'\''$/) {
             return substr(s, 2, length(s) - 2)
-         else
+         } else {
             return s
+         }
       }
       $1 == varname { print unquote(substr($0, index($0, "=") + 1)) }' "$1"
 }
 
 case $("${__explorer:?}/os")
 in
+   (adelie)
+      rc_getvar /etc/os-release VERSION_ID
+      ;;
    (amazon)
       cat /etc/system-release
       ;;
