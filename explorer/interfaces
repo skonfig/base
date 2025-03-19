@@ -1,6 +1,7 @@
 #!/bin/sh -e
 #
 # 2019 Ander Punnar (ander at kvlt.ee)
+# 2019,2025 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -22,11 +23,23 @@
 # Output is sorted lexicographically.
 #
 
-if command -v ip >/dev/null
+if command -v ip >/dev/null 2>&1
 then
 	ip -o link show | sed -n 's/^[0-9]\+: \(.\+\): <.*/\1/p'
-elif command -v ifconfig >/dev/null
+elif command -v ifconfig >/dev/null 2>&1
 then
-	ifconfig -a | sed -n -E 's/^(.*)(:[[:space:]]*flags=|Link encap).*/\1/p'
+	os=$("${__explorer:?}/os")
+	case ${os}
+	in
+		(beos|haiku)
+			ifconfig \
+			| sed -n -e 's/^\([^[:blank:]]\{1,\}\)\([[:blank:]]*Hardware type:.*\)\{0,1\}$/\1/p'
+			;;
+		(*)
+			ifconfig -a | sed -n \
+				-e 's/^\([^[:blank:]]*\):[[:blank:]]*flags=.*$/\1/p' \
+				-e 's/^\([^[:blank:]]*\)[[:blank:]]*Link encap.*$/\1/p'
+			;;
+	esac
 fi \
 | sort -u
