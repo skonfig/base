@@ -2,7 +2,7 @@
 #
 # 2010-2011 Nico Schottelius (nico-cdist at schottelius.org)
 # 2017 Philippe Gregoire (pg at pgregoire.xyz)
-# 2019-2020,2023 Dennis Camera (dennis.camera at riiengineering.ch)
+# 2019-2020,2023-2025 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -210,6 +210,14 @@ case $(uname -s)
 in
    (Darwin)
       echo macosx
+      exit 0
+      ;;
+   (BeOS)
+      echo beos
+      exit 0
+      ;;
+   (Haiku)
+      echo haiku
       exit 0
       ;;
    (NetBSD)
