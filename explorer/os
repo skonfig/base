@@ -171,6 +171,12 @@ then
    exit 0
 fi
 
+if test -f /etc/adelie-release
+then
+   echo adelie
+   exit 0
+fi
+
 if test -f /etc/owl-release
 then
    echo owl
