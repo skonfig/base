@@ -2,7 +2,7 @@
 #
 # 2010-2011 Nico Schottelius (nico-cdist at schottelius.org)
 # 2017 Philippe Gregoire (pg at pgregoire.xyz)
-# 2019-2020,2023 Dennis Camera (dennis.camera at riiengineering.ch)
+# 2019-2020,2023-2025 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -28,7 +28,7 @@
 # further up, except in cases where correct detection depends on a specific
 # order.
 
-if [ -f /etc/cdist-preos ]
+if test -f /etc/cdist-preos
 then
    echo cdist-preos
    exit 0
@@ -37,27 +37,28 @@ fi
 
 ### Debian and derivatives
 
-if grep -q ^DISTRIB_ID=Ubuntu /etc/lsb-release 2>/dev/null
+if grep -q '^DISTRIB_ID=Ubuntu' /etc/lsb-release 2>/dev/null
 then
    echo ubuntu
    exit 0
 fi
 
 # check before Debian because Pop!_OS also has /etc/debian_version
-if [ -f /etc/pop-os/os-release ]
+if test -f /etc/pop-os/os-release
 then
    echo pop-os
    exit 0
 fi
 
-# devuan ascii has both devuan_version and debian_version, so we need to check devuan_version first!
-if [ -f /etc/devuan_version ]
+# NOTE: Devuan ascii and later have both /etc/devuan_version and
+#       /etc/debian_version, so we need to check devuan_version first.
+if test -f /etc/devuan_version
 then
    echo devuan
    exit 0
 fi
 
-if [ -f /etc/debian_version ]
+if test -f /etc/debian_version
 then
    echo debian
    exit 0
@@ -66,19 +67,19 @@ fi
 
 ### RedHat and derivatives
 
-if [ -f /etc/fedora-release ]
+if test -f /etc/fedora-release
 then
    echo fedora
    exit 0
 fi
 
-if [ -f /etc/almalinux-release ]
+if test -f /etc/almalinux-release
 then
    echo almalinux
    exit 0
 fi
 
-if [ -f /etc/rocky-release ]
+if test -f /etc/rocky-release
 then
    echo rocky
    exit 0
@@ -86,13 +87,13 @@ fi
 
 # NOTE: check for centos-release after checking for AlmaLinux/Rocky Linux,
 #       because these two also have a centos-release file.
-if [ -f /etc/centos-release ]
+if test -f /etc/centos-release
 then
    echo centos
    exit 0
 fi
 
-if [ -f /etc/redhat-release ]
+if test -f /etc/redhat-release
 then
    if grep -q '^CentOS ' /etc/redhat-release
    then
@@ -143,13 +144,13 @@ fi
 
 ### Slackware and SuSE
 
-if [ -f /etc/SuSE-release ]
+if test -f /etc/SuSE-release
 then
    echo suse
    exit 0
 fi
 
-if [ -f /etc/slackware-version ]
+if test -f /etc/slackware-version
 then
    echo slackware
    exit 0
@@ -158,37 +159,37 @@ fi
 
 ### other Linux distributions
 
-if [ -f /etc/gentoo-release ]
+if test -f /etc/gentoo-release
 then
    echo gentoo
    exit 0
 fi
 
-if [ -f /etc/openwrt_version ]
+if test -f /etc/openwrt_version
 then
- echo openwrt
- exit 0
+   echo openwrt
+   exit 0
 fi
 
-if [ -f /etc/owl-release ]
+if test -f /etc/owl-release
 then
    echo owl
    exit 0
 fi
 
-if [ -f /etc/chimera-release ]
+if test -f /etc/chimera-release
 then
    echo chimera
    exit 0
 fi
 
-if grep -q ^Amazon /etc/system-release 2>/dev/null
+if grep -q '^Amazon' /etc/system-release 2>/dev/null
 then
    echo amazon
    exit 0
 fi
 
-if [ -f /etc/arch-release ]
+if test -f /etc/arch-release
 then
    echo archlinux
    exit 0
@@ -233,7 +234,7 @@ esac
 
 ### other Linux distributions (fall back to /etc/os-release)
 
-if [ -f /etc/os-release ]
+if test -f /etc/os-release
 then
    # after sles15, suse don't provide an /etc/SuSE-release anymore, but there is almost no difference between sles and opensuse leap, so call it suse
    # shellcheck source=/dev/null
