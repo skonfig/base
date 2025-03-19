@@ -1,7 +1,7 @@
 #!/bin/sh -e
 #
 # 2010-2011 Nico Schottelius (nico-cdist at schottelius.org)
-# 2020-2023 Dennis Camera (dennis.camera at riiengineering.ch)
+# 2020-2023,2025 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -143,6 +143,16 @@ in
       ;;
    (*bsd|solaris)
       uname -r
+      ;;
+   (beos)
+      # Original BeOS ended at 5.1 (Exp/Dano)
+      # Zeta then continued versions at 6.0 (e.g. Zeta 1.1 is uname -r: 6.0.1).
+      uname -r
+      ;;
+   (haiku)
+      # Haiku restarted versioning at 1.0, being a rewrite of BeOS.
+      # Unfortunately, uname -r is hard-coded to "1", though.
+      version /boot/system/lib/libbe.so
       ;;
    (openwrt)
       cat /etc/openwrt_version
