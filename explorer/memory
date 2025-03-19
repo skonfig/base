@@ -3,7 +3,7 @@
 # 2014 Daniel Heule (hda at sfs.biz)
 # 2014 Thomas Oettli (otho at sfs.biz)
 # 2017 Philippe Gregoire (pg at pgregoire.xyz)
-# 2020 Dennis Camera (dennis.camera at riiengineering.ch)
+# 2020-2021,2025 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -45,6 +45,17 @@ bytes2kib() {
 
 case $(uname -s)
 in
+	(BeOS|Haiku)
+		bytes=$(sysinfo -mem | sed -n -e 's#^.*(used/max *\([0-9]*\) */ *\([0-9]*\))$#\2#p')
+		awk -v bytes="${bytes}" '
+		BEGIN {
+			if (0 > bytes) {
+				# whoops, signed 32-bit integer overflow...
+				bytes = (2**32 + bytes)
+			}
+			printf "%.f\n", (bytes / 1024)
+		}'
+		;;
 	(Darwin)
 		sysctl -n hw.memsize | bytes2kib
 		;;
