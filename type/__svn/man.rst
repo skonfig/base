@@ -3,12 +3,12 @@ cdist-type__svn(7)
 
 NAME
 ----
-cdist-type__svn -  Get and or keep Subversion repositories up-to-date
+cdist-type__svn - Check out Subversion (SVN) repositories
 
 
 DESCRIPTION
 -----------
-This cdist type allows you to check out Subversion (SVN) repositories.
+This type allows you to check out Subversion (SVN) repositories.
 
 
 REQUIRED PARAMETERS
@@ -40,7 +40,7 @@ state
 
    ``present``
       a working copy of ``--source`` exists at ``__object_id``.
-   ``absent```
+   ``absent``
       No directory exists at ``__object_id``.
 
    Defaults to: ``present``
@@ -69,7 +69,7 @@ AUTHORS
 
 COPYING
 -------
-Copyright \(C) 2021-2022 Dennis Camera.
+Copyright \(C) 2021-2024 Dennis Camera.
 You can redistribute it and/or modify it under the terms of the GNU General
 Public License as published by the Free Software Foundation, either version 3 of
 the License, or (at your option) any later version.

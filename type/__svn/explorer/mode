@@ -1,6 +1,6 @@
 #!/bin/sh -e
 #
-# 2021 Dennis Camera (dennis.camera at riiengineering.ch)
+# 2021,2024 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -20,19 +20,24 @@
 # Prints the mode of the current working copy root (if present).
 #
 
+mode2octal() {
+	awk '{
+	k = 0
+	m = substr($0, 1, 10)
+	for (i = 8; i >= 0; --i) {
+		c = substr(m, 10-i, 1)
+		k += ((c~/[rwxst]/)*2^i)
+		if ((i % 3) == 0) {
+			k += (tolower(c)~/[st]/)*2^(9+i/3)
+		}
+	}
+	printf("%04o" ORS, k)
+	}'
+}
+
 destination="/${__object_id:?}/.svn"
 
 test -d "${destination}" || exit 0
 
 # shellcheck disable=SC2012
-ls -ldn "${destination}" \
-| awk '{
-	m = substr($0, 1, 10)
-	for (i = 8; i >= 0; --i) {
-		c = substr(m, 10-i, 1)
-		k += ((c~/[rwxst]/)*2^i)
-		if ((i % 3) == 0)
-			k += (tolower(c)~/[lst]/)*2^(9+i/3)
-	}
-	printf("%04o", k)
-  }'
+ls -ldn "${destination}" | mode2octal
