@@ -2,7 +2,7 @@
 #
 # 2016 Daniel Heule (hda at sfs.biz)
 # 2017 Philippe Gregoire (pg at pgregoire.xyz)
-# 2020,2023 Dennis Camera (dennis.camera at riiengineering.ch)
+# 2020,2023,2025 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -29,6 +29,8 @@
 #    busybox-init+openrc
 #  ArchLinux:
 #    systemd, sysvinit
+#  BeOS:
+#    (no output, has no init)
 #  Chimera Linux:
 #    dinit
 #  CRUX:
@@ -39,6 +41,8 @@
 #    sysvinit, sysvinit+openrc
 #  Gentoo:
 #    sysvinit+openrc, openrc-init, systemd
+#  Haiku:
+#    launch_daemon
 #  OpenBMC:
 #    systemd
 #  OpenWrt:
@@ -197,6 +201,11 @@ check_launchd() {
 	echo launchd
 }
 
+check_launch_daemon() {
+	command -v launch_roster >/dev/null 2>&1 || return 1
+	echo launch_daemon
+}
+
 check_openrc() {
 	test -f /run/openrc/softlevel || return 1
 	echo openrc
@@ -304,6 +313,9 @@ guess_by_path() {
 	in
 		(/bin/busybox)
 			check_busybox_init "$1" && return
+			;;
+		(/boot/system/servers/launch_daemon)
+			check_launch_daemon "$1" && return
 			;;
 		(/lib/systemd/systemd)
 			check_systemd "$1" && return
@@ -428,6 +440,31 @@ find_init() {
 			;;
 		(FreeBSD)
 			find_init_procfs || find_init_ps
+			;;
+		(BeOS)
+			# BeOS does not have an init program like other UNIX systems.
+			# Being a desktop OS it does not have services or such things known
+			# from other Unices.
+			# It has some shell scripts (/boot/beos/system/boot/Bootscript & co)
+			# to start and stop some programs, that’s all.
+			exit 0
+			;;
+		(Haiku)
+			# NOTE: Haiku is special in that it does not have an init
+			#       program like other UNIX systems.
+			#       Beginning with Haiku R1/beta1, the OS has some
+			#       sort of service manager, but it is not the parent
+			#       of all other processes, so the common detection
+			#       strategies don't work.
+			if test -x /boot/system/servers/launch_daemon
+			then
+				echo /boot/system/servers/launch_daemon
+			else
+				# Older versions of Haiku boot using Bootscript (like BeOS, but
+				# located in /boot/system/boot/Bootscript) and don't have
+				# services or such things.
+				exit 0
+			fi
 			;;
 		(OpenBSD)
 			find_init_pgrep || find_init_ps

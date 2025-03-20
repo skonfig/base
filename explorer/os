@@ -219,6 +219,14 @@ in
       echo macosx
       exit 0
       ;;
+   (BeOS)
+      echo beos
+      exit 0
+      ;;
+   (Haiku)
+      echo haiku
+      exit 0
+      ;;
    (NetBSD)
       echo netbsd
       exit 0

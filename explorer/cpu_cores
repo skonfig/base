@@ -2,6 +2,7 @@
 #
 # 2014 Daniel Heule (hda at sfs.biz)
 # 2014 Thomas Oettli (otho at sfs.biz)
+# 2025 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -25,6 +26,12 @@
 os=$("${__explorer:?}/os")
 case ${os}
 in
+    (beos)
+        sysinfo -cpu | grep -c '^CPU #[0-9][0-9]*'
+        ;;
+    (haiku)
+        nproc
+        ;;
     (macosx)
         sysctl -n hw.physicalcpu
         ;;

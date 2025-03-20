@@ -147,6 +147,16 @@ in
    (*bsd|solaris)
       uname -r
       ;;
+   (beos)
+      # Original BeOS ended at 5.1 (Exp/Dano)
+      # Zeta then continued versions at 6.0 (e.g. Zeta 1.1 is uname -r: 6.0.1).
+      uname -r
+      ;;
+   (haiku)
+      # Haiku restarted versioning at 1.0, being a rewrite of BeOS.
+      # Unfortunately, uname -r is hard-coded to "1", though.
+      version /boot/system/lib/libbe.so
+      ;;
    (openwrt)
       cat /etc/openwrt_version
       ;;

@@ -1,6 +1,7 @@
 #!/bin/sh
 #
 # 2010-2011 Andi Brönnimann (andi-cdist at v-net.ch)
+# 2025 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -20,7 +21,37 @@
 # Prints the processor architecture of the target.
 #
 
-if command -v uname >/dev/null 2>&1
-then
-   uname -m
-fi
+command -v uname >/dev/null 2>&1 || exit 0
+
+case $(uname -s)
+in
+	(BeOS|Haiku)
+		# NOTE: On BeOS/Haiku uname -m will print machine names like BePC,
+		#       BeBox, BeMac, etc.
+		#       uname -p is more helpful in printing the processor architecture,
+		#       but it will print "unknown" many times (esp. original BeOS).
+		#       So we need some logic to try to squeeze out something helpful.
+		#       Will print nothing if both uname -mp print "unknown".
+		proc=$(uname -p)
+		case ${proc}
+		in
+			(unknown)
+				proc=$(uname -m)
+				# fall back to guessing based on uname -m
+				case ${proc}
+				in
+					(BePC|Intel)
+						proc=x86 ;;
+					(BeMac|BeBox)
+						proc=ppc ;;
+					(unknown)
+						proc= ;;
+				esac
+				;;
+		esac
+		${proc:+echo "${proc}"}
+		;;
+	(*)
+		uname -m
+		;;
+esac
