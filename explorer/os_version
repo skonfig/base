@@ -65,7 +65,7 @@ in
             ;;
          (*/sid)
             # sid versions don't have a number, so we decode by codename:
-            case $(expr "${debian_version}" : '\([a-z]\{1,\}\)/')
+            case ${debian_version%%/*}
             in
                (forky) echo 13.99 ;;
                (trixie) echo 12.99 ;;
@@ -104,18 +104,16 @@ in
                (jessie) devuan_version=1 ;;
                (*) exit 1 ;;
             esac
-            devuan_suffix=$(expr "${devuan_codename}" : '[^/]*/\(.*\)$' || :)
-            case ${devuan_suffix}
+
+            case ${devuan_codename}
             in
-               ('')
-                  ;;
-               (ceres)
-                  # subtract .01
+               (*/ceres)
+                  # subtract .01 (analogue Debian)
                   devuan_version=$((devuan_version - 1)).99
                   ;;
-               (*)
+               (*/*)
                   printf 'Unknown suffix (%s) in version (%s)\n' \
-                     "${devuan_suffix}" "${devuan_codename}" >&2
+                     "${devuan_codename#*/}" "${devuan_codename}" >&2
                   exit 1
                   ;;
             esac
