@@ -54,6 +54,9 @@ in
    (chimera)
       cat /etc/chimera-release
       ;;
+   (crux)
+      crux | sed -e 's/^.*version //'
+      ;;
    (debian)
       debian_version=$(cat /etc/debian_version)
       case ${debian_version}
