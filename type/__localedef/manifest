@@ -1,8 +1,6 @@
 #!/bin/sh -e
 #
-# 2013-2019 Nico Schottelius (nico-cdist at schottelius.org)
-# 2015 David Hürlimann (david at ungleich.ch)
-# 2020 Dennis Camera (dennis.camera at riiengineering.ch)
+# 2020,2023 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -20,9 +18,9 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-# Install required packages.
+os=$(cat "${__global:?}/explorer/os")
 
-case $(cat "${__global:?}/explorer/os")
+case ${os}
 in
 	(debian|devuan)
 		__package_apt locales --state present
