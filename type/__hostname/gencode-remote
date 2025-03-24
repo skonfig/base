@@ -67,7 +67,7 @@ in
             "&& hostnamectl set-hostname '${name_should}'" \
             "|| hostname '${name_should}'"
         ;;
-    (centos|fedora|redhat|scientific|freebsd|netbsd|openbsd|gentoo|void)
+    (centos|fedora|redhat|scientific|crux|freebsd|netbsd|openbsd|gentoo|void)
         echo "hostname '${name_should}'"
         ;;
     (openwrt)

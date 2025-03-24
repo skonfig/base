@@ -91,6 +91,19 @@ in
             set_hostname_systemd "${name_should}"
         fi
         ;;
+    (crux)
+        case ${name_should}
+        in
+            (*[!a-zA-Z0-9-.]*)
+                name_should="\"${name_should}\"" ;;
+        esac
+
+        __key_value /etc/rc.conf:HOSTNAME \
+            --file /etc/rc.conf \
+            --delimiter '=' --exact_delimiter \
+            --key 'HOSTNAME' \
+            --value "${name_should}"
+        ;;
     (gentoo)
         # Only write to /etc/conf.d/hostname on OpenRC-based installations.
         # On systemd use hostnamectl(1) in gencode-remote.
