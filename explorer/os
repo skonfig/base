@@ -189,6 +189,12 @@ then
    exit 0
 fi
 
+if command -v crux >/dev/null 2>&1
+then
+   echo crux
+   exit 0
+fi
+
 if grep -q '^Amazon' /etc/system-release 2>/dev/null
 then
    echo amazon
