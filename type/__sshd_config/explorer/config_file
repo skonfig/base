@@ -1,6 +1,6 @@
 #!/bin/sh -e
 #
-# 2022 Dennis Camera (dennis.camera at riiengineering.ch)
+# 2022,2025 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -43,12 +43,31 @@ else
 	os=$("${__explorer:?}/os")
 	case ${os}
 	in
+		(haiku)
+			echo '/boot/system/settings/ssh/sshd_config'
+			;;
 		(macosx)
 			if version_ge "$("${__explorer:?}/os_version")" 10.11
 			then
 				echo '/etc/ssh/sshd_config'
 			else
 				echo '/etc/sshd_config'
+			fi
+			;;
+		(openbsd)
+			if version_ge "$("${__explorer:?}/os_version")" 3.1
+			then
+				echo '/etc/ssh/sshd_config'
+			else
+				echo '/etc/sshd_config'
+			fi
+			;;
+		(netbsd)
+			if version_ge "$("${__explorer:?}/os_version")" 1.6
+			then
+				echo '/etc/ssh/sshd_config'
+			else
+				echo '/etc/sshd.conf'
 			fi
 			;;
 		(*)
