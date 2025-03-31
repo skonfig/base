@@ -1,6 +1,6 @@
 #!/bin/sh -e
 #
-# 2022 Dennis Camera (dennis.camera at riiengineering.ch)
+# 2022,2025 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -48,11 +48,14 @@ in
 		}
 
 		qvalue=$(cat "${__object:?}/parameter/value")
-		case $(grep -o '[ "'\'']' "${__object:?}/parameter/value" | tr -d '\n')
+		case ${qvalue}
 		in
-			('') ;;
-			(*\"*) qvalue="'${qvalue}'" ;;
-			(*) qvalue="\"${qvalue}\"" ;;
+			('')
+				qvalue='""' ;;
+			(' '*\"*|*\"*' ')
+				qvalue="'${qvalue}'" ;;
+			(' '*|*' ')
+				qvalue="\"${qvalue}\"" ;;
 		esac
 
 		update_script='function prtvar() { printf "%s=%s\n", ENVIRON["ENAME"], ENVIRON["EVAL"]; p++ } '${awk_var_filter}' { prtvar(); next } /^[ \t]*#[ \t]*(m|minutes?)[ \t](h|hours?)/ || /^[ \t]*[0-9*@]/ { p++ } p==1 { prtvar() } { print } END { if (!p) prtvar() }'
