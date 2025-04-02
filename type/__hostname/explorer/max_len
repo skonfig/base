@@ -20,7 +20,7 @@
 # Prints the maximum length of a host name if defined on the system.
 #
 
-command -v getconf >/dev/null || exit 0
+command -v getconf >/dev/null 2>&1 || exit 0
 
 val=$(getconf HOST_NAME_MAX 2>/dev/null) || exit 0
 

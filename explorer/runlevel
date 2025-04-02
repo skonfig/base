@@ -21,7 +21,7 @@
 #
 
 set +e
-executable=$(command -v runlevel)
+executable=$(command -v runlevel 2>/dev/null)
 if [ -x "${executable}" ]
 then
    "${executable}" | awk '{ print $2 }'

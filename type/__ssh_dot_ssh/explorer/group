@@ -23,7 +23,7 @@
 
 gid=$("${__type_explorer:?}/passwd" | cut -d':' -f4)
 
-if command -v getent >/dev/null
+if command -v getent >/dev/null 2>&1
 then
 	getent group "${gid}" || :
 else

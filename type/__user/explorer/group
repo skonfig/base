@@ -23,7 +23,7 @@
 if [ -f "${__object:?}/parameter/gid" ]
 then
    gid=$(cat "${__object:?}/parameter/gid")
-   if command -v getent >/dev/null
+   if command -v getent >/dev/null 2>&1
    then
       getent group "${gid}" || :
    elif [ -f /etc/group ]
