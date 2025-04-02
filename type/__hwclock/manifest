@@ -62,12 +62,12 @@ in
 			unset -v CDIST_ORDER_DEPENDENCY
 		fi
 		;;
-	(centos|fedora|redhat|scientific)
+	(centos|fedora|redhat|scientific|oraclelinux)
 		read -r os_version <"${__global:?}/explorer/os_version"
 		os_major=${os_version%%[!0-9]*}
 		case ${os}
 		in
-			(centos|almalinux|rocky|scientific|eurolinux)
+			(centos|almalinux|rocky|scientific|eurolinux|oraclelinux)
 				update_sysconfig=$(test $((os_major)) -lt 6 && echo true || echo false)
 				;;
 			(fedora)
@@ -90,17 +90,16 @@ in
 				;;
 		esac
 
-		if ${update_sysconfig:?}
+		if ${update_sysconfig?}
 		then
-			export CDIST_ORDER_DEPENDENCY=true
 			__file /etc/sysconfig/clock --state present \
-				--owner root --group root --mode 0644
+				--owner 0 --group 0 --mode 0644
+			require=__file/etc/sysconfig/clock \
 			__key_value /etc/sysconfig/clock:UTC \
 				--file /etc/sysconfig/clock \
-				--key UTC \
 				--delimiter '=' --exact_delimiter \
+				--key 'UTC' \
 				--value "$(${local_clock?} && echo false || echo true)"
-			unset -v CDIST_ORDER_DEPENDENCY
 		fi
 		;;
 	(debian|devuan|ubuntu)

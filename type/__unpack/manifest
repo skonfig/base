@@ -46,7 +46,7 @@ in
             (debian|ubuntu|devuan)
                 __package xz-utils
                 ;;
-            (alpine|centos|almalinux|eurolinux|rocky)
+            (alpine|centos|almalinux|eurolinux|rocky|oraclelinux)
                 __package xz
                 ;;
         esac

@@ -24,7 +24,7 @@ state_should=$(cat "${__object:?}/parameter/state")
 
 case ${os}
 in
-	(alpine|centos|almalinux|eurolinux|rocky|fedora|redhat|scientific|debian|devuan|ubuntu)
+	(alpine|centos|almalinux|eurolinux|rocky|fedora|redhat|scientific|oraclelinux|debian|devuan|ubuntu)
 		if test "${state_should}" != 'absent'
 		then
 			__package openssh-server --state present

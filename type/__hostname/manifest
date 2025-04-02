@@ -36,7 +36,7 @@ else
     case ${os}
     in
         # RedHat-derivatives and BSDs
-        (centos|fedora|redhat|scientific|freebsd|netbsd|openbsd|slackware|suse)
+        (centos|fedora|redhat|scientific|oraclelinux|freebsd|netbsd|openbsd|slackware|suse)
             # Hostname is FQDN
             name_should=${__target_host:?}
             ;;
@@ -77,7 +77,7 @@ in
             #     --value "\"${name_should}\""
         fi
         ;;
-    (centos|fedora|redhat|scientific)
+    (centos|fedora|redhat|scientific|oraclelinux)
         if test -z "${has_hostnamectl}"
         then
             # Only write to /etc/sysconfig/network on non-systemd versions.

@@ -32,7 +32,7 @@ os=$(cat "${__global:?}/explorer/os")
 case ${os}
 in
    # Linux
-   (redhat|centos|almalinux|eurolinux|rocky|ubuntu|debian|devuan|archlinux|gentoo|coreos)
+   (redhat|centos|almalinux|eurolinux|rocky|oraclelinux|ubuntu|debian|devuan|archlinux|gentoo|coreos)
       flag='-w'
       ;;
    # BusyBox

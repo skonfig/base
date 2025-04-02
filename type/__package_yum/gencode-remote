@@ -39,7 +39,7 @@ state_should=$(cat "${__object:?}/parameter/state")
 os=$(cat "${__global:?}/explorer/os")
 case ${os}
 in
-	(scientific|centos|almalinux|eurolinux|rocky|redhat|amazon)
+	(scientific|centos|almalinux|eurolinux|rocky|redhat|oraclelinux|amazon)
 		opts='-y --quiet' ;;
 	(*)
 		opts='--assumeyes --quiet' ;;

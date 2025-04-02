@@ -32,7 +32,7 @@ else
     case ${os}
     in
         # RedHat-derivatives and BSDs
-        (centos|fedora|redhat|scientific|freebsd|macosx|netbsd|openbsd)
+        (centos|fedora|redhat|scientific|oraclelinux|freebsd|macosx|netbsd|openbsd)
             # Hostname is FQDN
             name_should=${__target_host:?}
             ;;
@@ -67,7 +67,7 @@ in
             "&& hostnamectl set-hostname '${name_should}'" \
             "|| hostname '${name_should}'"
         ;;
-    (centos|fedora|redhat|scientific|crux|freebsd|netbsd|openbsd|gentoo|void)
+    (centos|fedora|redhat|scientific|oraclelinux|crux|freebsd|netbsd|openbsd|gentoo|void)
         echo "hostname '${name_should}'"
         ;;
     (openwrt)
