@@ -26,7 +26,7 @@ function unquote(s) {
 	# simplified dequoting of single quoted strings
 	if (s ~ /^'.*'$/) {
 		s = substr(s, 2, length(s) - 2)
-		sub(/'\\''/, "'", s)
+		gsub(/'\\''/, "'", s)
 	}
 	return s
 }
