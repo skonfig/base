@@ -2,6 +2,7 @@
 #
 # 2012-2013 Nico Schottelius (nico-cdist at schottelius.org)
 # 2016 Daniel Heule (hda at sfs.biz)
+# 2018,2023,2025 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -28,13 +29,12 @@ target_runlevel=$(cat "${__object:?}/parameter/target_runlevel")
 [ "${state_should}" = "${state_is}" ] && exit 0
 
 os=$(cat "${__global:?}/explorer/os")
-os_version=$(cat "${__global:?}/explorer/os_version")
 name=${__object_id:?}
 
 case ${state_should}
 in
     (present)
-        if [ "${init}" = 'systemd' ]
+        if test "${init}" = 'systemd'
         then
             # this handles ALL linux distros with systemd
             # e.g. archlinux, gentoo in some cases, new RHEL and SLES versions
@@ -42,23 +42,7 @@ in
         else
             case ${os}
             in
-                (debian)
-                    case ${os_version}
-                    in
-                        ([1-7]*)
-                            echo "update-rc.d '${name}' defaults >/dev/null"
-                            ;;
-                        (8*)
-                            echo "systemctl enable '${name}'"
-                            ;;
-                        (*)
-                            echo "Unsupported version ${os_version} of ${os}" >&2
-                            exit 1
-                            ;;
-                    esac
-                    ;;
-
-                (devuan)
+                (debian|devuan)
                     echo "update-rc.d '${name}' defaults >/dev/null"
                     ;;
 
@@ -74,7 +58,7 @@ in
                     # 'enable' can be successful and still return a non-zero exit
                     # code, deal with it by checking for success ourselves in that
                     # case (the || ... part).
-                    echo "'/etc/init.d/${name}' enable || [ -f /etc/rc.d/S??'${name}' ]"
+                    echo "'/etc/init.d/${name}' enable || test -f /etc/rc.d/S??'${name}'"
                     ;;
 
                 (ubuntu)

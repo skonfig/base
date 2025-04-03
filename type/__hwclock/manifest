@@ -1,6 +1,6 @@
 #!/bin/sh -e
 #
-# 2020 Dennis Camera (dennis.camera at riiengineering.ch)
+# 2020,2025 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -63,31 +63,30 @@ in
 		fi
 		;;
 	(centos|fedora|redhat|scientific)
-		os_version=$(cat "${__global:?}/explorer/os_version")
-		os_major=$(expr "${os_version}" : '.* release \([0-9]*\)')
+		read -r os_version <"${__global:?}/explorer/os_version"
+		os_major=${os_version%%[!0-9]*}
 		case ${os}
 		in
-			(centos|scientific)
-				update_sysconfig=$(test "${os_major}" -lt 6 && echo true || echo false)
+			(centos|almalinux|rocky|scientific|eurolinux)
+				update_sysconfig=$(test $((os_major)) -lt 6 && echo true || echo false)
 				;;
 			(fedora)
-				update_sysconfig=$(test "${os_major}" -lt 10 && echo true || echo false)
+				update_sysconfig=$(test $((os_major)) -lt 10 && echo true || echo false)
 				;;
-			(redhat|*)
-				case ${os_version}
-				in
-					('Red Hat Enterprise Linux'*)
-						update_sysconfig=$(test "${os_major}" -lt 6 && echo true || echo false)
-						;;
-					('Red Hat Linux'*)
-						update_sysconfig=true
-						;;
-					(*)
-						printf 'Could not determine Red Hat distribution.\n' >&2
-						printf "Please contribute an implementation for it if you can.\n" >&2
-						exit 1
-						;;
-				esac
+			(redhat)
+				read -r init <"${__global:?}/explorer/init"
+				if test $((os_major)) -lt 6 || test "${init}" = sysvinit
+				then
+					# Red Hat Linux (original) or RHEL < 6
+					update_sysconfig=true
+				else
+					update_sysconfig=false
+				fi
+				;;
+			(*)
+				printf 'Could not determine Red Hat distribution.\n' >&2
+				printf "Please contribute an implementation for it if you can.\n" >&2
+				exit 1
 				;;
 		esac
 
@@ -105,15 +104,15 @@ in
 		fi
 		;;
 	(debian|devuan|ubuntu)
-		os_major=$(sed 's/[^0-9].*$//' "${__global:?}/explorer/os_version")
+		read -r os_version <"${__global:?}/explorer/os_version"
 
 		case ${os}
 		in
 			(debian)
-				if test "${os_major}" -ge 7
+				if test "${os_version%%.*}" -ge 7
 				then
 					update_rcS=false
-				elif test "${os_major}" -ge 3
+				elif test "${os_version%%.*}" -ge 3
 				then
 					update_rcS=true
 				else
@@ -123,7 +122,7 @@ in
 					# Debian 2.1 uses the ancient GMT key.
 					# Debian 1.3 does not have rcS.
 					printf "Your operating system (Debian %s) is currently not supported by this type (%s)\n" \
-						"$(cat "${__global:?}/explorer/os_version")" "${__type##*/}" >&2
+						"${os_version}" "${__type##*/}" >&2
 					printf "Please contribute an implementation for it if you can.\n" >&2
 					exit 1
 				fi
@@ -132,11 +131,11 @@ in
 				update_rcS=false
 				;;
 			(ubuntu)
-				update_rcS=$(test "${os_major}" -lt 16 && echo true || echo false)
+				update_rcS=$(test "${os_version%%.*}" -lt 16 && echo true || echo false)
 				;;
 		esac
 
-		if ${update_rcS}
+		if ${update_rcS?}
 		then
 			export CDIST_ORDER_DEPENDENCY=true
 			__file /etc/default/rcS --state present \
@@ -180,12 +179,12 @@ in
 			# shellcheck source=/dev/null
 			os_version=$(. "${__global:?}/explorer/os_release" && echo "${VERSION}")
 		else
-			os_version=$(sed -n 's/^VERSION\ *=\ *//p' "${__global:?}/explorer/os_version")
+			read -r os_version <"${__global:?}/explorer/os_version"
 		fi
 		os_major=$(expr "${os_version}" : '\([0-9]\{1,\}\)')
 
 		# TODO: Consider using `yast2 timezone set hwclock' instead
-		if expr "${os_major}" \< 12
+		if test "${os_version%%.*}" -lt 12
 		then
 			# Starting with SuSE 12 (first systemd-based version)
 			# /etc/sysconfig/clock does not contain the HWCLOCK line

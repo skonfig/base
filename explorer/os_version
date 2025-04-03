@@ -41,12 +41,25 @@ in
    (adelie)
       rc_getvar /etc/os-release VERSION_ID
       ;;
+   (alpine)
+      cat /etc/alpine-release
+      ;;
    (amazon)
       cat /etc/system-release
       ;;
    (archlinux)
       # empty, but well...
       cat /etc/arch-release
+      ;;
+   (beos)
+      # Original BeOS ended at 5.1 (Exp/Dano)
+      # Zeta then continued versions at 6.0 (e.g. Zeta 1.1 is uname -r: 6.0.1).
+      if libbe_version=$(version /boot/system/lib/libbe.so 2>/dev/null)
+      then
+         printf '%s\n' "${libbe_version#R}"
+      else
+         uname -r
+      fi
       ;;
    (checkpoint)
       awk '{version=$NF; printf("%s\n", substr(version, 2))}' /etc/cp-release
@@ -99,6 +112,7 @@ in
             # decode codename
             case ${devuan_codename%%/*}
             in
+               (freia) devuan_version=7 ;;
                (excalibur) devuan_version=6 ;;
                (daedalus) devuan_version=5 ;;
                (chimaera) devuan_version=4 ;;
@@ -126,14 +140,7 @@ in
       echo "${devuan_version}"
       ;;
    (fedora)
-      cat /etc/fedora-release
-      ;;
-   (gentoo)
-      cat /etc/gentoo-release
-      ;;
-   (macosx)
-      # NOTE: Legacy versions (< 10.3) do not support options
-      sw_vers | awk -F ':[ \t]+' '$1 == "ProductVersion" { print $2 }'
+      sed -e 's/^Fedora\( Core\)* release \(.*\) (.*)$/\2/' /etc/fedora-release
       ;;
    (freebsd)
       # Apparently uname -r is not a reliable way to get the patch level.
@@ -147,37 +154,47 @@ in
          uname -r
       fi
       ;;
-   (*bsd|solaris)
-      uname -r
-      ;;
-   (beos)
-      # Original BeOS ended at 5.1 (Exp/Dano)
-      # Zeta then continued versions at 6.0 (e.g. Zeta 1.1 is uname -r: 6.0.1).
-      uname -r
+   (gentoo)
+      cat /etc/gentoo-release
       ;;
    (haiku)
       # Haiku restarted versioning at 1.0, being a rewrite of BeOS.
-      # Unfortunately, uname -r is hard-coded to "1", though.
-      version /boot/system/lib/libbe.so
+      # uname -r is hard-coded to "1", so we ignore it.
+      libbe_version=$(version /boot/system/lib/libbe.so 2>/dev/null) || exit 0
+      printf '%s\n' "${libbe_version#R}"
+      ;;
+   (macosx)
+      # NOTE: Legacy versions (< 10.3) do not support options
+      sw_vers | awk -F ':[ \t]+' '$1 == "ProductVersion" { print $2 }'
       ;;
    (openwrt)
-      cat /etc/openwrt_version
+      if test -r /etc/openwrt_release
+      then
+         # since the LEDE fork (17.01 or OpenWrt 18.06), /etc/openwrt_version
+         # contains a commit ID (e.g. r7808-ef686b7292) instead of the
+         # release version.
+         rc_getvar /etc/openwrt_release DISTRIB_RELEASE
+      else
+         cat /etc/openwrt_version
+      fi
       ;;
    (owl)
       cat /etc/owl-release
       ;;
    (redhat|centos|almalinux|eurolinux|rocky|mitel|scientific)
-      cat /etc/redhat-release
+      sed -e 's/^\([A-Za-z]* \)*release \(.*\) (.*)$/\2/' /etc/redhat-release
       ;;
    (slackware)
-      cat /etc/slackware-version
+      sed -e 's/^Slackware //' /etc/slackware-version
       ;;
    (suse)
-      if [ -f /etc/os-release ]
+      if test -f /etc/os-release
       then
-        cat /etc/os-release
+         rc_getvar /etc/os-release VERSION_ID
       else
-        cat /etc/SuSE-release
+         # fall back to original /etc/SuSE-release (deprecated since SuSE 13,
+         # removed in 15)
+         sed -n -e 's/^VERSION *= *//p' /etc/SuSE-release
       fi
       ;;
    (ubuntu|pop-os)
@@ -196,7 +213,15 @@ in
          rc_getvar /etc/lsb-release DISTRIB_RELEASE
       fi
       ;;
-   (alpine)
-       cat /etc/alpine-release
-       ;;
+   (*bsd|solaris)
+      # NOTE: this section has to be at the bottom because of the wildcard.
+      #       The freebsd section above should take precedence.
+      uname -r
+      ;;
+   (*)
+      if test -r /etc/os-release
+      then
+         rc_getvar /etc/os-release VERSION_ID
+      fi
+      ;;
 esac

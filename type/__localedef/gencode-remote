@@ -119,7 +119,7 @@ in
 		case ${state_should}
 		in
 			(present)
-				if expr "$(grep -o -e '^[0-9]*' "${__global:?}/explorer/os_version")" '>=' 11 >/dev/null
+				if awk '{ exit !(int($0) >= 11) }' "${__global:?}/explorer/os_version"
 				then
 					# localedef(1) is available with FreeBSD >= 11
 					printf "localedef -i %s -f %s %s\n" \
