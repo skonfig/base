@@ -30,7 +30,7 @@ not_supported() {
 
 name=${__object_id:?}
 
-if command -v getent >/dev/null
+if command -v getent >/dev/null 2>&1
 then
 	getent group "${name}" || :
 elif test -f /etc/group

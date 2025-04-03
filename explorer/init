@@ -259,7 +259,7 @@ check_sysvinit() (
 )
 
 check_upstart() {
-	test -x "$(command -v initctl)" || return 1
+	test -x "$(command -v initctl 2>/dev/null)" || return 1
 	case $(initctl version)
 	in
 		(*'(upstart '*')')

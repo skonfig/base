@@ -96,7 +96,7 @@ in
                 # because the state explorer will report all packages as manual
                 # for those.
                 # shellcheck disable=SC2016
-                echo 'if ! head -n1 "$(command -v apt-mark)" | grep -qF python'
+                echo 'if ! head -n1 "$(command -v apt-mark 2>/dev/null)" | grep -qF python'
 
                 # new C++ implementation (Debian >= 7)
                 echo "then apt-mark manual '${name_is}' >/dev/null"

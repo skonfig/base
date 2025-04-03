@@ -28,7 +28,7 @@ else
 	owner=${__object_id:?}
 fi
 
-if command -v getent >/dev/null
+if command -v getent >/dev/null 2>&1
 then
 	gid=$(getent passwd "${owner}" | cut -d':' -f4)
 	getent group "${gid}" || :

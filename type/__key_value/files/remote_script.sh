@@ -47,7 +47,7 @@ else
     touch "${file}"
 fi
 
-awk_bin=$(PATH=$(getconf PATH 2>/dev/null) && command -v awk || echo awk)
+awk_bin=$(PATH=$(getconf PATH 2>/dev/null) && command -v awk 2>/dev/null || echo awk)
 
 "${awk_bin}" -f - "${file}" >"${tmpfile}" <<'AWK_EOF'
 BEGIN {
