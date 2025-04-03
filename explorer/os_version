@@ -112,6 +112,7 @@ in
             # decode codename
             case ${devuan_codename%%/*}
             in
+               (freia) devuan_version=7 ;;
                (excalibur) devuan_version=6 ;;
                (daedalus) devuan_version=5 ;;
                (chimaera) devuan_version=4 ;;
