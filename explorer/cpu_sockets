@@ -2,6 +2,7 @@
 #
 # 2014 Daniel Heule (hda at sfs.biz)
 # 2014 Thomas Oettli (otho at sfs.biz)
+# 2025 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -28,14 +29,14 @@ in
         system_profiler SPHardwareDataType | grep -F 'Number of Processors' | awk -F': ' '{print $2}'
         ;;
     (*)
-        if [ -r /proc/cpuinfo ]
+        if test -r /proc/cpuinfo
         then
-            sockets=$(grep -F 'physical id' /proc/cpuinfo | sort -u | wc -l)
-            if [ "${sockets}" -eq 0 ]
+            sockets=$(grep -e '^physical id[[:blank:]]*:' /proc/cpuinfo | sort -u | wc -l)
+            if test $((sockets)) -lt 1
             then
-                sockets=$(grep -cF 'processor' /proc/cpuinfo)
+                sockets=$(grep -c -e '^processor[[:blank:]]*:' /proc/cpuinfo)
             fi
-            echo "${sockets}"
+            echo $((sockets))
         fi
         ;;
 esac
