@@ -67,7 +67,10 @@ in
         then
             # shellcheck disable=SC2012
             ls -1 /sys/block/ \
-            | awk -v ign_majors="$(echo "${ign_majors}" | tr ' ' '|')" '
+            | awk -v ign_majors="${ign_majors}" '
+                BEGIN {
+                    gsub(/ /, "|", ign_majors)
+                }
                 {
                   devfile = "/sys/block/" $0 "/dev"
                   getline devno < devfile
