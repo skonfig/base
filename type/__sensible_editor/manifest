@@ -58,7 +58,7 @@ in
 		version_ge "${os_version}" 10.04 || package_name='debianutils'
 		pkg_type='apt'
 		;;
-	(centos|fedora|redhat|scientific)
+	(centos|fedora|redhat|scientific|oraclelinux)
 		pkg_type='yum'
 		;;
 	(*)

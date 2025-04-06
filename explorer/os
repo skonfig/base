@@ -93,6 +93,12 @@ then
    exit 0
 fi
 
+if test -f /etc/oracle-release || test -f /etc/enterprise-release
+then
+   echo oraclelinux
+   exit 0
+fi
+
 if test -f /etc/redhat-release
 then
    if grep -q '^CentOS ' /etc/redhat-release

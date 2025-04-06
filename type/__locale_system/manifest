@@ -83,7 +83,10 @@ in
     (archlinux)
         locale_conf='/etc/locale.conf'
         ;;
-    (centos|redhat|scientific)
+    (redhat|centos|almalinux|eurolinux|rocky|oraclelinux)
+        # NOTE: This is a hack to differentiate Red Hat Linux from
+        # RHEL. Red Hat Linux >= 7 does not have os-release and will
+        # thus fall back to /etc/sysconfig/i18n.
         # shellcheck source=/dev/null
         version_id=$(. "${__global:?}/explorer/os_release" && echo "${VERSION_ID:-0}")
         if version_ge "${version_id}" 7
@@ -94,9 +97,8 @@ in
         fi
         ;;
     (fedora)
-        # shellcheck source=/dev/null
-        version_id=$(. "${__global:?}/explorer/os_release" && echo "${VERSION_ID:-0}")
-        if version_ge "${version_id}" 18
+        read -r os_version <"${__global:?}/explorer/os_version"
+        if version_ge "${os_version}" 18
         then
             locale_conf='/etc/locale.conf'
             quote_value=false

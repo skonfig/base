@@ -184,6 +184,17 @@ in
    (redhat|centos|almalinux|eurolinux|rocky|mitel|scientific)
       sed -e 's/^\([A-Za-z]* \)*release \(.*\) (.*)$/\2/' /etc/redhat-release
       ;;
+   (oraclelinux)
+      if test -r /etc/oracle-release
+      then
+         # Oracle Linux >= 5
+         sed -e 's/^\([A-Za-z]* \)*release \(.*\)$/\2/' /etc/oracle-release
+      elif test -r /etc/enterprise-release
+      then
+         # older versions
+         sed -e 's/^\([A-Za-z]* \)*release \(.*\) (.*)$/\2/' /etc/enterprise-release
+      fi
+      ;;
    (slackware)
       sed -e 's/^Slackware //' /etc/slackware-version
       ;;

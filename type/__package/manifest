@@ -32,7 +32,8 @@ else
    os=$(cat "${__global:?}/explorer/os")
    case ${os}
    in
-      (amazon|scientific|centos|almalinux|eurolinux|rocky|fedora|redhat) type='yum' ;;
+      (amazon|scientific|centos|almalinux|eurolinux|oraclelinux|rocky|fedora|redhat)
+         type='yum' ;;
       (archlinux) type='pacman' ;;
       (debian|ubuntu|devuan) type='apt' ;;
       (freebsd)
