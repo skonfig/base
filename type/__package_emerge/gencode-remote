@@ -43,7 +43,7 @@ then
     echo 'Package name is not unique! The following packages are installed:' >&2
     echo "${pkg_version}" >&2
     exit 1
-elif [ -n "${version}" ] && [ "$(echo "${pkg_version}" | cut -d ' ' -f 1 | sort | uniq | wc -l)" -gt 1 ]
+elif [ -n "${version}" ] && [ "$(echo "${pkg_version}" | cut -d ' ' -f 1 | LC_ALL=C sort -u | wc -l)" -gt 1 ]
 then
     echo 'Package name is not unique! The following packages are installed:' >&2
     echo "${pkg_version}" >&2

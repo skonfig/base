@@ -29,7 +29,7 @@
 #
 
 joinlines() { sed -n -e H -e "\${x;s/^\\n//;s/\\n/${1:?}/g;p;}"; }
-trlower() { tr '[:upper:]' '[:lower:]'; }
+trlower() { LC_ALL=C tr '[:upper:]' '[:lower:]'; }
 tolower() { printf '%s' "$*" | trlower; }
 
 default_value() {

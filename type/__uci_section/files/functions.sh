@@ -64,7 +64,8 @@ uci_cmd() {
 
 uci_validate_name() {
 	# like util.c uci_validate_name()
-	test -n "$*" && test -z "$(printf %s "$*" | tr -d '[:alnum:]_' | tr -c '' .)"
+	test -n "$*" \
+	&& test -z "$(printf '%s' "$*" | LC_ALL=C tr -d '[:alnum:]_' | tr -c '' .)"
 }
 
 unquote_lines() {

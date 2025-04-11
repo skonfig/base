@@ -48,7 +48,7 @@ uci_cmd() {
 
 uci_validate_name() {
 	# like util.c uci_validate_name()
-	test -n "$*" && test -z "$(echo "$*" | tr -d '[:alnum:]_')"
+	test -n "$*" && test -z "$(echo "$*" | LC_ALL=C tr -d '[:alnum:]_')"
 }
 
 uci_validate_tuple() (

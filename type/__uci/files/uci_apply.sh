@@ -48,7 +48,7 @@ rollback() {
 
 	uci changes \
 	| sed -e 's/^-//' -e 's/\..*\$//' \
-	| sort -u \
+	| LC_ALL=C sort -u \
 	| while read -r _package
 	  do
 		  uci revert "${_package}"

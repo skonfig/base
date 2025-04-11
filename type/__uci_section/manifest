@@ -71,7 +71,7 @@ in
 		if test -s "${__object:?}/parameter/option"
 		then
 			sed -e 's/=.*$//' "${__object:?}/parameter/option" \
-			| sort \
+			| LC_ALL=C sort \
 			| uniq -d \
 			| print_errors \
 				  'Found duplicate --options:' \

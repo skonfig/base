@@ -204,7 +204,7 @@ check_chroot_procfs() (
 				EOF
 				printf '%s\n' "${hmntpnt%"${cmntpnt}"}"
 			done </proc/self/mountinfo \
-			| sort -u \
+			| LC_ALL=C sort -u \
 			| head -n 1  # just take the first...
 		fi
 
@@ -440,12 +440,12 @@ check_vm_cpuinfo() {
 			  do
 				  guess_hypervisor_from_cpu_model "${_cpu_model}"
 			  done \
-			| sort \
+			| LC_ALL=C sort \
 			| uniq -c \
 			| awk '
 			  { if ($1 > most_c) { most_c = $1; most_s = $2 } }
 			  END {
-				if (most_s) print most_s
+				if (most_s) { print most_s }
 				exit !most_s
 			  }' \
 			&& return 0

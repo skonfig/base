@@ -60,13 +60,15 @@ in
 		if test -f "${__object:?}/parameter/list"
 		then
 			listnames_should=$(
-				sed -e 's/=.*$//' "${__object:?}/parameter/list" | sort -u)
+				sed -e 's/=.*$//' "${__object:?}/parameter/list" \
+				| LC_ALL=C sort -u)
 		fi
 
 		if test -f "${__object:?}/parameter/option"
 		then
 			optnames_should=$(
-				sed -e 's/=.*$//' "${__object:?}/parameter/option" | sort -u)
+				sed -e 's/=.*$//' "${__object:?}/parameter/option" \
+				| LC_ALL=C sort -u)
 		fi
 
 		# Make sure the section itself is present

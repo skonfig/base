@@ -19,5 +19,5 @@
 #
 
 gnu_normalize_codeset() {
-	echo "$*" | tr -cd '[:alnum:]' | tr '[:upper:]' '[:lower:]'
+	echo "$*" | LC_ALL=C tr -cd '[:alnum:]' | LC_ALL=C tr '[:upper:]' '[:lower:]'
 }

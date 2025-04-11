@@ -89,7 +89,7 @@ remove_lines() {
 	cat <<-EOF
 	tmpfile=\$(mktemp $(shquot "${1:?}.skonfig.XXXXXX"))
 	grep -v -x -F \\
-	$(printf '%s\n' "${2:?}" | sort -u | sed -e "s/'/'\\\\''/g" -e "s/^.*\$/       -e '&' \\\\/")
+	$(printf '%s\n' "${2:?}" | LC_ALL=C sort -u | sed -e "s/'/'\\\\''/g" -e "s/^.*\$/       -e '&' \\\\/")
 	<$(shquot "${1:?}") >"\${tmpfile}" || :
 	cat "\${tmpfile}" >$(shquot "${1:?}")
 	rm -f "\${tmpfile}"
@@ -134,7 +134,7 @@ in
 			# ensure that the files are sorted for comparison with comm(1).
 			remove_lines \
 				"${file}" \
-				"$(printf '%s\n' "${entry_should}" | comm -13 - "${__object:?}/explorer/entry")"
+				"$(printf '%s\n' "${entry_should}" | LC_ALL=C comm -13 - "${__object:?}/explorer/entry")"
 		fi
 
 		key_present_count=$(grep -c -x -F -e "${entry_should}" "${__object:?}/explorer/entry") || :
