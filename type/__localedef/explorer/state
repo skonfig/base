@@ -58,7 +58,7 @@ format_locale() {
 
 gnu_normalize_codeset() {
 	# reimplementation of glibc/locale/programs/localedef.c normalize_codeset()
-	echo "$*" | tr '[:upper:]' '[:lower:]' | tr -cd '[:alnum:]'
+	echo "$*" | LC_ALL=C tr -cd '[:alnum:]' | LC_ALL=C tr '[:upper:]' '[:lower:]'
 }
 
 locale_available() (

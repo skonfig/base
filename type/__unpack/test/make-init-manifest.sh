@@ -8,7 +8,7 @@ echo 'export CDIST_ORDER_DEPENDENCY=1'
 echo "__directory $d"
 
 find "$p" -name 'test.*' -and -not -name '*.cdist__unpack_sum' \
-    | sort \
+    | LC_ALL=C sort \
     | while read -r l
 do
     n="$( basename "$l" )"

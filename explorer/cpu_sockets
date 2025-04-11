@@ -31,7 +31,7 @@ in
     (*)
         if test -r /proc/cpuinfo
         then
-            sockets=$(grep -e '^physical id[[:blank:]]*:' /proc/cpuinfo | sort -u | wc -l)
+            sockets=$(grep -e '^physical id[[:blank:]]*:' /proc/cpuinfo | LC_ALL=C sort -u | wc -l)
             if test $((sockets)) -lt 1
             then
                 sockets=$(grep -c -e '^processor[[:blank:]]*:' /proc/cpuinfo)

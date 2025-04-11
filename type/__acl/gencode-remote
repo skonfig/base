@@ -57,7 +57,7 @@ fi
 # users/groups in target is most common reason.
 echo "${acl_should}" \
     | grep -o -e 'user:[^:]\{1,\}' -e 'group:[^:]\{1,\}' \
-    | sort -u \
+    | LC_ALL=C sort -u \
     | while read -r l
     do
         grep -qxF -e "${l}" "${__object:?}/explorer/getent" || {
@@ -70,7 +70,7 @@ if [ -f "${__object:?}/parameter/default" ]
 then
     acl_should=$(echo "${acl_should}" \
         | sed 's/^default://' \
-        | sort -u \
+        | LC_ALL=C sort -u \
         | sed 's/\(.*\)/default:\1\n\1/')
 fi
 

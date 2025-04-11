@@ -57,4 +57,5 @@ awk -v tk="${type_and_key}" <"${file}" '
 		}
 	}
 }
-' | sort
+' \
+| LC_ALL=C sort

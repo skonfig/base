@@ -42,4 +42,4 @@ then
 			;;
 	esac
 fi \
-| sort -u
+| LC_ALL=C sort -u

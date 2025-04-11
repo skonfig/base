@@ -28,7 +28,7 @@ version_ge() {
 	# NOTES: if the lowest value of the two version numbers is equal to
 	#        `min_version_expected`, `version_is` must be the same or larger.
 	#        `-k n,n` instead of `-k n` is required for some sort(1)s.
-	sort -t. -n -k1,1 -k2,2 -k3,3 <<-EOF | { read -r _x; test "${_x}" = "$2"; }
+	LC_ALL=C sort -t. -n -k1,1 -k2,2 -k3,3 <<-EOF | { read -r _x; test "${_x}" = "$2"; }
 	$1
 	$2
 	EOF

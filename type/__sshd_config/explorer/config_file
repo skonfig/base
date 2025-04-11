@@ -31,7 +31,7 @@ version_ge() {
 	#        `min_version_expected`, `version_is` must be the same or larger.
 	#        `-k n,n` instead of `-k n` is required for some sort(1)s.
 	printf '%s\n' "$1" "$2" \
-	| sort -t '.' -n -k 1,1 -k 2,2 -k 3,3 \
+	| LC_ALL=C sort -t '.' -n -k 1,1 -k 2,2 -k 3,3 \
 	| head -1 \
 	| grep -qxF -e "$2"
 }

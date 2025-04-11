@@ -1,6 +1,7 @@
 #!/bin/sh -e
 #
 # 2012 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2025 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -18,26 +19,33 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-user=$(cat "${__object:?}/parameter/user" 2>/dev/null || echo "${__object_id:?}")
+if test -f "${__object:?}/parameter/user"
+then
+	user=$(cat "${__object:?}/parameter/user")
+else
+	user=${__object_id:?}
+fi
 state_should=$(cat "${__object:?}/parameter/state")
 oldusermod=$(cat "${__object:?}/explorer/oldusermod")
 os=$(cat "${__global:?}/explorer/os")
 
-mkdir "${__object:?}/files"
-# file has to be sorted for comparison with `comm`
-sort "${__object:?}/parameter/group" >"${__object:?}/files/group.sorted"
+get_changed_groups() {
+   # groups have to be sorted for comparison with comm(1).
+   LC_ALL=C sort "${__object:?}/parameter/group" \
+   | LC_ALL=C comm "$@" "${__object:?}/explorer/group" -
+}
 
 case ${state_should}
 in
    (present)
-      changed_groups=$(comm -13 "${__object:?}/explorer/group" "${__object:?}/files/group.sorted")
+      changed_groups=$(get_changed_groups -13)
       ;;
    (absent)
-      changed_groups=$(comm -12 "${__object:?}/explorer/group" "${__object:?}/files/group.sorted")
+      changed_groups=$(get_changed_groups -12)
       ;;
 esac
 
-if [ -z "${changed_groups}" ]
+if test -z "${changed_groups}"
 then
    # Nothing to do, move along
    exit 0
