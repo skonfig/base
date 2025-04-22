@@ -45,7 +45,7 @@ in
 				;;
 			('')
 				# Guess type by the number of values
-				if test "$(wc -l "${__object:?}/parameter/value")" -gt 1
+				if test "$(wc -l <"${__object:?}/parameter/value")" -gt 1
 				then
 					type=list
 				else
