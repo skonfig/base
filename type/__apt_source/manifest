@@ -26,8 +26,44 @@ join_lines() {
 
 name=${__object_id:?}
 state_should=$(cat "${__object:?}/parameter/state")
-uri=$(cat "${__object:?}/parameter/uri")
 
+os=$(cat "${__global:?}/explorer/os")
+case ${os}
+in
+	(debian)
+		os_version=$(cat "${__global:?}/explorer/os_version")
+		case ${os_version%%[!0-9]*}
+		in
+			([0123])
+				supports_sources_list_d=false ;;
+			(*)
+				# Debian 4.0 and later
+				supports_sources_list_d=true ;;
+		esac
+		;;
+	(ubuntu)
+		os_version=$(cat "${__global:?}/explorer/os_version")
+		case ${os_version%%[!0-9]*}
+		in
+			([45])
+				supports_sources_list_d=false ;;
+			(*)
+				# Ubuntu 6.06 and later
+				supports_sources_list_d=true ;;
+		esac
+		;;
+	(devuan)
+		supports_sources_list_d=true
+		;;
+	(*)
+		: "${__type:?}"  # make shellcheck happy
+		printf 'Your operating system (%s) is currently not supported by this type (%s)\n' "${os}" "${__type##*/}" >&2
+		printf 'Please contribute an implementation for it if you can.\n' >&2
+		exit 1
+		;;
+esac
+
+uri=$(cat "${__object:?}/parameter/uri")
 if test -f "${__object:?}/parameter/distribution"
 then
 	distribution=$(cat "${__object:?}/parameter/distribution")
@@ -63,19 +99,37 @@ then
 	signed_by="signed-by=$(join_lines ',' "${__object:?}/parameter/signed-by")"
 fi
 
-# export variables for use in template
-export name
-export uri
-export distribution
-export component
-export forcedarch
-export signed_by
+source_defn=$(
+	# export variables for use in template
+	export name
+	export uri
+	export distribution
+	export component
+	export forcedarch
+	export signed_by
+	"${__type:?}/files/source.list.template")
 
-# generate file from template
-mkdir "${__object:?}/files"
-"${__type:?}/files/source.list.template" >"${__object:?}/files/source.list"
+if ${supports_sources_list_d?}
+then
+	: "${__type:?}"  # make shellcheck happy
 
-__file "/etc/apt/sources.list.d/${name}.list" \
-	--source "${__object:?}/files/source.list" \
-	--owner 0 --group 0 --mode 0644 \
-	--state "${state_should}"
+	__file "/etc/apt/sources.list.d/${name}.list" \
+		--state "${state_should}" \
+		--owner 0 --group 0 --mode 0644 \
+		--source - <<-EOF
+		# Managed by skonfig (${__type##*/}).
+		# Changes will be overwritten.
+		#
+
+		# ${name:?}
+		${source_defn-}
+		EOF
+else
+	# old version which does not support the sources.list.d directory
+	__block "/etc/apt/sources.list:${name}" \
+		--state "${state_should}" \
+		--file /etc/apt/sources.list \
+		--prefix "# skonfig: ${__object_name:?}" \
+		--suffix "#/skonfig: ${__object_name:?}" \
+		--text "${source_defn-}"
+fi
