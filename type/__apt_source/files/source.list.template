@@ -1,10 +1,32 @@
 #!/bin/sh -eu
+#
+# 2011-2018 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2022 Daniel Fancsali (fancsali at gmail.com)
+# 2022,2025 Dennis Camera (dennis.camera at riiengineering.ch)
+#
+# This file is part of skonfig-base.
+#
+# skonfig-base is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# skonfig-base is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
+#
 
 : "${__type:?}"  # make shellcheck happy
 
 entry="${uri:?} ${distribution:?} ${component:?}"
-options="${forcedarch-} ${signed_by-}"
-options=${options## }; options=${options%% } # Trim spaces from either end
+
+options_src="${signed_by-}"
+options="${forcedarch-} ${options_src-}"
+options=${options# }; options=${options% } # trim space from either end
 
 # header
 cat <<EOF
@@ -13,9 +35,10 @@ cat <<EOF
 #
 
 # ${name:?}
-deb ${options:+[${options}] }${entry}
 EOF
-if [ -f "${__object:?}/parameter/include-src" ]
+
+printf 'deb %s%s\n' "${options:+[${options}] }" "${entry}"
+if test -f "${__object:?}/parameter/include-src"
 then
-   echo "deb-src ${signed_by:+[${signed_by}] }${entry}"
+	printf 'deb-src %s%s\n' "${options_src:+[${options_src}] }" "${entry}"
 fi

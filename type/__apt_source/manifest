@@ -25,7 +25,7 @@ join_lines() {
 }
 
 name=${__object_id:?}
-state=$(cat "${__object:?}/parameter/state")
+state_should=$(cat "${__object:?}/parameter/state")
 uri=$(cat "${__object:?}/parameter/uri")
 
 if test -f "${__object:?}/parameter/distribution"
@@ -74,7 +74,8 @@ export signed_by
 # generate file from template
 mkdir "${__object:?}/files"
 "${__type:?}/files/source.list.template" >"${__object:?}/files/source.list"
+
 __file "/etc/apt/sources.list.d/${name}.list" \
-   --source "${__object:?}/files/source.list" \
-   --owner root --group root --mode 0644 \
-   --state "${state}"
+	--source "${__object:?}/files/source.list" \
+	--owner 0 --group 0 --mode 0644 \
+	--state "${state_should}"

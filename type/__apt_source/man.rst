@@ -3,7 +3,7 @@ cdist-type__apt_source(7)
 
 NAME
 ----
-cdist-type__apt_source - Manage apt sources
+cdist-type__apt_source - Manage APT sources
 
 
 DESCRIPTION
@@ -15,20 +15,22 @@ when needed so call of index updating type is not needed.
 REQUIRED PARAMETERS
 -------------------
 uri
-   the uri to the apt repository
+   The URI to the APT repository.
 
 
 OPTIONAL MULTIPLE PARAMETERS
 ----------------------------
 signed-by
-   provide a GPG key fingerprint or keyring path for signature checks.
+   Provide a GPG key fingerprint or keyring path for signature checks.
 
 
 OPTIONAL PARAMETERS
 -------------------
 arch
-   set this if you need to force and specific arch (ubuntu specific)
+   Set this if you need to force any specific CPU architectures.
    This parameter can be used multiple times.
+
+   Defaults to download all architectures defined by ``APT::Architectures``.
 component
    The component(s) to enable. Can be used multiple times.
 distribution
@@ -44,7 +46,7 @@ state
 BOOLEAN PARAMETERS
 ------------------
 include-src
-   include deb-src entries
+   Add ``deb-src`` entries.
 
 
 EXAMPLES
@@ -53,15 +55,16 @@ EXAMPLES
 .. code-block:: sh
 
    __apt_source rabbitmq \
+      --state present \
       --uri http://www.rabbitmq.com/debian/ \
       --distribution testing \
       --component main \
-      --include-src \
-      --state present
+      --include-src
 
    __apt_source canonical_partner \
+      --state present \
       --uri http://archive.canonical.com/ \
-      --component partner --state present
+      --component partner
 
    __apt_source goaccess \
       --uri http://deb.goaccess.io/ \
@@ -73,11 +76,13 @@ AUTHORS
 -------
 * Steven Armstrong <steven-cdist--@--armstrong.cc>
 * Daniel Fancsali <fancsali--@--gmail.com>
+* Dennis Camera <dennis.camera--@--riiengineering.ch>
 
 
 COPYING
 -------
-Copyright \(C) 2011-2018 Steven Armstrong.
+Copyright \(C) 2011-2018 Steven Armstrong, 2022 Daniel Fancsali,
+2022,2025 Dennis Camera.
 You can redistribute it and/or modify it under the terms of the GNU General
 Public License as published by the Free Software Foundation, either version 3 of
 the License, or (at your option) any later version.
