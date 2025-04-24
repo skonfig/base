@@ -28,8 +28,9 @@ OPTIONAL PARAMETERS
 -------------------
 arch
    set this if you need to force and specific arch (ubuntu specific)
+   This parameter can be used multiple times.
 component
-   space delimited list of components to enable. Defaults to an empty string.
+   The component(s) to enable. Can be used multiple times.
 distribution
    The distribution codename to use.
 

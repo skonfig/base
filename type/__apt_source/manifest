@@ -19,6 +19,11 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
+join_lines() {
+	# NOTE: this function should not be used on untrusted input.
+	sed -e ':a' -e '$!N' -e "s/\n/$1/" -e 'ta' "$2"
+}
+
 name=${__object_id:?}
 state=$(cat "${__object:?}/parameter/state")
 uri=$(cat "${__object:?}/parameter/uri")
@@ -45,17 +50,17 @@ else
 	exit 1
 fi
 
-component=$(cat "${__object:?}/parameter/component")
+component=$(join_lines ' ' "${__object:?}/parameter/component")
 
-if [ -f "${__object:?}/parameter/arch" ]
+if test -s "${__object:?}/parameter/arch"
 then
-	forcedarch="arch=$(cat "${__object:?}/parameter/arch")"
+	forcedarch="arch=$(join_lines , "${__object:?}/parameter/arch")"
 fi
 
-if [ -f "${__object:?}/parameter/signed-by" ]
+if test -s "${__object:?}/parameter/signed-by"
 then
-   # Take all '--signed-by' parameter values present on separate lines and join them with a comma
-   signed_by="signed-by=$(sed -e ':a' -e '$!N' -e 's/\n/,/' -e 'ta' "${__object:?}/parameter/signed-by")"
+	# Take all --signed-by values and join them with a comma.
+	signed_by="signed-by=$(join_lines ',' "${__object:?}/parameter/signed-by")"
 fi
 
 # export variables for use in template
