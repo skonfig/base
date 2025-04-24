@@ -1,6 +1,7 @@
 #!/bin/sh -e
 #
 # 2011-2018 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2025 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -22,11 +23,26 @@ name=${__object_id:?}
 state=$(cat "${__object:?}/parameter/state")
 uri=$(cat "${__object:?}/parameter/uri")
 
-if [ -f "${__object:?}/parameter/distribution" ]
+if test -f "${__object:?}/parameter/distribution"
 then
-   distribution=$(cat "${__object:?}/parameter/distribution")
+	distribution=$(cat "${__object:?}/parameter/distribution")
+elif test -s "${__global:?}/explorer/lsb_codename"
+then
+	distribution=$(cat "${__global:?}/explorer/lsb_codename")
+elif test -s "${__global:?}/explorer/os_release"
+then
+	distribution=$(
+		awk -F= '
+		function unquote(s) {
+			return (s~/^".*"$/||s~/^'\''.*'\''$/) ? substr(s,2,length(s)-2) : s
+		}
+		$1 == "VERSION_CODENAME" {
+			print unquote(substr($0, index($0, "=") + 1))
+		}' "${__global:?}/explorer/os_release")
 else
-   distribution=$(cat "${__global:?}/explorer/lsb_codename")
+	echo 'Could not determine distribution value automatically.' >&2
+	echo 'Please use the --distribution parameter to specify it manually.' >&2
+	exit 1
 fi
 
 component=$(cat "${__object:?}/parameter/component")

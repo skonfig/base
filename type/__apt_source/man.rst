@@ -31,8 +31,9 @@ arch
 component
    space delimited list of components to enable. Defaults to an empty string.
 distribution
-   the distribution codename to use. Defaults to DISTRIB_CODENAME from
-   the targets /etc/lsb-release
+   The distribution codename to use.
+
+   Defaults to: auto-detected release codename of the target.
 state
    ``present`` or ``absent``
 
