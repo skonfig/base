@@ -6,14 +6,15 @@ entry="${uri:?} ${distribution:?} ${component:?}"
 options="${forcedarch-} ${signed_by-}"
 options=${options## }; options=${options%% } # Trim spaces from either end
 
-cat << DONE
-# Created by cdist ${__type##*/}
-# Do not change. Changes will be overwritten.
+# header
+cat <<EOF
+# Managed by skonfig (${__type##*/}).
+# Changes will be overwritten.
 #
 
 # ${name:?}
 deb ${options:+[${options}] }${entry}
-DONE
+EOF
 if [ -f "${__object:?}/parameter/include-src" ]
 then
    echo "deb-src ${signed_by:+[${signed_by}] }${entry}"
