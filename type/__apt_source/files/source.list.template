@@ -1,6 +1,6 @@
 #!/bin/sh -eu
 
-: "${__type:?}" "${options:?}"  # make shellcheck happy
+: "${__type:?}"  # make shellcheck happy
 
 entry="${uri:?} ${distribution:?} ${component:?}"
 options="${forcedarch-} ${signed_by-}"
