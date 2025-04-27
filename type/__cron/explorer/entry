@@ -1,6 +1,6 @@
 #!/bin/sh -e
 #
-# 2022 Dennis Camera (dennis.camera at riiengineering.ch)
+# 2022,2025 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -34,7 +34,15 @@ crontab_list() {
 }
 
 grep_suffix() {
-	awk -v suffix="$1" 'substr($0, length($0) - length(suffix) + 1) == suffix'
+	awk -v suffix="$1" '
+	# skip comment lines
+	/^[[:blank:]]*#/ { next }
+
+	{
+		if (substr($0, length($0) - length(suffix) + 1) == suffix) {
+			print
+		}
+	}'
 }
 
-crontab_list | grep -v '^[[:blank:]]*#' | grep_suffix " # ${name}"
+crontab_list | grep_suffix " # ${name}"

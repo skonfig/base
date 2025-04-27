@@ -1,8 +1,12 @@
 #!/bin/sh -e
 #
 # 2014 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2017 Ľubomír Kučera (lubomir.kucera.jr at gmail.com)
+# 2018 Kamila Součková (kamila at ksp.sk)
+# 2018 Darko Poljak (darko.poljak at gmail.com)
 # 2018 Takashi Yoshi (takashi at yoshi.email)
-# 2019 Nico Schottelius (nico-cdist at schottelius.org)
+# 2016,2017,2019 Nico Schottelius (nico-cdist at schottelius.org)
+# 2023,2025 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -26,7 +30,7 @@ os=$(cat "${__global:?}/explorer/os")
 case ${os}
 in
    # Linux
-   (alpine|redhat|centos|almalinux|eurolinux|rocky|oraclelinux|ubuntu|debian|devuan|archlinux|coreos)
+   (alpine|redhat|centos|almalinux|eurolinux|rocky|oraclelinux|ubuntu|debian|devuan|archlinux|coreos|dsm)
       :
       ;;
    # BSD

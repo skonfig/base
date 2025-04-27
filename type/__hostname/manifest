@@ -104,6 +104,30 @@ in
             --key 'HOSTNAME' \
             --value "${name_should}"
         ;;
+    (dsm)
+        read -r os_version <"${__global:?}/explorer/os_version"
+        case ${os_version%%-*}
+        in
+            ([123]|[123].*|4.[12]|4.[12].*)
+                # before DSM 4.3
+                __file /etc/sysconfig/network \
+                    --state exists \
+                    --owner 0 --group 0 --mode 0644
+                require=__file/etc/sysconfig/network \
+                __key_value /etc/sysconfig/network:HOSTNAME \
+                    --file /etc/sysconfig/network \
+                    --delimiter '=' --exact_delimiter \
+                    --key 'HOSTNAME' \
+                    --value "${name_should}"
+                ;;
+            (*)
+                # DSM 4.3 and later
+                printf '%s\n' "${name_should}" | __file /etc/hostname \
+                    --owner 0 --group 0 --mode 0644 \
+                    --source -
+                ;;
+        esac
+        ;;
     (gentoo)
         # Only write to /etc/conf.d/hostname on OpenRC-based installations.
         # On systemd use hostnamectl(1) in gencode-remote.

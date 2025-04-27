@@ -1,6 +1,6 @@
 #!/bin/sh -e
 #
-# 2022 Dennis Camera (dennis.camera at riiengineering.ch)
+# 2022,2025 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -24,6 +24,11 @@ cron_ok() { echo true; exit 0; }
 cron_fail() { printf '%s\n' "$1" >&2; exit "$2"; }
 
 user=$(cat "${__object:?}/parameter/user")
+
+command -v crontab >/dev/null 2>&1 || {
+	echo 'Cannot find crontab(1). This type does not work without it.' >&2
+	exit 1
+}
 
 case $(uname -s)
 in

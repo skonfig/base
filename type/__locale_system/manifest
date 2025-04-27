@@ -96,6 +96,11 @@ in
             locale_conf='/etc/sysconfig/i18n'
         fi
         ;;
+    (dsm)
+        locale_conf='/etc/profile'
+        quote_value=false
+        key_prefix='export '
+        ;;
     (fedora)
         read -r os_version <"${__global:?}/explorer/os_version"
         if version_ge "${os_version}" 18
@@ -168,7 +173,7 @@ in
         # NOTE: lang.csh (csh config) is ignored here.
         locale_conf='/etc/profile.d/lang.sh'
         locale_conf_mode=0755
-        key="export ${__object_id:?}"
+        key_prefix='export '
         ;;
     (suse)
         read -r os_version <"${__global:?}/explorer/os_version"
@@ -207,10 +212,10 @@ __file "${locale_conf}" \
     --mode "${locale_conf_mode:-0644}"
 
 require="__file${locale_conf}" \
-__key_value "${locale_conf}:${key#export }" \
-    --file "${locale_conf}" \
-    --key "${key}" \
-    --delimiter '=' --exact_delimiter \
+__key_value "${locale_conf}:${key}" \
     --state "${state_should}" \
+    --file "${locale_conf}" \
+    --key "${key_prefix-}${key}" \
+    --delimiter '=' --exact_delimiter \
     --value "${value:-$(catval "${__object:?}/parameter/value")}" \
     --onchange "${onchange_cmd-}"
