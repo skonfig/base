@@ -1,6 +1,7 @@
 #!/bin/sh -e
 #
 # 2011-2018 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2025 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -18,42 +19,117 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
+join_lines() {
+	# NOTE: this function should not be used on untrusted input.
+	sed -e ':a' -e '$!N' -e "s/\n/$1/" -e 'ta' "$2"
+}
+
 name=${__object_id:?}
-state=$(cat "${__object:?}/parameter/state")
+state_should=$(cat "${__object:?}/parameter/state")
+
+os=$(cat "${__global:?}/explorer/os")
+case ${os}
+in
+	(debian)
+		os_version=$(cat "${__global:?}/explorer/os_version")
+		case ${os_version%%[!0-9]*}
+		in
+			([0123])
+				supports_sources_list_d=false ;;
+			(*)
+				# Debian 4.0 and later
+				supports_sources_list_d=true ;;
+		esac
+		;;
+	(ubuntu)
+		os_version=$(cat "${__global:?}/explorer/os_version")
+		case ${os_version%%[!0-9]*}
+		in
+			([45])
+				supports_sources_list_d=false ;;
+			(*)
+				# Ubuntu 6.06 and later
+				supports_sources_list_d=true ;;
+		esac
+		;;
+	(devuan)
+		supports_sources_list_d=true
+		;;
+	(*)
+		: "${__type:?}"  # make shellcheck happy
+		printf 'Your operating system (%s) is currently not supported by this type (%s)\n' "${os}" "${__type##*/}" >&2
+		printf 'Please contribute an implementation for it if you can.\n' >&2
+		exit 1
+		;;
+esac
+
 uri=$(cat "${__object:?}/parameter/uri")
-
-if [ -f "${__object:?}/parameter/distribution" ]
+if test -f "${__object:?}/parameter/distribution"
 then
-   distribution=$(cat "${__object:?}/parameter/distribution")
+	distribution=$(cat "${__object:?}/parameter/distribution")
+elif test -s "${__global:?}/explorer/lsb_codename"
+then
+	distribution=$(cat "${__global:?}/explorer/lsb_codename")
+elif test -s "${__global:?}/explorer/os_release"
+then
+	distribution=$(
+		awk -F= '
+		function unquote(s) {
+			return (s~/^".*"$/||s~/^'\''.*'\''$/) ? substr(s,2,length(s)-2) : s
+		}
+		$1 == "VERSION_CODENAME" {
+			print unquote(substr($0, index($0, "=") + 1))
+		}' "${__global:?}/explorer/os_release")
 else
-   distribution=$(cat "${__global:?}/explorer/lsb_codename")
+	echo 'Could not determine distribution value automatically.' >&2
+	echo 'Please use the --distribution parameter to specify it manually.' >&2
+	exit 1
 fi
 
-component=$(cat "${__object:?}/parameter/component")
+component=$(join_lines ' ' "${__object:?}/parameter/component")
 
-if [ -f "${__object:?}/parameter/arch" ]
+if test -s "${__object:?}/parameter/arch"
 then
-	forcedarch="arch=$(cat "${__object:?}/parameter/arch")"
+	forcedarch="arch=$(join_lines , "${__object:?}/parameter/arch")"
 fi
 
-if [ -f "${__object:?}/parameter/signed-by" ]
+if test -s "${__object:?}/parameter/signed-by"
 then
-   # Take all '--signed-by' parameter values present on separate lines and join them with a comma
-   signed_by="signed-by=$(sed -e ':a' -e '$!N' -e 's/\n/,/' -e 'ta' "${__object:?}/parameter/signed-by")"
+	# Take all --signed-by values and join them with a comma.
+	signed_by="signed-by=$(join_lines ',' "${__object:?}/parameter/signed-by")"
 fi
 
-# export variables for use in template
-export name
-export uri
-export distribution
-export component
-export forcedarch
-export signed_by
+source_defn=$(
+	# export variables for use in template
+	export name
+	export uri
+	export distribution
+	export component
+	export forcedarch
+	export signed_by
+	"${__type:?}/files/source.list.template")
 
-# generate file from template
-mkdir "${__object:?}/files"
-"${__type:?}/files/source.list.template" >"${__object:?}/files/source.list"
-__file "/etc/apt/sources.list.d/${name}.list" \
-   --source "${__object:?}/files/source.list" \
-   --owner root --group root --mode 0644 \
-   --state "${state}"
+if ${supports_sources_list_d?}
+then
+	: "${__type:?}"  # make shellcheck happy
+
+	__file "/etc/apt/sources.list.d/${name}.list" \
+		--state "${state_should}" \
+		--owner 0 --group 0 --mode 0644 \
+		--source - <<-EOF
+		# Managed by skonfig (${__type##*/}).
+		# Changes will be overwritten.
+		#
+
+		# ${name:?}
+		${source_defn-}
+		EOF
+else
+	# old version which does not support the sources.list.d directory
+	__block "/etc/apt/sources.list:${name}" \
+		--state "${state_should}" \
+		--file /etc/apt/sources.list \
+		--prefix "# skonfig: ${__object_name:?}" \
+		--suffix "#/skonfig: ${__object_name:?}" \
+		--text "${source_defn-}"
+fi

@@ -21,21 +21,18 @@
 name=${__object_id:?}
 destination="/etc/apt/sources.list.d/${name}.list"
 
-# There are special arguments to apt(8) to prevent aborts if apt woudn't been
-# updated after the 19th April 2021 till the bullseye release. The additional
-# arguments acknoledge the happend suite change (the apt(8) update does the
-# same by itself).
+# Allow release info changes to prevent apt-get(8) aborts e.g. if APT wasn't
+# updated between 2021-04-19 and the bullseye release.
+# The additional arguments acknowledge the suite change (apt(8) update
+# does the same by itself).
 #
-# Using '-o $config' instead of the --allow-releaseinfo-change-* parameter
-# allows backward compatablility to pre-buster Debian versions.
-#
-# See more: ticket #861
-# https://code.ungleich.ch/ungleich-public/cdist/-/issues/861
+# Using ’-o’ instead of the --allow-releaseinfo-change-* parameters
+# allows backwards compatibility with pre-buster APT versions.
 apt_opts='-o Acquire::AllowReleaseInfoChange::Suite=true -o Acquire::AllowReleaseInfoChange::Version=true'
 
-# run 'apt-get update' only if something changed with our sources.list file
-#   it will be run a second time on error as a redundancy messure to success
+# Run 'apt-get update' only if something changed in our sources.list file
+# it will be run a second time on error as a redundancy measure to success.
 if grep -q "^__file${destination}" "${__messages_in:?}"
 then
-   printf 'apt-get %s update || apt-get %s update\n' "${apt_opts}" "${apt_opts}"
+	printf 'apt-get %s update || apt-get %s update\n' "${apt_opts}" "${apt_opts}"
 fi
