@@ -3,19 +3,27 @@ cdist-type__timezone(7)
 
 NAME
 ----
-cdist-type__timezone - Allows one to configure the desired localtime timezone.
+cdist-type__timezone - Configure the system timezone.
 
 
 DESCRIPTION
 -----------
-This type creates a symlink (/etc/localtime) to the selected timezone
-(which should be available in /usr/share/zoneinfo).
+This type creates a symlink (``/etc/localtime``) to the selected
+timezone (which should be available in ``/usr/share/zoneinfo``).
 
 
 REQUIRED PARAMETERS
 -------------------
 tz
    The name of the timezone to set.
+
+
+OPTIONAL PARAMETERS
+-------------------
+tzdir
+   The directory containing the timezone data files on the target.
+
+   Default: detected based on OS, usually ``/usr/share/zoneinfo``.
 
 
 EXAMPLES
@@ -29,6 +37,12 @@ EXAMPLES
    # Set up US/Central as our timezone.
    __timezone --tz US/Central
 
+   # Some operating systems (e.g. Debian, RedHat, SuSE) have a separate
+   # directory for POSIX timezones (time values interpreted as seconds since
+   # the epoch, not counting leap seconds).
+   # It can be used by manually specifying the TZDIR.
+   __timezone --tz Europe/Vaduz --tzdir /usr/share/zoneinfo/posix
+
 
 AUTHORS
 -------
@@ -40,7 +54,7 @@ AUTHORS
 
 COPYING
 -------
-Copyright \(C) 2012-2020 the `AUTHORS`_.
+Copyright \(C) 2012-2022 the `AUTHORS`_.
 You can redistribute it and/or modify it under the terms of the GNU General
 Public License as published by the Free Software Foundation, either version 3 of
 the License, or (at your option) any later version.
