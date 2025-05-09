@@ -4,7 +4,7 @@
 # 2011 Nico Schottelius (nico-cdist at schottelius.org)
 # 2013 Daniel Heule (hda at sfs.biz)
 # 2018 Thomas Eckert (tom at it-eckert.de)
-# 2022,2024 Dennis Camera (dennis.camera at riiengineering.ch)
+# 2022,2024-2025 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -27,33 +27,6 @@ name=${__object_id:?}
 os=$(cat "${__global:?}/explorer/os")
 state_should=$(cat "${__object:?}/parameter/state")
 
-# We need to shorten options for both usermod and useradd since on some
-# systems (such as *BSD, Darwin) those commands do not handle GNU style long
-# options.
-shorten_property() {
-	case $1
-	in
-		(comment)
-			echo '-c' ;;
-		(home)
-			echo '-d' ;;
-		(gid)
-			echo '-g' ;;
-		(groups)
-			echo '-G' ;;
-		(password)
-			echo '-p' ;;
-		(shell)
-			echo '-s' ;;
-		(uid)
-			echo '-u' ;;
-		(create-home)
-			echo '-m' ;;
-		(system)
-			echo '-r' ;;
-	esac
-}
-
 quote_ifneeded() {
 	# copied from type/__uci/files/functions.sh
 	for _arg
@@ -74,38 +47,18 @@ quote_ifneeded() {
 }
 
 
-do_user() {
-	_user_op=$1
-	_user_name=$2
-	shift 2
-
-	case ${os:?}
-	in
-		(freebsd)
-			# FreeBSD uses the pw wrapper utility and -n for the name
-			set -- pw "user${_user_op}" "$@" -n "${_user_name}"
-			;;
-		(openbsd|netbsd)
-			# OpenBSD/NetBSD use the user wrapper utility
-			# NOTE: use the absolute path because NetBSD does not include
-			#       sbin in the default path
-			set -- /usr/sbin/user "${_user_op}" "$@" "${_user_name}"
-			;;
-		(openwrt)
-			# NOTE: older releases of OpenWrt do not include sbin in PATH, but
-			#       user* utilities are installed in /usr/sbin.
-			echo 'PATH=/bin:/sbin:/usr/bin:/usr/sbin'
-			set -- "user${_user_op}" "$@" "${_user_name}"
-			;;
-		(*)
-			set -- "user${_user_op}" "$@" "${_user_name}"
-			;;
-	esac
-	unset -v _user_op _user_name
-
-	# quote arguments if needed
-	quote_ifneeded "$@"; echo
-}
+case ${os}
+in
+	(freebsd)
+		# shellcheck source=SCRIPTDIR/freebsd.sh
+		. "${__type:?}/gencode-remote/freebsd.sh" ;;
+	(netbsd|openbsd)
+		# shellcheck source=SCRIPTDIR/bsd_user.sh
+		. "${__type:?}/gencode-remote/bsd_user.sh" ;;
+	(*)
+		# shellcheck source=SCRIPTDIR/usermod.sh
+		. "${__type:?}/gencode-remote/usermod.sh" ;;
+esac
 
 case ${state_should}
 in
@@ -181,13 +134,13 @@ in
 
 				if test "${new_value}" != "${current_value}"
 				then
-					set -- "$@" "$(shorten_property "${property}")" "${new_value}"
+					set -- "$@" "${property}"="${new_value}"
 				fi
 			done
 
 			if test $# -gt 0
 			then
-				do_user mod "${name}" "$@"
+				do_modify_user "${name}" "$@"
 				echo mod >>"${__messages_out:?}"
 			fi
 		else
@@ -206,12 +159,12 @@ in
 
 						# boolean options have no value, so new_value must be
 						# conditional
-						set -- "$@" "$(shorten_property "${property}")" ${new_value:+"${new_value}"}
+						set -- "$@" "${property}"${new_value:+="${new_value}"}
 						;;
 				esac
 			done
 
-			do_user add "${name}" "$@"
+			do_create_user "${name}" "$@"
 			echo add >>"${__messages_out:?}"
 		fi
 		;;
@@ -222,10 +175,10 @@ in
 			set --
 			if test -f "${__object:?}/parameter/remove-home"
 			then
-				set -- "$@" -r
+				set -- "$@" remove-home
 			fi
 
-			do_user del "${name}" "$@"
+			do_delete_user "${name}" "$@"
 			echo del >>"${__messages_out:?}"
 			# legacy, use del only in the future, like in the other cases
 			echo "userdel $*" >>"${__messages_out:?}"
