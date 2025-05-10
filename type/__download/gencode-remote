@@ -43,7 +43,7 @@ gencode_cksum "${download_tmp_q}"
 printf 'mv %s %s\n' "${download_tmp_q}" "$(shquot "${remote_dst:?}")"
 
 # execute --onchange (both for local and remote download)
-if test -f "${__object:?}/parameter/onchange"
+if test -s "${__object:?}/parameter/onchange"
 then
 	cat "${__object:?}/parameter/onchange"
 fi

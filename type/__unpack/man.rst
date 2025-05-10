@@ -45,7 +45,10 @@ backup-destination
    ``XXX.cdist__unpack_backup_YYY``, where ``XXX`` is destination and
    ``YYY`` current UNIX timestamp.
 onchange
-   Execute this command after unpack.
+   Execute the given command after unpacking.
+
+   Can be used multiple times to execute multiple commands.
+   The commands will be executed in the order the parameters are specified.
 preserve-archive
    Don't delete archive after unpacking.
 

@@ -27,7 +27,10 @@ line
    (This parameter is actually required, but marked optional because the
    deprecated ``--file`` is still accepted.)
 onchange
-   Run command after change. Runs after ``--reconfigure``.
+   Execute the given command after change. Runs after ``--reconfigure``.
+
+   Can be used multiple times to execute multiple commands.
+   The commands will be executed in the order the parameters are specified.
 
 
 BOOLEAN PARAMETERS

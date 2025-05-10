@@ -30,8 +30,11 @@ comment
 key
    The key to change. Defaults to object_id.
 onchange
-   The code to run if the key or value changes (i.e. is inserted, removed or
-   replaced).
+   Execute the given command if the key or value was changed (i.e. was inserted,
+   removed, or replaced).
+
+   Can be used multiple times to execute multiple commands.
+   The commands will be executed in the order the parameters are specified.
 state
    present or absent, defaults to present. If present, sets the key to value,
    if absent, removes the key from the file.

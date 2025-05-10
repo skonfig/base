@@ -83,7 +83,7 @@ esac
 
 cat "${__type:?}/files/remote_script.sh"
 
-if ${fire_onchange?}
+if ${fire_onchange?} && test -s "${__object:?}/parameter/onchange"
 then
     cat "${__object:?}/parameter/onchange"
 fi

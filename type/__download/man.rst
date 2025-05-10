@@ -49,7 +49,10 @@ download
    For local downloads it is expected that usable utilities for downloading
    exist in the system. Type will try to use ``curl``, ``fetch`` or ``wget``.
 onchange
-   Execute this command after download.
+   Execute the given command after downloading.
+
+   Can be used multiple times to execute multiple commands.
+   The commands will be executed in the order the parameters are specified.
 sum
    Supported formats: ``cksum`` output without file name, MD5, SHA1 and SHA256.
 

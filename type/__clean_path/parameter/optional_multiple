@@ -7,6 +7,7 @@ not-newer
 not-path
 not-regex
 not-type
+onchange
 rm-atime
 rm-ctime
 rm-iname
