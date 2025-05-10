@@ -105,7 +105,7 @@ AUTHORS
 
 COPYING
 -------
-Copyright \(C) 2021 Ander Punnar, 2023-2024 Dennis Camera.
+Copyright \(C) 2021 Ander Punnar, 2023-2025 Dennis Camera.
 You can redistribute it and/or modify it under the terms of the GNU General
 Public License as published by the Free Software Foundation, either version 3 of
 the License, or (at your option) any later version.
