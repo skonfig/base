@@ -26,7 +26,10 @@ line
    Must be set, if ``--state present`` or ``--state replace``.
    Ignored if ``--regex`` is used and ``--state absent``.
 onchange
-   The code to run if line is added, removed or updated.
+   Execute the given command after a line was added, removed, or updated.
+
+   Can be used multiple times to execute multiple commands.
+   The commands will be executed in the order the parameters are specified.
 regex
    If ``--state present``, search for this pattern and if it matches add
    the given line.

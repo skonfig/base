@@ -41,7 +41,11 @@ mode
 
    Defaults to: ``0600``
 onchange
-   The code to run if file is modified.
+   Execute the given command after the file was modified (if it had to be
+   modified).
+
+   Can be used multiple times to execute multiple commands.
+   The commands will be executed in the order the parameters are specified.
 owner
    User to :strong:`chown`\ (1) to.
 
