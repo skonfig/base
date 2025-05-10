@@ -1,7 +1,7 @@
 #!/bin/sh -e
 #
 # 2024 Ander Punnar (ander at kvlt.ee)
-# 2024 Dennis Camera (dennis.camera at riiengineering.ch)
+# 2024-2025 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -27,9 +27,7 @@ echo '${__type:?}/explorer/find -depth -exec rm -rf {} +'
 
 ln -sf "${found}" "${__messages_out:?}"
 
-onchange="${__object:?}/parameter/onchange"
-
-if [ -f "${onchange}" ]
+if test -s "${__object:?}/parameter/onchange"
 then
-    cat "${onchange}"
+    cat "${__object:?}/parameter/onchange"
 fi

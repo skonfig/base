@@ -155,7 +155,7 @@ in
 		;;
 esac
 
-if ${fire_onchange?} && test -f "${__object:?}/parameter/onchange"
+if ${fire_onchange?} && test -s "${__object:?}/parameter/onchange"
 then
 	cat "${__object:?}/parameter/onchange"
 fi
