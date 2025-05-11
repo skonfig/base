@@ -25,10 +25,20 @@ os=$(cat "${__global:?}/explorer/os")
 name=${__object_id:?}
 state_should=$(cat "${__object:?}/parameter/state")
 
-shquot() {
-	sed -e "s/'/'\\\\''/g" -e "1s/^/'/" -e "\$s/\$/'/" <<-EOF
-	$*
-	EOF
+quote_ifneeded() {
+	# copied from type/__uci/files/functions.sh
+	for _arg
+	do
+		shift
+		if test -n "$(printf %s "${_arg}" | tr -d -c '\t\n \042-\047\050-\052\073-\077\133\\`|~' | tr -c '' '.')"
+		then
+			# needs quoting
+			set -- "$@" "'$(printf '%s\n' "${_arg}" | sed -e "s/'/'\\\\''/g")'"
+		else
+			set -- "$@" "${_arg}"
+		fi
+	done
+	unset -v _arg
 }
 
 case ${os}

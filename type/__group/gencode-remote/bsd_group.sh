@@ -53,7 +53,7 @@ do_create_group() {
 
 	printf '/usr/sbin/group add%s %s\n' \
 		"${__do_argv:+ ${__do_argv}}" \
-		"$(shquot "${__do_group:?}")"
+		"$(quote_ifneeded "${__do_group:?}")"
 
 	unset -v __do_group __do_argv
 }
@@ -67,7 +67,7 @@ do_modify_group() {
 
 	printf '/usr/sbin/group mod%s %s\n' \
 		"${__do_argv:+ ${__do_argv}}" \
-		"$(shquot "${__do_group:?}")"
+		"$(quote_ifneeded "${__do_group:?}")"
 
 	unset -v __do_group __do_argv
 }
@@ -76,5 +76,5 @@ do_delete_group() {
 	# usage: do_delete_group name
 
 	printf '/usr/sbin/group del %s\n' \
-		"$(shquot "${1:?}")"
+		"$(quote_ifneeded "${1:?}")"
 }

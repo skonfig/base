@@ -40,7 +40,7 @@ properties_to_groupmod_argv() {
 		case ${__groupmod_opt-},${__group_prop-}
 		in
 			(-*,*=*)  # valid option with value
-				set -- "$@" "${__groupmod_opt}" "$(shquot "${__group_prop#*=}")"
+				set -- "$@" "${__groupmod_opt}" "$(quote_ifneeded "${__group_prop#*=}")"
 				;;
 			(-*,*)  # valid option without value
 				set -- "$@" "${__groupmod_opt}"
@@ -63,7 +63,7 @@ do_create_group() {
 
 	printf 'groupadd%s %s\n' \
 		"${__do_argv:+ ${__do_argv}}" \
-		"$(shquot "${__do_group:?}")"
+		"$(quote_ifneeded "${__do_group:?}")"
 
 	unset -v __do_group __do_argv
 }
@@ -77,7 +77,7 @@ do_modify_group() {
 
 	printf 'groupmod%s %s\n' \
 		"${__do_argv:+ ${__do_argv}}" \
-		"$(shquot "${__do_group:?}")"
+		"$(quote_ifneeded "${__do_group:?}")"
 
 	unset -v __do_group __do_argv
 }
@@ -86,5 +86,5 @@ do_delete_group() {
 	# usage: do_delete_group name
 
 	printf 'groupdel %s\n' \
-		"$(shquot "${1:?}")"
+		"$(quote_ifneeded "${1:?}")"
 }
