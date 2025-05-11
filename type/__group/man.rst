@@ -29,16 +29,16 @@ system
 
 MESSAGES
 --------
-mod
-   group is modified
-add
-   New group added
-remove
-   group is removed
-change <property> <new_value> <current_value>
-   Changed group property from current_value to new_value
-set <property> <new_value>
-   set property to new value, property was not set before
+``add``
+   New group created/added
+``mod``
+   Existing group modified
+``change <property> <new_value> <current_value>``
+   Changed group ``property`` from ``current_value`` to ``new_value``
+``remove`` (deprecated, use ``del`` instead)
+   Group removed
+``del``
+   Group deleted
 
 
 EXAMPLES
@@ -65,11 +65,12 @@ EXAMPLES
 AUTHORS
 -------
 * Steven Armstrong <steven-cdist--@--armstrong.cc>
+* Dennis Camera <dennis.camera--@--riiengineering.ch>
 
 
 COPYING
 -------
-Copyright \(C) 2011-2015 Steven Armstrong.
+Copyright \(C) 2011-2015 Steven Armstrong, 2019-2025 Dennis Camera.
 You can redistribute it and/or modify it under the terms of the GNU General
 Public License as published by the Free Software Foundation, either version 3 of
 the License, or (at your option) any later version.
