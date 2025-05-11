@@ -43,13 +43,15 @@ system
 
 MESSAGES
 --------
-mod
-   User is modified
-add
-   New user added
-userdel -r
+``add``
+   New user created/added
+``mod``
+   Existing user modified
+``del``
+   User deleted
+``userdel -r`` (deprecated)
    If user was deleted with homedir
-userdel
+``userdel`` (deprecated)
    If user was deleted (keeping homedir)
 
 
