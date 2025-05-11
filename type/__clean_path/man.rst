@@ -20,9 +20,14 @@ This type is mostly POSIX compatible.
 OPTIONAL PARAMETERS
 -------------------
 path
-   Path to be cleaned. Defaults to ``$__object_id``.
+   Path to be cleaned.
+
+   Defaults to: ``__object_id``
 onchange
-   The code to run if something was removed.
+   Execute the given command if something was removed.
+
+   Can be used multiple times to execute multiple commands.
+   The commands will be executed in the order the parameters are specified.
 
 
 OPTIONAL MULTIPLE PARAMETERS

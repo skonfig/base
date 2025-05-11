@@ -109,7 +109,7 @@ then
     printf 'removed archive %s\n' "${src}" >>"${__messages_out:?}"
 fi
 
-if [ -f "${__object:?}/parameter/onchange" ]
+if test -s "${__object:?}/parameter/onchange"
 then
     cat "${__object:?}/parameter/onchange"
 fi

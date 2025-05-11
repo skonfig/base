@@ -53,7 +53,10 @@ mode
    Requires rsync >= 2.6.7; numeric modes (e.g. `--chmod=644,D755`) require
    rsync >= 3.1.0.
 onchange
-   Command to run in target after sync.
+   Execute the given command on the target after rsync is complete.
+
+   Can be used multiple times to execute multiple commands.
+   The commands will be executed in the order the parameters are specified.
 options
    Due to a `bug in Python's argparse<https://bugs.python.org/issue9334>`_,
    the value must be prefixed with ``\``.

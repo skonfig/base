@@ -148,7 +148,7 @@ printf 'rsync%s %s %s@%s:%s\n' \
     "$(shquot "${__target_host:?}")" \
     "$(shquot "${dst}")"
 
-if [ -f "${__object:?}/parameter/onchange" ]
+if test -s "${__object:?}/parameter/onchange"
 then
     cat "${__object:?}/parameter/onchange"
 fi

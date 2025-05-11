@@ -3,12 +3,12 @@ cdist-type__sed(7)
 
 NAME
 ----
-cdist-type__sed - Transform text files with ``sed``
+cdist-type__sed - Transform text files with :strong:`sed`\ (1)
 
 
 DESCRIPTION
 -----------
-Transform text files with ``sed``.
+Transform text files with :strong:`sed`\ (1).
 
 
 REQUIRED MULTIPLE PARAMETERS
@@ -21,9 +21,14 @@ script
 OPTIONAL PARAMETERS
 -------------------
 file
-   Path to the file. Defaults to ``$__object_id``.
+   Path to the file.
+
+   Defaults to: ``$__object_id``
 onchange
-   Execute this command if ``sed`` changes file.
+   Execute the given command after :strong:`sed`\ (1) changed the file.
+
+   Can be used multiple times to execute multiple commands.
+   The commands will be executed in the order the parameters are specified.
 
 
 BOOLEAN PARAMETERS
