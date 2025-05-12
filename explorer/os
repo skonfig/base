@@ -268,19 +268,37 @@ esac
 
 ### other Linux distributions (fall back to /etc/os-release)
 
+rc_getvar() {
+   awk -F= -v varname="$2" '
+      function unquote(s) {
+         if (s ~ /^".*"$/ || s ~ /^'\''.*'\''$/) {
+            return substr(s, 2, length(s) - 2)
+         } else {
+            return s
+         }
+      }
+      $1 == varname { print unquote(substr($0, index($0, "=") + 1)) }' "$1"
+}
+
 if test -f /etc/os-release
 then
-   # after sles15, suse don't provide an /etc/SuSE-release anymore, but there is almost no difference between sles and opensuse leap, so call it suse
-   # shellcheck source=/dev/null
-   if (. /etc/os-release && echo "${ID_LIKE}" | grep -q '\(^\|\ \)suse\($\|\ \)')
-   then
-      echo suse
-      exit 0
-   fi
+   # try to group similar operating systems by ID_LIKE
+   case $(rc_getvar /etc/os-release ID_LIKE)
+   in
+      ('suse'|'suse '*|*' suse '*|*' suse')
+         # since "SuSE Linux" version 15, SuSE doesn't provide /etc/SuSE-release
+         # anymore, so SuSE derivatives aren’t detected as suse anymore.
+         # Since there is almost no difference between SLES and openSUSE, call
+         # them all "suse"
+         echo suse
+         exit 0
+         ;;
+   esac
 
-   # already lowercase, according to:
+   # if no ID_LIKE match, report ID as is in os-release(5).
+   # The value is already lowercase, according to:
    # https://www.freedesktop.org/software/systemd/man/os-release.html
-   awk -F= '/^ID=/ { if ($2 ~ /^'"'"'(.*)'"'"'$/ || $2 ~ /^"(.*)"$/) { print substr($2, 2, length($2) - 2) } else { print $2 } }' /etc/os-release
+   rc_getvar /etc/os-release ID
    exit 0
 fi
 
