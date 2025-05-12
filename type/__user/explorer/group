@@ -1,6 +1,8 @@
-#!/bin/sh
+#!/bin/sh -e
 #
 # 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2017 Philippe Grégoire (pg at pgregoire.xyz)
+# 2019,2024-2025 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -17,17 +19,45 @@
 # You should have received a copy of the GNU General Public License
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
-# Get an existing groups group entry.
+# Get an existing group's group entry.
+#
+# Attention: depending on which code path is taken the output may or
+# may not include the group's members.
 #
 
-if [ -f "${__object:?}/parameter/gid" ]
+test -s "${__object:?}/parameter/gid" || exit 0
+
+gid=$(cat "${__object:?}/parameter/gid")
+
+if command -v getent >/dev/null 2>&1
 then
-   gid=$(cat "${__object:?}/parameter/gid")
-   if command -v getent >/dev/null 2>&1
-   then
-      getent group "${gid}" || :
-   elif [ -f /etc/group ]
-   then
-      grep -E "^(${gid}|([^:]+:){2}${gid}):" /etc/group || :
-   fi
+	getent group "${gid}" || :
+elif test -s /etc/group
+then
+	# NOTE: the logic to differentiate between
+	#       group names and gids in getent(1) differs between libcs, e.g.
+	#       * glibc, musl, FreeBSD, NetBSD treat everything they can parse
+	#         as an integer as a (numeric) gid.
+	#       * OpenBSD looks up by group name first and if no match is found,
+	#         tries to parse as gid.
+	#
+	#       This behaviour does not necessarily match what e.g. chgrp(1)
+	#       does (hint, on the systems I checked: what OpenBSD getent does).
+	#       chgrp and OpenBSD's getent can be "forced" to interpret the
+	#       value as a numeric gid if it is prefixed with 0s. We allow for
+	#       this behaviour, too.
+	awk -F: -v g="${gid}" '
+	BEGIN {
+		if (g == (g + 0)) {
+			# convert g to integer gid if it is a number
+			gid = (g + 0)
+		}
+	}
+
+	g == $1          { group_by_name = $0 }
+	gid && gid == $3 { group_by_gid  = $0 }
+
+	END {
+		print (group_by_name ? group_by_name : group_by_gid)
+	}' /etc/group
 fi

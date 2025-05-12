@@ -1,0 +1,191 @@
+#!/bin/sh -e
+#
+# 2011 Steven Armstrong (steven-cdist at armstrong.cc)
+# 2011 Nico Schottelius (nico-cdist at schottelius.org)
+# 2013 Daniel Heule (hda at sfs.biz)
+# 2018 Thomas Eckert (tom at it-eckert.de)
+# 2022,2024-2025 Dennis Camera (dennis.camera at riiengineering.ch)
+#
+# This file is part of skonfig-base.
+#
+# skonfig-base is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# skonfig-base is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
+#
+
+name=${__object_id:?}
+
+os=$(cat "${__global:?}/explorer/os")
+state_should=$(cat "${__object:?}/parameter/state")
+
+quote_ifneeded() {
+	# copied from type/__uci/files/functions.sh
+	for _arg
+	do
+		shift
+		if test -n "$(printf %s "${_arg}" | tr -d -c '\t\n \042-\047\050-\052\073-\077\133\\`|~' | tr -c '' '.')"
+		then
+			# needs quoting
+			set -- "$@" "'$(printf '%s\n' "${_arg}" | sed -e "s/'/'\\\\''/g")'"
+		else
+			set -- "$@" "${_arg}"
+		fi
+	done
+	unset -v _arg
+
+	# NOTE: Use printf because POSIX echo interprets escape sequences
+	printf '%s' "$*"
+}
+
+
+case ${os}
+in
+	(freebsd)
+		# shellcheck source=SCRIPTDIR/freebsd.sh
+		. "${__type:?}/gencode-remote/freebsd.sh" ;;
+	(netbsd|openbsd)
+		# shellcheck source=SCRIPTDIR/bsd_user.sh
+		. "${__type:?}/gencode-remote/bsd_user.sh" ;;
+	(*)
+		# shellcheck source=SCRIPTDIR/usermod.sh
+		. "${__type:?}/gencode-remote/usermod.sh" ;;
+esac
+
+case ${state_should}
+in
+	(present)
+		cd "${__object:?}/parameter"
+
+		if cut -d: -f1 "${__object:?}/explorer/passwd" | grep -qxF -e "${name}"
+		then
+			# user exists already
+			for property in *
+			do
+				unset -v current_value field
+				new_value=$(cat "${property}")
+				file="${__object:?}/explorer/passwd"
+
+				case ${property}
+				in
+					(password)
+						field=2
+						file="${__object:?}/explorer/shadow"
+						;;
+					(uid)
+						field=3
+						;;
+					(gid)
+						field=4
+
+						# We always try to interpret the gid we are given as a
+						# group name, cf. also the comment in explorer/group.
+						# We thus try to resolve the gid from the user's
+						# passwd entry to the respective group name to compare.
+						gid_from_passwd=$(cut -d : -f 4 "${__object:?}/explorer/passwd")
+						gid_from_group=$(cut -d : -f 3 "${__object:?}/explorer/group")
+
+						# default: assume the group is different and thus we
+						# cannot resolve its name:
+						current_value=${gid_from_passwd}
+
+						if test "${gid_from_group}" -eq "${gid_from_passwd}"
+						then
+							# The group explorer returned the user's primary
+							# group. Now we check if the group's name matches
+							# the should value, and if so, we resolve the name
+							# because no change is needed.
+							if test "$(cut -d : -f 1 "${__object:?}/explorer/group")" = "${new_value}"
+							then
+								current_value=${new_value}
+							fi
+						fi
+						;;
+					(comment)
+						field=5
+						;;
+					(home)
+						field=6
+						;;
+					(shell)
+						field=7
+						;;
+					(create-home|system|remove-home)
+						# does not apply to user modification
+						continue
+						;;
+					(state)
+						# does not apply to user modification
+						continue
+						;;
+				esac
+
+				# if we haven't already set $current_value above, pull it from
+				# the appropriate file/field
+				: "${current_value:=$(cut -d : -f $((field)) <"${file}")}"
+
+				if test "${new_value}" != "${current_value}"
+				then
+					set -- "$@" "${property}"="${new_value}"
+				fi
+			done
+
+			if test $# -gt 0
+			then
+				do_modify_user "${name}" "$@"
+				echo mod >>"${__messages_out:?}"
+			fi
+		else
+			# user does not already exist
+
+			for property in *
+			do
+				case ${property}
+				in
+					(remove-home)
+						continue ;;
+					(state)
+						continue ;;
+					(*)
+						new_value=$(cat "${property}")
+
+						# boolean options have no value, so new_value must be
+						# conditional
+						set -- "$@" "${property}"${new_value:+="${new_value}"}
+						;;
+				esac
+			done
+
+			do_create_user "${name}" "$@"
+			echo add >>"${__messages_out:?}"
+		fi
+		;;
+	(absent)
+		if cut -d: -f1 "${__object:?}/explorer/passwd" | grep -qxF -e "${name}"
+		then
+			# user exists, but --state absent, so delete it
+			set --
+			if test -f "${__object:?}/parameter/remove-home"
+			then
+				set -- "$@" remove-home
+			fi
+
+			do_delete_user "${name}" "$@"
+			echo del >>"${__messages_out:?}"
+			# legacy, use del only in the future, like in the other cases
+			echo "userdel $*" >>"${__messages_out:?}"
+		fi
+		;;
+	(*)
+		printf 'Invalid --state: %s\n' "${state_should}" >&2
+		exit 1
+		;;
+esac
