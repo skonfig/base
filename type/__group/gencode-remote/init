@@ -50,8 +50,8 @@ in
 		# shellcheck source=SCRIPTDIR/bsd_group.sh
 		. "${__type:?}/gencode-remote/bsd_group.sh" ;;
 	(*)
-		# shellcheck source=SCRIPTDIR/usermod.sh
-		. "${__type:?}/gencode-remote/usermod.sh" ;;
+		# shellcheck source=SCRIPTDIR/groupmod.sh
+		. "${__type:?}/gencode-remote/groupmod.sh" ;;
 esac
 
 case ${state_should}
