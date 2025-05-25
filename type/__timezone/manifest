@@ -3,7 +3,7 @@
 # 2011 Ramon Salvadó (rsalvado at gnuine.com)
 # 2012-2015 Steven Armstrong (steven-cdist at armstrong.cc)
 # 2012-2019 Nico Schottelius (nico-cdist at schottelius.org)
-# 2020 Dennis Camera (dennis.camera at riiengineering.ch)
+# 2020,2025 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -81,7 +81,7 @@ invalid_timezone() {
 # some OSes require a timezone package to be installed first
 case ${os}
 in
-	(archlinux|alpine|debian|devuan|ubuntu|centos|redhat|scientific|voidlinux)
+	(adelie|alpine|archlinux|debian|devuan|ubuntu|centos|redhat|scientific|voidlinux)
 		__package tzdata
 		export require=__package/tzdata
 		;;
@@ -102,7 +102,7 @@ esac
 # configure the timezone
 case ${os}
 in
-	(alpine|slackware)
+	(adelie|alpine|slackware)
 		test -n "${zoneinfo_file}" || invalid_timezone
 		;;
 	(coreos|debian|devuan|ubuntu)
