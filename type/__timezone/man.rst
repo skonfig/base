@@ -9,13 +9,20 @@ cdist-type__timezone - Configure the system timezone.
 DESCRIPTION
 -----------
 This type creates a symlink (``/etc/localtime``) to the selected
-timezone (which should be available in ``/usr/share/zoneinfo``).
+timezone (which should be available in ``--tzdir`` which is usually
+``/usr/share/zoneinfo``).
+
+On some operating systems, other system-specific files are modified as well.
+
+If necessary, the zoneinfo database (``tzdata``) will be installed on the target.
 
 
 REQUIRED PARAMETERS
 -------------------
 tz
    The name of the timezone to set.
+
+   It should map to a file present in ``--tzdir``.
 
 
 OPTIONAL PARAMETERS
