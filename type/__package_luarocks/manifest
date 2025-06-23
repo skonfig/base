@@ -18,5 +18,5 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-__package luarocks --state installed
-__package make --state installed
+__package luarocks
+__package make
