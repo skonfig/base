@@ -26,11 +26,11 @@ else
     file="/${__object_id:?}"
 fi
 
-script=$(cat "${__object:?}/parameter/script")
-
-if [ "${script}" = '-' ]
+if test "$(cat "${__object:?}/parameter/script" 2>/dev/null)" = '-'
 then
-    script=$(cat "${__object:?}/stdin")
+    script_file="${__object:?}/stdin"
+else
+    script_file="${__object:?}/parameter/script"
 fi
 
 # since stdin is not available in explorer, we pull file from target with explorer
@@ -47,19 +47,19 @@ fi
 # do sed dry run, diff result and if no change, then there's nothing to do
 # also redirect diff's output to stderr for debugging purposes
 
-if echo "${script}" | ${sed_cmd} -f - "${file_from_target}" | diff -u "${file_from_target}" - >&2
+if ${sed_cmd} -f "${script_file}" "${file_from_target}" | diff -u "${file_from_target}" - >&2
 then
     exit 0
 fi
 
-# we can't use -i, because it's not posix, so we fly with tempfile and cp
+# we can't use -i, because it's not POSIX, so we fly with tempfile and cp
 # and we use cp because we want to preserve destination file's attributes
 
 # shellcheck disable=SC2016
 echo 'tmp="${__object:?}/tempfile"'
 
 echo "${sed_cmd} -f - '${file}' >\"\${tmp}\" <<'EOF'"
-echo "${script}"
+cat "${script_file}"
 echo 'EOF'
 
 echo "cp \"\${tmp}\" '${file}'"
