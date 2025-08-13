@@ -19,7 +19,10 @@
 #
 
 # Select motd source
-if [ -f "${__object:?}/parameter/source" ]
+if [ -f "${__object:?}/parameter/empty" ]
+then
+   source="${__object:?}/parameter/empty"
+elif [ -f "${__object:?}/parameter/source" ]
 then
    source=$(cat "${__object:?}/parameter/source")
    if [ "${source}" = '-' ]
