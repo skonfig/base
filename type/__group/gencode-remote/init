@@ -39,6 +39,9 @@ quote_ifneeded() {
 		fi
 	done
 	unset -v _arg
+
+	# NOTE: Use printf because POSIX echo interprets escape sequences
+	printf '%s' "$*"
 }
 
 case ${os}
