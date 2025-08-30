@@ -262,7 +262,7 @@ denotes the program which is run.
        fi
 
    If a compound command follows the combination operator, the compound
-   commands's opening character shall be on the same line, e.g.
+   command's opening character shall be on the same line, e.g.
 
        command -v special-command >/dev/null 2>&1 || {
            echo 'special-command not found' >&2
