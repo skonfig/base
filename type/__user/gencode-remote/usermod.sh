@@ -17,38 +17,35 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-
-# We need to shorten options for both usermod and useradd since on some
-# systems (such as *BSD, Darwin) those commands do not handle GNU style long
-# options.
-shorten_usermod_property() {
-	case $1
-	in
-		(comment)
-			echo '-c' ;;
-		(home)
-			echo '-d' ;;
-		(gid)
-			echo '-g' ;;
-		(groups)
-			echo '-G' ;;
-		(password)
-			echo '-p' ;;
-		(shell)
-			echo '-s' ;;
-		(uid)
-			echo '-u' ;;
-		(create-home)
-			echo '-m' ;;
-		(remove-home|system)
-			echo '-r' ;;
-	esac
-}
-
 properties_to_usermod_argv() {
 	for __do_arg in "$@"
 	do
-		__do_opt=$(shorten_usermod_property "${__do_arg%%=*}")
+		# we need to shorten options for both usermod and useradd since on some
+		# systems (such as *BSD, Darwin) those commands do not handle GNU-style
+		# long options.
+		case ${__do_arg%%=*}
+		in
+			(comment)
+				__do_opt='-c' ;;
+			(home)
+				__do_opt='-d' ;;
+			(gid)
+				__do_opt='-g' ;;
+			(groups)
+				__do_opt='-G' ;;
+			(password)
+				__do_opt='-p' ;;
+			(shell)
+				__do_opt='-s' ;;
+			(uid)
+				__do_opt='-u' ;;
+			(create-home)
+				__do_opt='-m' ;;
+			(remove-home|system)
+				__do_opt='-r' ;;
+			(*)
+				return 1 ;;
+		esac
 
 		case ${__do_opt-},${__do_arg-}
 		in
