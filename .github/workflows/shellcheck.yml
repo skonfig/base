@@ -86,9 +86,27 @@ jobs:
               "${type}"/gencode-local \
               "${type}"/gencode-remote
             do
-              test -e "${c}" || continue
+              set --
+              if test -d "${c}"
+              then
+                if test -f "${c}/init"
+                then
+                  set -- "$@" "${c}/init"
+                else
+                  for f in "${c}"/*
+                  do
+                    test -f "${f}" || continue
+                    set -- "$@" "${f}"
+                  done
+                fi
+              elif test -f "${c}"
+              then
+                set -- "$@" "${c}"
+              fi
 
-              shellcheck ${SHELLCHECKOPTS-} "${c}" || rc=1
+              test $# -gt 0 || continue
+
+              shellcheck ${SHELLCHECKOPTS-} "$@" || rc=1
             done
 
             if test -d "${type}/explorer"
@@ -169,9 +187,27 @@ jobs:
               "${type}"/gencode-local \
               "${type}"/gencode-remote
             do
-              test -e "${c}" || continue
+              set --
+              if test -d "${c}"
+              then
+                if test -f "${c}/init"
+                then
+                  set -- "$@" "${c}/init"
+                else
+                  for f in "${c}"/*
+                  do
+                    test -f "${f}" || continue
+                    set -- "$@" "${f}"
+                  done
+                fi
+              elif test -f "${c}"
+              then
+                set -- "$@" "${c}"
+              fi
 
-              shellcheck -f gcc ${SHELLCHECKOPTS-} "${c}" \
+              test $# -gt 0 || continue
+
+              shellcheck -f gcc ${SHELLCHECKOPTS-} "$@" \
               | proc_shellcheck_output \
               || rc=1
             done
