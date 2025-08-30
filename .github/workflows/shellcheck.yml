@@ -64,22 +64,17 @@ jobs:
           # shellcheck
 
           # check explorers
-          echo '::group::explorer/*'
 
           find ./explorer -type f \
             -exec awk 'FNR==1{exit !/^#!\/bin\/sh/}' {} \; \
             -exec shellcheck ${SHELLCHECKOPTS-} {} + \
           || steprc=1
 
-          echo '::endgroup::'
-
           # Check types
           for type in ./type/*/.
           do
             rc=0
             type=${type%/.}
-
-            printf '::group::type/%s\n' "${type##*/}"
 
             for c in \
               "${type}"/manifest \
@@ -124,8 +119,6 @@ jobs:
                 -exec shellcheck ${SHELLCHECKOPTS-} {} + \
               || rc=1
             fi
-
-            echo '::endgroup::'
 
             if test $((rc)) -ne 0
             then
