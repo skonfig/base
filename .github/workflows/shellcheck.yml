@@ -64,14 +64,11 @@ jobs:
           # shellcheck
 
           # check explorers
-          echo '::group::explorer/*'
 
           find ./explorer -type f \
             -exec awk 'FNR==1{exit !/^#!\/bin\/sh/}' {} \; \
             -exec shellcheck ${SHELLCHECKOPTS-} {} + \
           || steprc=1
-
-          echo '::endgroup::'
 
           # Check types
           for type in ./type/*/.
@@ -79,16 +76,32 @@ jobs:
             rc=0
             type=${type%/.}
 
-            printf '::group::type/%s\n' "${type##*/}"
-
             for c in \
               "${type}"/manifest \
               "${type}"/gencode-local \
               "${type}"/gencode-remote
             do
-              test -e "${c}" || continue
+              set --
+              if test -d "${c}"
+              then
+                if test -f "${c}/init"
+                then
+                  set -- "$@" "${c}/init"
+                else
+                  for f in "${c}"/*
+                  do
+                    test -f "${f}" || continue
+                    set -- "$@" "${f}"
+                  done
+                fi
+              elif test -f "${c}"
+              then
+                set -- "$@" "${c}"
+              fi
 
-              shellcheck ${SHELLCHECKOPTS-} "${c}" || rc=1
+              test $# -gt 0 || continue
+
+              shellcheck ${SHELLCHECKOPTS-} "$@" || rc=1
             done
 
             if test -d "${type}/explorer"
@@ -106,8 +119,6 @@ jobs:
                 -exec shellcheck ${SHELLCHECKOPTS-} {} + \
               || rc=1
             fi
-
-            echo '::endgroup::'
 
             if test $((rc)) -ne 0
             then
@@ -169,9 +180,27 @@ jobs:
               "${type}"/gencode-local \
               "${type}"/gencode-remote
             do
-              test -e "${c}" || continue
+              set --
+              if test -d "${c}"
+              then
+                if test -f "${c}/init"
+                then
+                  set -- "$@" "${c}/init"
+                else
+                  for f in "${c}"/*
+                  do
+                    test -f "${f}" || continue
+                    set -- "$@" "${f}"
+                  done
+                fi
+              elif test -f "${c}"
+              then
+                set -- "$@" "${c}"
+              fi
 
-              shellcheck -f gcc ${SHELLCHECKOPTS-} "${c}" \
+              test $# -gt 0 || continue
+
+              shellcheck -f gcc ${SHELLCHECKOPTS-} "$@" \
               | proc_shellcheck_output \
               || rc=1
             done

@@ -35,7 +35,20 @@ shorten_groupmod_property() {
 properties_to_groupmod_argv() {
 	for __group_prop in "$@"
 	do
-		__groupmod_opt=$(shorten_groupmod_property "${__group_prop%%=*}")
+		# we need to shorten options for both groupmod and groupadd since on
+		# some systems (such as *BSD, Darwin) those commands do not handle
+		# GNU-style long options.
+		case ${__group_prop%%=*}
+		in
+			(gid)
+				__groupmod_opt='-g' ;;
+			(password)
+				__groupmod_opt='-p' ;;
+			(system)
+				__groupmod_opt='-r' ;;
+			(*)
+				return 1 ;;
+		esac
 
 		case ${__groupmod_opt-},${__group_prop-}
 		in
