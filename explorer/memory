@@ -89,10 +89,12 @@ in
 		then
 			# Use memory blocks if the architecture (e.g. x86, PPC64, s390)
 			# supports them (they denote physical memory)
-			num_mem_blocks=$(cat /sys/devices/system/memory/memory[0-9]*/state | grep -cxF online)
-			mem_block_size=$(cat /sys/devices/system/memory/block_size_bytes)
-
-			echo $((num_mem_blocks * 0x${mem_block_size})) | bytes2kib && exit
+			if num_mem_blocks=$(cat /sys/devices/system/memory/memory[0-9]*/state 2>/dev/null | grep -cxF online)
+			then
+				mem_block_size=$(cat /sys/devices/system/memory/block_size_bytes)
+				echo $((num_mem_blocks * 0x${mem_block_size})) | bytes2kib
+				exit 0
+			fi
 		fi
 		if test -r /proc/meminfo
 		then
