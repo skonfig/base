@@ -62,9 +62,17 @@ in
 	(FreeBSD)
 		sysctl -n hw.realmem | bytes2kib
 		;;
-	(NetBSD|OpenBSD)
-		# NOTE: This reports "usable" memory, not physically installed memory.
-		command -p sysctl -n hw.physmem | bytes2kib
+	(NetBSD)
+		# NOTE: This reports "usable" memory, not physically installed memory
+		#       (on some architectures).
+		#
+		#       hw.physmem64 is available on NetBSD >= 2.0
+		/sbin/sysctl -n hw.physmem64 | bytes2kib
+		;;
+	(OpenBSD)
+		# NOTE: This reports "usable" memory, not physically installed memory
+		#       (on some architectures).
+		sysctl -n hw.physmem | bytes2kib
 		;;
 	(SunOS)
 		# Make sure that awk from xpg4 is used for the scripts to work
