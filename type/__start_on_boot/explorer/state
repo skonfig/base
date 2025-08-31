@@ -2,6 +2,7 @@
 #
 # 2012-2019 Nico Schottelius (nico-cdist at schottelius.org)
 # 2013 Daniel Heule (hda at sfs.biz)
+# 2025 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -96,6 +97,63 @@ else
             state='absent'
             service -e | grep "/${name}$" && state='present'
             ;;
+        (netbsd)
+            NL=$(printf '\n.'); NL=${NL%?}
+
+            if test -x /usr/sbin/service
+            then
+                # NetBSD >= 7.0
+                rcvar=$(/usr/sbin/service "${name}" rcvar)
+            else
+                # NetBSD < 7.0
+                rc_script=$(
+                    # shellcheck source=/dev/null
+                    . /etc/rc.conf
+                    for _d in ${rc_directories:-/etc/rc.d}
+                    do
+                        if test -f "${_d}/${name}" && test -x "${_d}/${name}"
+                        then
+                            printf '%s/%s\n' "${_d}" "${name}"
+
+                        fi
+                    done)
+                test -x "${rc_script}" || {
+                    printf 'service %s could not be found' "${name}" >&2
+                    exit 1
+                }
+
+                rcvar=$("${rc_script}" rcvar)
+            fi
+
+            # remove service name comment
+            rcvar=${rcvar#'#'*"${NL}"}
+            # only first variable (at the time of writing there can’t be more
+            # than one anyway)
+            rcvar=${rcvar%%"${NL}"*}
+            # some (older) versions of NetBSD prefix the rcvar with $
+            rcvar=${rcvar#\$}
+
+            case ${rcvar}
+            in
+                (*=*)
+                    # OK
+                    extra=${rcvar%%=*}
+
+                    case ${rcvar#*=}
+                    in
+                        ([Yy][Ee][Ss]|[Tt][Rr][Uu][Ee]|[Oo][Nn]|1)
+                            state='present' ;;
+                        (*)
+                            state='absent' ;;
+                    esac
+                    ;;
+                ('')
+                    # this service is not enableable
+                    printf 'The service %s is not enableable\n' "${name}" >&2
+                    exit 1
+                    ;;
+            esac
+            ;;
         (openbsd)
             state='absent'
             # OpenBSD 5.7 and higher
@@ -109,4 +167,4 @@ else
     esac
 fi
 
-echo "${state}"
+printf '%s%s\n' "${state}" "${extra:+ ${extra}}"

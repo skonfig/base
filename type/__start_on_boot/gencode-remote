@@ -21,7 +21,7 @@
 #
 
 state_should=$(cat "${__object:?}/parameter/state")
-state_is=$(cat "${__object:?}/explorer/state")
+read -r state_is _ <"${__object:?}/explorer/state" || :
 init=$(cat "${__global:?}/explorer/init")
 target_runlevel=$(cat "${__object:?}/parameter/target_runlevel")
 
@@ -62,8 +62,8 @@ in
                     ;;
 
 
-                (freebsd)
-                    :  # handled in manifest
+                (freebsd|netbsd)
+                    # handled in manifest
                     ;;
 
                 (openbsd)
@@ -102,6 +102,11 @@ in
 
                 (openwrt)
                     echo "'/etc/init.d/${name}' disable"
+                    ;;
+
+
+                (freebsd|netbsd)
+                    # handled in manifest
                     ;;
 
                 (openbsd)
