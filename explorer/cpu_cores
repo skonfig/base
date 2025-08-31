@@ -35,11 +35,12 @@ in
     (macosx)
         sysctl -n hw.physicalcpu
         ;;
-    (openbsd)
-        sysctl -n hw.ncpuonline
+    (netbsd|openbsd)
+        # OpenBSD sysctl(8) always exits 0 (thus `grep .' to check for success)
+        /sbin/sysctl -n hw.ncpuonline 2>/dev/null | grep . \
+        || /sbin/sysctl -n hw.ncpu
         ;;
-    (freebsd|netbsd)
-        PATH=$(getconf PATH)
+    (freebsd)
         sysctl -n hw.ncpu
         ;;
     (*)
