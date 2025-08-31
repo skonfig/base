@@ -28,15 +28,14 @@ in
     (macosx)
         system_profiler SPHardwareDataType | grep -F 'Number of Processors' | awk -F': ' '{print $2}'
         ;;
+    (netbsd)
+        ;;
     (*)
         if test -r /proc/cpuinfo
         then
             sockets=$(grep -e '^physical id[[:blank:]]*:' /proc/cpuinfo | sort -u | wc -l)
-            if test $((sockets)) -lt 1
-            then
-                sockets=$(grep -c -e '^processor[[:blank:]]*:' /proc/cpuinfo)
-            fi
-            echo $((sockets))
+            test $((sockets)) -gt 0 || sockets=1
+            printf '%u\n' "${sockets}"
         fi
         ;;
 esac

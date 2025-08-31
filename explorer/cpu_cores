@@ -45,8 +45,9 @@ in
     (*)
         if test -r /proc/cpuinfo
         then
-            cores=$(grep -c -e '^processor[[:blank:]]*:' /proc/cpuinfo)
-            test $((cores)) -ge 1 && echo $((cores)) || echo 1
+            cores=$(grep -c -e '^processor[[:blank:]]*:' /proc/cpuinfo || :)
+            test $((cores)) -gt 0 || cores=1
+            printf '%u\n' "${cores}"
         fi
         ;;
 esac
