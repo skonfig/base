@@ -2,6 +2,7 @@
 #
 # 2018 Kamila Součková (kamila at ksp.sk)
 # 2018 Jonas Weber (github at jonasw.de)
+# 2025 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -19,9 +20,10 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
-state_should=$(cat "${__object:?}/parameter/state")
-state_is=$(cat "${__object:?}/explorer/state")
 name=${__object_id:?}
+
+state_should=$(cat "${__object:?}/parameter/state")
+read -r state_is extra <"${__object:?}/explorer/state" || :
 
 # Short circuit if nothing is to be done
 [ "${state_should}" = "${state_is}" ] && exit 0
@@ -43,7 +45,23 @@ in
 			--value "\"${value}\"" \
 			--delimiter '='
 		;;
+	(netbsd)
+		rcvar=${extra}
+		: "${rcvar:?rcvar detection failed}"
+		__key_value "/etc/rc.conf:${rcvar}" \
+			--file /etc/rc.conf \
+			--delimiter '=' --exact_delimiter \
+			--key "${rcvar}" \
+			--value "$(
+				case ${state_should}
+				in
+					(present)
+						echo YES ;;
+					(absent)
+						echo NO ;;
+				esac)"
+		;;
 	(*)
-		: # handled in gencode-remote
+		# handled in gencode-remote
 		;;
 esac
