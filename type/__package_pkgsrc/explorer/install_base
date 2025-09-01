@@ -1,0 +1,31 @@
+#!/bin/sh -e
+#
+# 2025 Dennis Camera (dennis.camera at riiengineering.ch)
+#
+# This file is part of skonfig-base.
+#
+# skonfig-base is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# skonfig-base is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
+#
+# Prints the directory in which the pkg_install executables are
+# installed in.  This explorer is needed because this directory is not
+# in the default $PATH for all operating systems.
+#
+
+# common locations:
+# /usr/sbin: NetBSD
+# /opt/tools/sbin: SmartOS
+# /usr/pkg/sbin: Mac OS X
+PATH=/usr/sbin:/usr/pkg/sbin:/usr/pkg/bin:/opt/tools/sbin:/opt/tools/bin:${PATH}
+
+command -v pkg_add | sed 's|/pkg_add$|/|'

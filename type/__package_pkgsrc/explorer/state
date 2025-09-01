@@ -1,0 +1,57 @@
+#!/bin/sh -e
+#
+# 2025 Dennis Camera (dennis.camera at riiengineering.ch)
+#
+# This file is part of skonfig-base.
+#
+# skonfig-base is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# skonfig-base is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
+#
+# Prints the current state of the package.
+#
+
+# cf. install_base explorer for paths
+PATH=${PATH}:/usr/sbin:/usr/pkg/sbin:/usr/pkg/bin:/opt/tools/sbin:/opt/tools/bin
+
+if test -f "${__object:?}/parameter/name"
+then
+	name=$(cat "${__object:?}/parameter/name")
+else
+	name=${__object_id:?}
+fi
+
+if test -f "${__object:?}/parameter/version"
+then
+	version=$(cat "${__object:?}/parameter/version")
+	case ${version}
+	in
+		('<'*|'>'*)
+			;;
+		(?*)
+			version="-${version}" ;;
+	esac
+fi
+pkgid=${name}${version-}
+
+if pkg_best_match=$(pkg_info -E "${pkgid}")
+then
+	if pkg_info -B "${pkg_best_match}" | grep -qxiF 'automatic=yes'
+	then
+		auto='auto'
+	else
+		auto='manual'
+	fi
+	echo "present ${auto}"
+else
+	echo 'absent'
+fi
