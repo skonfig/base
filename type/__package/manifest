@@ -2,6 +2,7 @@
 #
 # 2011-2013 Steven Armstrong (steven-cdist at armstrong.cc)
 # 2019 Nico Schottelius (nico-cdist at schottelius.org)
+# 2023,2025 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -47,6 +48,7 @@ else
       (gentoo) type='emerge' ;;
       (suse) type='zypper' ;;
       (openwrt) type='opkg' ;;
+      (netbsd) type='pkgsrc' ;;
       (openbsd) type='pkg_openbsd' ;;
       (adelie|alpine|chimera) type='apk' ;;
       (*)

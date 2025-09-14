@@ -1,0 +1,94 @@
+#!/bin/sh -e
+#
+# 2025 Dennis Camera (dennis.camera at riiengineering.ch)
+#
+# This file is part of skonfig.
+#
+# skonfig is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# skonfig is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with skonfig. If not, see <http://www.gnu.org/licenses/>.
+#
+
+# get the pkg_install base directory or hope the executables are in
+# $PATH if empty
+read -r pkg_install_base <"${__object:?}/explorer/install_base" || :
+
+shquot() {
+	sed -e "s/'/'\\\\''/g" -e "1s/^/'/" -e "\$s/\$/'/" <<-EOF
+	$*
+	EOF
+}
+
+read -r state_is auto_is <"${__object:?}/explorer/state" || :
+state_should=$(cat "${__object:?}/parameter/state")
+
+if test -s "${__object:?}/parameter/name"
+then
+	name=$(cat "${__object:?}/parameter/name")
+else
+	name=${__object_id:?}
+fi
+
+
+# check if there is anything to do
+
+case ${state_should}/${auto_is}
+in
+	(present/auto)
+		# just mark as user installed (the package is already
+		# installed because $auto_is=auto)
+		printf '%spkg_admin unset automatic %s\n' \
+			"${pkg_install_base-}" "$(shquot "${name}")"
+		exit 0
+		;;
+	("${state_is}"/*)
+		# nothing to do
+		exit 0
+		;;
+esac
+
+
+# package installation/removal
+
+if test -s "${__object:?}/parameter/version"
+then
+	version=$(cat "${__object:?}/parameter/version")
+	case ${version}
+	in
+		('<'*|'>'*)
+			;;
+		(?*)
+			version="-${version}" ;;
+	esac
+fi
+
+pkgid=${name}${version-}
+
+case ${state_should}
+in
+	(present)
+		if test -s "${__object:?}/parameter/pkg-path"
+		then
+			read -r pkg_path <"${__object:?}/parameter/pkg-path"
+		fi
+
+		${pkg_path:+printf 'PKG_PATH=%s \\\n' "$(shquot "${pkg_path}")"}
+		printf '%spkg_add -U %s\n' \
+			"${pkg_install_base-}" "$(shquot "${pkgid}")"
+		echo 'installed' >>"${__messages_out:?}"
+		;;
+	(absent)
+		printf '%spkg_delete -A %s\n' \
+			"${pkg_install_base-}" "$(shquot "${pkgid}")"
+		echo 'removed' >>"${__messages_out:?}"
+		;;
+esac
