@@ -48,7 +48,7 @@ else
       (gentoo) type='emerge' ;;
       (suse) type='zypper' ;;
       (openwrt) type='opkg' ;;
-      (netbsd) type='pkgsrc' ;;
+      (netbsd|smartos) type='pkgsrc' ;;
       (openbsd) type='pkg_openbsd' ;;
       (adelie|alpine|chimera) type='apk' ;;
       (*)

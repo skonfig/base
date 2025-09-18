@@ -40,6 +40,9 @@ in
         /sbin/sysctl -n hw.ncpuonline 2>/dev/null | grep . \
         || /sbin/sysctl -n hw.ncpu
         ;;
+    (smartos)
+        sysinfo -p | sed -n -e 's/^CPU_Core_Count=//p'
+        ;;
     (freebsd)
         sysctl -n hw.ncpu
         ;;

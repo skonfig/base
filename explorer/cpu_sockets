@@ -30,6 +30,9 @@ in
         ;;
     (netbsd)
         ;;
+    (smartos)
+        sysinfo -p | sed -n -e 's/^CPU_Socket_Count=//p'
+        ;;
     (*)
         if test -r /proc/cpuinfo
         then
