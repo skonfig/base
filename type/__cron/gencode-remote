@@ -35,31 +35,15 @@ name=${__object_name:?}
 user=$(cat "${__object:?}/parameter/user")
 command=$(cat "${__object:?}/parameter/command")
 
-if test -f "${__object:?}/parameter/raw_command"
-then
-	echo 'error: parameter --raw_command is not supported anymore.' >&2
-	exit 1
-elif test -f "${__object:?}/parameter/raw"
+if test -f "${__object:?}/parameter/raw"
 then
 	read -r when <"${__object:?}/parameter/raw"
 else
 	read -r minute <"${__object:?}/parameter/minute"
 	read -r hour <"${__object:?}/parameter/hour"
-	if test -f "${__object:?}/parameter/day_of_month"
-	then
-		# deprecated name
-		read -r day_of_month <"${__object:?}/parameter/day_of_month"
-	else
-		read -r day_of_month <"${__object:?}/parameter/day-of-month"
-	fi
+	read -r day_of_month <"${__object:?}/parameter/day-of-month"
 	read -r month <"${__object:?}/parameter/month"
-	if test -f "${__object:?}/parameter/day_of_week"
-	then
-		# deprecated name
-		read -r day_of_week <"${__object:?}/parameter/day_of_week"
-	else
-		read -r day_of_week <"${__object:?}/parameter/day-of-week"
-	fi
+	read -r day_of_week <"${__object:?}/parameter/day-of-week"
 	when="${minute} ${hour} ${day_of_month} ${month} ${day_of_week}"
 fi
 

@@ -1,9 +1,7 @@
 state
 minute
 hour
-day_of_month
 day-of-month
 month
-day_of_week
 day-of-week
 raw
