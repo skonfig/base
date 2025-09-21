@@ -232,6 +232,17 @@ fi
 
 ### Unices
 
+if test -f /etc/release
+then
+	case $(head -n 1 /etc/release)
+	in
+		(*' SmartOS '*)
+			echo smartos
+			exit 0
+			;;
+	esac
+fi
+
 # assume there is no tr on the client -> do lower case ourselves
 case $(uname -s)
 in

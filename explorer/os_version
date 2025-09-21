@@ -243,6 +243,9 @@ in
          rc_getvar /etc/lsb-release DISTRIB_RELEASE
       fi
       ;;
+   (smartos)
+      awk '1==NR {print $2}' /etc/release
+      ;;
    (*bsd|solaris)
       # NOTE: this section has to be at the bottom because of the wildcard.
       #       The freebsd section above should take precedence.
