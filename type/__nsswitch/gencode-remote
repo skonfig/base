@@ -1,6 +1,6 @@
 #!/bin/sh -e
 #
-# 2023 Dennis Camera (dennis.camera at riiengineering.ch)
+# 2023,2025 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -31,6 +31,15 @@ then
 	exit 0
 fi
 
+os=$(cat "${__global:?}/explorer/os")
+case ${os}
+in
+	(fedora|redhat|centos|almalinux|rocky|oraclelinux|scientific|amazon)
+		echo 'This type currently does not work on Red Hat, because it does not support authconfig/authselect.' >&2
+		echo 'Please contribute an implementation for it if you can.' >&2
+		exit 1
+		;;
+esac
 
 if ! test -s "${__object:?}/explorer/sources"
 then
