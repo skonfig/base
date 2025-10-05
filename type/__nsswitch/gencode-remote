@@ -39,6 +39,18 @@ in
 		echo 'Please contribute an implementation for it if you can.' >&2
 		exit 1
 		;;
+	(solaris)
+		case $(cat "${__global:?}/explorer/os_version")
+		in
+			(5.11|5.11.*|'')
+				# Solaris 11 manages name service switch information in SMF
+				# https://docs.oracle.com/cd/E23824_01/html/821-1455/c8switch-18904.html
+				echo 'This type currently does not work on Solaris 11, because it does not support managing the information in SMF.' >&2
+				echo 'Please contribute an implementation for it if you can.' >&2
+				exit 1
+				;;
+		esac
+		;;
 esac
 
 if ! test -s "${__object:?}/explorer/sources"
