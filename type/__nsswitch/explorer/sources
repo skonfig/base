@@ -27,7 +27,8 @@ awk -v db_name="${__object_id:?}" '
 {
 	# remove comments
 	sub(/[ \\t]*#.*$/, "")
-	# merge line continuations to single line
+	# merge line continuations to single line (line continuations do not apply
+	# to comments, btw).
 	while (/\\$/) {
 		sub(/\\$/, (0 < (getline _nl) ? _nl : ""))
 	}

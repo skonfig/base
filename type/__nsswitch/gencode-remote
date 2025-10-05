@@ -72,52 +72,74 @@ fi
 #       correct behaviour if /etc/nsswitch.conf is a symbolic link.
 cat <<'EOF'
 awk -v db_name="${__object_id:?}" -v source_file="${__object:?}/parameter/source" '
-function get_indent(    i) {
-	# FIXME: handle tab stops?
-	i = index($0, $1) - 1
-	i += length($1)
-	i += index(substr($0, i+1), $2) - 1
-	return i
-}
-function guess_indent(key,    cnt, il, i) {
-	# set initial cnt = 2 to ignore indentations which only occur once
-	il = (length(key) + 2); cnt = 2
-
-	for (i in indent) {
-		if (indent[i] > cnt) { il = i }
+function update_indents(    i, _l) {
+	_l = $0
+	while (_l ~ /[\t]/) {
+		# expand tab stops
+		i = index(_l, "\t")-1
+		_l = substr(_l, 1, i) sprintf("%"(TAB_WIDTH - (i % TAB_WIDTH))"s", "") substr(_l, i+2)
 	}
-	return il
+
+	i = index(_l, $1) - 1
+	i += length($1)
+	i += index(substr(_l, i+1), $2) - 1
+
+	if (/[\t]/ || i > (index(_l, $1) + length($1))) {
+		# only remember indentation if there are at least two spaces or a tab
+		indents[i]++
+		num_indents++
+		num_indents_tabs += /[\t]/
+	}
+}
+function fmt_db(db,    cnt, cnt_total, il, i) {
+	# set initial cnt = 2 to ignore indentations which only occur once
+	il = (length(db) + 1); cnt = 2
+
+	for (i in indents) {
+		cnt_total += indents[i]
+		if (indents[i] > cnt) { il = i; cnt = indents[i] }
+	}
+
+	if ((cnt * 2) <= cnt_total) {
+		# no clear indentation style (< 50%), ignore
+		return db " "
+	}
+
+	if ((2 * num_indents_tabs) > num_indents) {
+		# this file uses tabs predominantly
+		cnt = (il - length(db)) / TAB_WIDTH
+		for (i = 0; i < cnt; ++i) { db = db "\t" }
+		return db
+	} else {
+		return sprintf("%-"il"s", db)
+	}
 }
 
 BEGIN {
+	TAB_WIDTH = 8
+
 	while (0 < (getline src < source_file)) {
 		sources = sources (sources ? " " : "") src
 	}
 	close(source_file)
 }
 
-$1 ~ /^[^#].*:/ {
+$1 ~ /:$/ {
 	# looks like an entry
-	db = substr($1, 1, index($1, ":") - 1)
+	update_indents()
 
-	i = get_indent()
-	if (i > (index($0, $1) + length($1))) {
-		# only remember if there is more than one space between db and sources
-		indent[i]++
-	}
-}
-
-db == db_name {
-	if (!f) {
+	if ($1 == db_name":") {
 		# only replace the first occurrence
-		if (sources) {
+		if (!f && sources) {
 			match($0, /:[ \t]*/)
 			printf "%s%s" ORS, substr($0, 1, RSTART + RLENGTH - 1), sources
 		}
 		f = 1
+		while (/\\$/) { getline }
+	} else {
+		print
+		while (/\\$/) { getline; print }
 	}
-
-	while (/\\$/) { getline }
 	next
 }
 
@@ -126,7 +148,7 @@ db == db_name {
 END {
 	if (!f && sources) {
 		# append new entry
-		printf ("%-" guess_indent(db_name) "s%s" ORS), db_name ":", sources
+		printf "%s%s" ORS, fmt_db(db_name":"), sources
 	}
 }
 ' /etc/nsswitch.conf >/etc/nsswitch.conf.tmp \
