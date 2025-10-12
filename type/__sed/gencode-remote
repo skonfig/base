@@ -19,6 +19,12 @@
 # along with skonfig-base. If not, see <http://www.gnu.org/licenses/>.
 #
 
+shquot() {
+	sed -e "s/'/'\\\\''/g" -e "1s/^/'/" -e "\$s/\$/'/" <<-EOF
+	$*
+	EOF
+}
+
 if [ -f "${__object:?}/parameter/file" ]
 then
     file=$(cat "${__object:?}/parameter/file")
@@ -58,11 +64,12 @@ fi
 # shellcheck disable=SC2016
 echo 'tmp="${__object:?}/tempfile"'
 
-echo "${sed_cmd} -f - '${file}' >\"\${tmp}\" <<'EOF'"
-cat "${script_file}"
-echo 'EOF'
+printf '%s \\\n' "${sed_cmd}"
+sed -e "s/'/'\\\\''/g" -e "s/^.*$/    -e '&' \\\\/" "${script_file}"
+# shellcheck disable=SC2016
+printf '%s >%s\n' "$(shquot "${file}")" '"${tmp}"'
 
-echo "cp \"\${tmp}\" '${file}'"
+echo "cp \"\${tmp}\" $(shquot "${file}")"
 
 # shellcheck disable=SC2016
 echo 'rm -f "${tmp}"'
