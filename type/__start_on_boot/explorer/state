@@ -155,13 +155,17 @@ else
             esac
             ;;
         (openbsd)
-            state='absent'
             # OpenBSD 5.7 and higher
-            rcctl ls on | grep "^${name}$" && state='present'
+            if rcctl get "${name}" status >/dev/null
+            then
+                state='present'
+            else
+                state='absent'
+            fi
             ;;
 
         (*)
-            printf 'Unsupported os: %s\n' "${os}" >&2
+            printf 'Unsupported OS: %s\n' "${os}" >&2
             exit 1
             ;;
     esac
