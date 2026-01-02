@@ -38,7 +38,7 @@ else
       (archlinux) type='pacman' ;;
       (debian|ubuntu|devuan) type='apt' ;;
       (freebsd)
-         if [ -n "$(cat "${__object:?}/explorer/pkgng_exists")" ]
+         if test -s "${__object:?}/explorer/pkgng_exists"
          then
             type='pkgng_freebsd'
          else
