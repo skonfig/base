@@ -2,7 +2,7 @@
 #
 # 2011-2013 Steven Armstrong (steven-cdist at armstrong.cc)
 # 2019 Nico Schottelius (nico-cdist at schottelius.org)
-# 2023,2025 Dennis Camera (dennis.camera at riiengineering.ch)
+# 2023,2025-2026 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -47,7 +47,29 @@ else
          ;;
       (gentoo) type='emerge' ;;
       (suse) type='zypper' ;;
-      (openwrt) type='opkg' ;;
+      (openwrt)
+         type='opkg'
+
+         # OpenWrt switched to the APK package manager in November 2024 for
+         # SNAPSHOTs (should be r28056) and 25.12.0 for releases.
+         os_version=$(cat "${__global:?}/explorer/os_version")
+         case ${os_version}
+         in
+            (SNAPSHOT)
+               openwrt_rev=$(sed -n -e 's/.*r\([0-9]\{1,\}\).*/\1/p' "${__global:?}/explorer/lsb_description")
+               if test "${openwrt_rev:-0}" -ge 28056
+               then
+                  type='apk'
+               fi
+               ;;
+            ([0-9]*)
+               if test "${os_version%%[!0-9]*}" -ge 25
+               then
+                  type='apk'
+               fi
+               ;;
+         esac
+         ;;
       (netbsd|smartos) type='pkgsrc' ;;
       (openbsd) type='pkg_openbsd' ;;
       (adelie|alpine|chimera) type='apk' ;;
