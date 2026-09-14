@@ -16,8 +16,6 @@ systemd units, see SYSTEMD.UNIT(5).
 
 OPTIONAL PARAMETERS
 -------------------
-drop-in
-   Create drop-in file for existing unit.
 enablement-state
    'enabled', 'disabled' or 'masked', where:
 
@@ -45,6 +43,10 @@ BOOLEAN PARAMETERS
 restart
    Start the unit if it was inactive. Restart the unit if the unit file
    changed. Stop the unit if new ``enablement-state`` is ``masked``.
+drop-in
+   Create override drop-in file for existing unit.
+unique-drop-in
+   Create unique drop-in file for existing unit.
 
 
 MESSAGES
