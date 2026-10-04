@@ -2,7 +2,7 @@
 #
 # 2012 Steven Armstrong (steven-cdist at armstrong.cc)
 # 2014 Nico Schottelius (nico-cdist at schottelius.org)
-# 2019,2025 Dennis Camera (dennis.camera at riiengineering.ch)
+# 2019,2025-2026 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -36,7 +36,7 @@ else
     case ${os}
     in
         # RedHat-derivatives and BSDs
-        (centos|fedora|redhat|scientific|oraclelinux|freebsd|netbsd|openbsd|slackware|suse)
+        (centos|fedora|redhat|scientific|oraclelinux|ibmpowerhmc|freebsd|netbsd|openbsd|slackware|suse)
             # Hostname is FQDN
             name_should=${__target_host:?}
             ;;
@@ -141,6 +141,9 @@ in
         else
             set_hostname_systemd "${name_should}"
         fi
+        ;;
+    (ibmpowerhmc)
+        # handled in gencode-remote
         ;;
     (freebsd)
         __key_value '/etc/rc.conf:hostname' \
