@@ -2,7 +2,7 @@
 #
 # 2014-2017 Steven Armstrong (steven-cdist at armstrong.cc)
 # 2014 Nico Schottelius (nico-cdist at schottelius.org)
-# 2019,2025 Dennis Camera (dennis.camera at riiengineering.ch)
+# 2019,2025-2026 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -32,7 +32,7 @@ else
     case ${os}
     in
         # RedHat-derivatives and BSDs
-        (centos|fedora|redhat|scientific|oraclelinux|freebsd|macosx|netbsd|openbsd)
+        (centos|fedora|redhat|scientific|oraclelinux|ibmpowerhmc|freebsd|macosx|netbsd|openbsd)
             # Hostname is FQDN
             name_should=${__target_host:?}
             ;;
@@ -69,6 +69,22 @@ in
         ;;
     (centos|fedora|redhat|scientific|oraclelinux|crux|freebsd|netbsd|openbsd|gentoo|void|dsm)
         echo "hostname '${name_should}'"
+        ;;
+    (ibmpowerhmc)
+        case ${name_should}
+        in
+            (*.*)
+                hostname_should=${name_should%%.*}
+                domainname_should=${name_should#*.}
+                ;;
+            (*)
+                hostname_should=${name_should}
+                domainname_should=
+                ;;
+        esac
+
+        printf "su - hscroot -c 'chhmc -c network -s modify -h '\\''%s'\\'' -d '\\''%s'\\'\n" \
+            "${hostname_should}" "${domainname_should}"
         ;;
     (openwrt)
         echo "echo '${name_should}' >/proc/sys/kernel/hostname"

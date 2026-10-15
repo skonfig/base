@@ -1,6 +1,6 @@
 #!/bin/sh -e
 #
-# 2020,2022 Dennis Camera (dennis.camera at riiengineering.ch)
+# 2020,2022,2026 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -37,6 +37,9 @@ in
 		fi
 		;;
 	(freebsd|netbsd|openbsd)
+		# whitelist
+		;;
+	(ibmpowerhmc)
 		# whitelist
 		;;
 	(macosx)

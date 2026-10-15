@@ -1,7 +1,7 @@
 #!/bin/sh -e
 #
 # 2010-2011 Nico Schottelius (nico-cdist at schottelius.org)
-# 2020-2023,2025 Dennis Camera (dennis.camera at riiengineering.ch)
+# 2020-2023,2025-2026 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -181,6 +181,9 @@ in
       # uname -r is hard-coded to "1", so we ignore it.
       libbe_version=$(version /boot/system/lib/libbe.so 2>/dev/null) || exit 0
       printf '%s\n' "${libbe_version#R}"
+      ;;
+   (ibmpowerhmc)
+      rc_getvar /etc/hmc-release.d/version BUILD_VERSION
       ;;
    (macosx)
       # NOTE: Legacy versions (< 10.3) do not support options

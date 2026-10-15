@@ -3,6 +3,7 @@
 # 2011 Ramon Salvadó (rsalvado at gnuine.com)
 # 2012-2015 Steven Armstrong (steven-cdist at armstrong.cc)
 # 2012-2019 Nico Schottelius (nico-cdist at schottelius.org)
+# 2026 Dennis Camera (dennis.camera at riiengineering.ch)
 #
 # This file is part of skonfig-base.
 #
@@ -23,6 +24,8 @@
 timezone=$(cat "${__object:?}/parameter/tz")
 os=$(cat "${__global:?}/explorer/os")
 
+zone_path=/usr/share/zoneinfo
+
 case ${os}
 in
     (archlinux|debian|ubuntu|devuan|alpine)
@@ -36,6 +39,9 @@ in
     (freebsd|netbsd|openbsd)
         # whitelist
         :
+        ;;
+    (ibmpowerhmc)
+        zone_path='../usr/share/zoneinfo'
         ;;
     (coreos)
         # whitelist
@@ -62,5 +68,5 @@ in
 esac
 
 __link /etc/localtime \
-    --source "/usr/share/zoneinfo/${timezone}" \
+    --source "${zone_path:?}/${timezone}" \
     --type symbolic
